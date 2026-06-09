@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/gb-logo.jpg" alt="GeniusBees Logo" width="150"/>
+  <img src="frontend/public/gb-logo.jpg" alt="GeniusBees Logo" width="150"/>
   <h1>🐝 GeniusBees Worksheet Editor</h1>
   <p><strong>A powerful, visual HTML worksheet builder and editor designed for modern educators.</strong></p>
   
@@ -7,7 +7,8 @@
     <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
     <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" />
     <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-    <img src="https://img.shields.io/badge/Zustand-443E38?style=for-the-badge&logo=react&logoColor=white" alt="Zustand" />
+    <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+    <img src="https://img.shields.io/badge/AWS_S3-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS" />
   </p>
 </div>
 
@@ -15,7 +16,7 @@
 
 ## 🌟 Overview
 
-The **GeniusBees Worksheet Editor** is a visual worksheet editor that lets users upload, edit, export, and save worksheets to AWS S3 through a lightweight backend.
+The **GeniusBees Worksheet Editor** is a visual worksheet editor that lets users upload, edit, export, and save worksheets to AWS S3. The project is split into a React frontend and an Express backend.
 
 ## ✨ Key Features
 
@@ -24,103 +25,76 @@ The **GeniusBees Worksheet Editor** is a visual worksheet editor that lets users
 - **🔄 Undo & Redo System:** Built-in history management means you never lose your progress or make an irreversible mistake.
 - **📱 Responsive & Resizable Panel:** A sleek, light-themed interface with adjustable sidebars to fit your workflow.
 - **📤 Seamless Export:** Export your finished worksheets as clean HTML or high-quality PDF files.
-- **☁️ AWS S3 Save:** Save worksheets to an S3 bucket with a custom file name and folder path.
+- **☁️ AWS S3 Save:** Save worksheets directly to an S3 bucket with a custom file name and folder path.
 - **🔒 Secure Sandboxing:** Editing happens inside a secure iframe, isolating worksheet styles from the application UI.
 
-## 🚀 Getting Started
+## 📂 Project Structure
 
-Follow these steps to get the project up and running on your local machine.
+The application uses a separated frontend and backend structure:
+
+- `frontend/`: Continues the React application, Vite configuration, and all UI components.
+- `backend/`: Continues the Node.js/Express server that acts as a proxy to securely upload the generated HTML to an AWS S3 Bucket.
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
 Make sure you have [Node.js](https://nodejs.org/) installed on your system.
 
-### Installation
+### 1. Setup the Backend
 
-1. **Clone the repository:**
+1. **Navigate to the backend folder a install dependencies:**
 
    ```bash
-   git clone https://github.com/Dilukshan285/Worksheet-generator.git
-   cd Worksheet-generator
+   cd backend
+   npm install
    ```
 
-2. **Install frontend dependencies:**
+2. **Configure Environment Variables:**
+   Copy the `.env.example` to `.env` and fill in your AWS details.
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Inside `backend/.env`:
+
+   ```env
+   AWS_REGION=us-east-1
+   AWS_S3_BUCKET=geniusbees-worksheet-generator
+   AWS_S3_KEY_PREFIX=worksheets
+   PORT=3001
+
+   # Put your IAM user keys here (ensure no quotes are around the values)
+   AWS_ACCESS_KEY_ID=AKIA...
+   AWS_SECRET_ACCESS_KEY=xxx...
+   ```
+
+3. **Start the API server:**
+   ```bash
+   npm run dev
+   ```
+   _The backend will run on `http://localhost:3001`._
+
+### 2. Setup the Frontend
+
+1. **Open a new terminal, navigate to the frontend folder and install dependencies:**
 
    ```bash
    cd frontend
    npm install
    ```
 
-3. **Install backend dependencies:**
-
+2. **Start the frontend app:**
    ```bash
-   cd ..
-   cd backend
-   npm install
-   ```
-
-4. **Start the frontend development server:**
-
-   ```bash
-   cd ..
-   cd frontend
    npm run dev
    ```
-
-5. **Start the backend development server:**
-
-   ```bash
-   cd ..
-   cd backend
-   npm run dev
-   ```
-
-6. **Build the frontend for production:**
-   ```bash
-   cd ..
-   cd frontend
-   npm run build
-   ```
-
-## Backend Setup
-
-The project is now split into separate `frontend/` and `backend/` folders.
-
-- Frontend: go into `frontend/` and run `npm run dev`
-- Backend: go into `backend/` and run `npm run dev`
-
-Create a `.env` file inside `backend/` from `backend/.env.example` and set your AWS settings:
-
-```bash
-AWS_REGION=us-east-1
-AWS_S3_BUCKET=your-worksheet-bucket
-AWS_S3_KEY_PREFIX=worksheets
-PORT=3001
-```
-
-If you prefer to connect AWS through the CLI instead of environment variables, run `aws configure` once and provide your access key, secret key, default region, and output format. The backend will then use your local AWS profile automatically through the AWS SDK.
-
-The backend exposes `POST /api/worksheets/s3`, which accepts:
-
-- `html` - the worksheet HTML to store
-- `fileName` - the file name to use in S3
-- `folderPath` - the folder prefix inside the bucket
-
-In the editor, the export modal now includes inputs for file name and S3 folder before saving.
-
-## Folder Layout
-
-- `frontend/` contains the React app, Vite config, static assets, and frontend package file.
-- `backend/` contains the Express API, backend package file, and AWS environment example.
-- The workspace root now mainly acts as the repo parent and documentation entry point.
+   _The frontend will run on `http://localhost:5173` and proxy API calls to the backend automatically._
 
 ## 🛠️ Tech Stack
 
-- **Framework:** [React 18](https://react.dev/) with [Vite](https://vitejs.dev/)
-- **Styling:** [Tailwind CSS v3](https://tailwindcss.com/)
-- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
-- **History Management:** [Zundo](https://github.com/charkour/zundo)
-- **Backend:** [Express](https://expressjs.com/) with the AWS SDK for S3
+- **Frontend:** [React 18](https://react.dev/), [Vite](https://vitejs.dev/), [Tailwind CSS](https://tailwindcss.com/), [Zustand](https://github.com/pmndrs/zustand)
+- **Backend:** [Express](https://expressjs.com/), [AWS SDK for Node.js](https://aws.amazon.com/sdk-for-javascript/)
 
 ## 🎨 Theme & Design
 
