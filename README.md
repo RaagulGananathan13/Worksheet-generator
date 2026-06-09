@@ -38,18 +38,21 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your system.
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/Dilukshan285/Worksheet-generator.git
    cd Worksheet-generator
    ```
 
 2. **Install frontend dependencies:**
+
    ```bash
    cd frontend
    npm install
    ```
 
 3. **Install backend dependencies:**
+
    ```bash
    cd ..
    cd backend
@@ -57,6 +60,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your system.
    ```
 
 4. **Start the frontend development server:**
+
    ```bash
    cd ..
    cd frontend
@@ -64,6 +68,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your system.
    ```
 
 5. **Start the backend development server:**
+
    ```bash
    cd ..
    cd backend
@@ -120,6 +125,7 @@ In the editor, the export modal now includes inputs for file name and S3 folder 
 ## 🎨 Theme & Design
 
 The application follows the official **GeniusBees** brand identity:
+
 - **Primary:** Orange (`#F57C00`)
 - **Secondary:** Green (`#4CAF50`) & Purple (`#7B1FA2`)
 - **Background:** Clean White (`#FFFFFF`) with subtle surface layers.
