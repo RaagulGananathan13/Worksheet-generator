@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { X, Download, FileCode, Printer, FileText } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
 
@@ -6,7 +6,17 @@ export default function ExportModal() {
   const originalHTML = useWorksheetStore((s) => s.originalHTML);
   const draftHTML = useWorksheetStore((s) => s.draftHTML);
   const hasUnsavedChanges = useWorksheetStore((s) => s.hasUnsavedChanges);
+  const worksheetMeta = useWorksheetStore((s) => s.worksheetMeta);
   const setShowExportModal = useWorksheetStore((s) => s.setShowExportModal);
+  const [fileName, setFileName] = useState((worksheetMeta.title || 'worksheet').trim());
+  const [folderPath, setFolderPath] = useState('worksheets');
+  const [s3Status, setS3Status] = useState('');
+  const [s3Error, setS3Error] = useState('');
+  const [isSavingToS3, setIsSavingToS3] = useState(false);
+
+  const currentHTML = useMemo(() => (
+    (hasUnsavedChanges && draftHTML) ? draftHTML : originalHTML
+  ), [draftHTML, hasUnsavedChanges, originalHTML]);
 
   // ──────────────────────────────────────────────────────────────
   //  DYNAMIC PDF EXPORT ENGINE
@@ -22,14 +32,13 @@ export default function ExportModal() {
 
   // Build the print-ready HTML document
   const buildPrintDocument = useCallback(() => {
-    const sourceHTML = (hasUnsavedChanges && draftHTML) ? draftHTML : originalHTML;
-    const bodyContent = extractBodyContent(sourceHTML);
+    const bodyContent = extractBodyContent(currentHTML);
 
     // Extract font links
     const fontLinks = [];
     const linkRe = /<link[^>]*href="[^"]*fonts[^"]*"[^>]*>/gi;
     let m;
-    while ((m = linkRe.exec(originalHTML)) !== null) fontLinks.push(m[0]);
+    while ((m = linkRe.exec(currentHTML)) !== null) fontLinks.push(m[0]);
 
     // Extract template styles (skip editor styles)
     const styleRe = /<style(?:(?!id="ws-editor)[^>])*>([\s\S]*?)<\/style>/gi;
@@ -117,7 +126,7 @@ body {
 ${bodyContent}
 </body>
 </html>`;
-  }, [originalHTML, draftHTML, hasUnsavedChanges, extractBodyContent]);
+  }, [currentHTML, extractBodyContent]);
 
   // ── DYNAMIC SCALE-TO-FIT: Measures content, scales if needed ──
   const handleExportPDF = useCallback(() => {
@@ -240,7 +249,7 @@ ${bodyContent}
 
   // ── HTML Download ──
   const handleExportHTML = useCallback(() => {
-    const html = (hasUnsavedChanges && draftHTML) ? draftHTML : originalHTML;
+    const html = currentHTML;
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -249,7 +258,39 @@ ${bodyContent}
     a.click();
     URL.revokeObjectURL(url);
     setShowExportModal(false);
-  }, [originalHTML, draftHTML, hasUnsavedChanges, setShowExportModal]);
+  }, [currentHTML, setShowExportModal]);
+
+  const handleSaveToS3 = useCallback(async () => {
+    setS3Error('');
+    setS3Status('');
+    setIsSavingToS3(true);
+
+    try {
+      const response = await fetch('/api/worksheets/s3', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          html: currentHTML,
+          fileName,
+          folderPath,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Failed to save to S3');
+      }
+
+      setS3Status(`Saved to ${data.location}`);
+    } catch (error) {
+      setS3Error(error.message || 'Failed to save to S3');
+    } finally {
+      setIsSavingToS3(false);
+    }
+  }, [currentHTML, fileName, folderPath]);
 
   const handlePrint = useCallback(() => {
     handleExportPDF();
@@ -272,6 +313,37 @@ ${bodyContent}
             ⚠ You have unsaved changes. The export will include your latest edits.
           </div>
         )}
+
+        <div className="mb-4 space-y-3 rounded-xl border border-surface-200 bg-surface-50 p-4">
+          <div>
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">File Name</label>
+            <input
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+              className="input-field w-full text-xs"
+              placeholder="worksheet-name"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">S3 Folder</label>
+            <input
+              value={folderPath}
+              onChange={(e) => setFolderPath(e.target.value)}
+              className="input-field w-full text-xs"
+              placeholder="class-worksheets/grade-3"
+            />
+            <p className="mt-1 text-[10px] text-surface-400">This becomes the S3 key prefix. Leave it as-is or change it per worksheet.</p>
+          </div>
+          <button
+            onClick={handleSaveToS3}
+            disabled={isSavingToS3 || !currentHTML.trim()}
+            className="w-full rounded-xl bg-brand-orange px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-brand-orange-dark disabled:cursor-not-allowed disabled:bg-surface-300"
+          >
+            {isSavingToS3 ? 'Saving to S3...' : 'Save to S3'}
+          </button>
+          {s3Status && <p className="text-xs text-success-500">{s3Status}</p>}
+          {s3Error && <p className="text-xs text-danger-500">{s3Error}</p>}
+        </div>
 
         <div className="space-y-2.5">
           <button onClick={handleExportPDF}

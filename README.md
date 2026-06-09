@@ -15,7 +15,7 @@
 
 ## 🌟 Overview
 
-The **GeniusBees Worksheet Editor** is a state-of-the-art frontend application that empowers users to upload, visually edit, and export HTML worksheets with zero backend dependencies. With its intuitive drag-and-drop interface and real-time property panel, creating perfect worksheets has never been easier.
+The **GeniusBees Worksheet Editor** is a visual worksheet editor that lets users upload, edit, export, and save worksheets to AWS S3 through a lightweight backend.
 
 ## ✨ Key Features
 
@@ -24,6 +24,7 @@ The **GeniusBees Worksheet Editor** is a state-of-the-art frontend application t
 - **🔄 Undo & Redo System:** Built-in history management means you never lose your progress or make an irreversible mistake.
 - **📱 Responsive & Resizable Panel:** A sleek, light-themed interface with adjustable sidebars to fit your workflow.
 - **📤 Seamless Export:** Export your finished worksheets as clean HTML or high-quality PDF files.
+- **☁️ AWS S3 Save:** Save worksheets to an S3 bucket with a custom file name and folder path.
 - **🔒 Secure Sandboxing:** Editing happens inside a secure iframe, isolating worksheet styles from the application UI.
 
 ## 🚀 Getting Started
@@ -42,20 +43,71 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your system.
    cd Worksheet-generator
    ```
 
-2. **Install dependencies:**
+2. **Install frontend dependencies:**
    ```bash
+   cd frontend
    npm install
    ```
 
-3. **Start the development server:**
+3. **Install backend dependencies:**
    ```bash
+   cd ..
+   cd backend
+   npm install
+   ```
+
+4. **Start the frontend development server:**
+   ```bash
+   cd ..
+   cd frontend
    npm run dev
    ```
 
-4. **Build for production:**
+5. **Start the backend development server:**
    ```bash
+   cd ..
+   cd backend
+   npm run dev
+   ```
+
+6. **Build the frontend for production:**
+   ```bash
+   cd ..
+   cd frontend
    npm run build
    ```
+
+## Backend Setup
+
+The project is now split into separate `frontend/` and `backend/` folders.
+
+- Frontend: go into `frontend/` and run `npm run dev`
+- Backend: go into `backend/` and run `npm run dev`
+
+Create a `.env` file inside `backend/` from `backend/.env.example` and set your AWS settings:
+
+```bash
+AWS_REGION=us-east-1
+AWS_S3_BUCKET=your-worksheet-bucket
+AWS_S3_KEY_PREFIX=worksheets
+PORT=3001
+```
+
+If you prefer to connect AWS through the CLI instead of environment variables, run `aws configure` once and provide your access key, secret key, default region, and output format. The backend will then use your local AWS profile automatically through the AWS SDK.
+
+The backend exposes `POST /api/worksheets/s3`, which accepts:
+
+- `html` - the worksheet HTML to store
+- `fileName` - the file name to use in S3
+- `folderPath` - the folder prefix inside the bucket
+
+In the editor, the export modal now includes inputs for file name and S3 folder before saving.
+
+## Folder Layout
+
+- `frontend/` contains the React app, Vite config, static assets, and frontend package file.
+- `backend/` contains the Express API, backend package file, and AWS environment example.
+- The workspace root now mainly acts as the repo parent and documentation entry point.
 
 ## 🛠️ Tech Stack
 
@@ -63,6 +115,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your system.
 - **Styling:** [Tailwind CSS v3](https://tailwindcss.com/)
 - **State Management:** [Zustand](https://github.com/pmndrs/zustand)
 - **History Management:** [Zundo](https://github.com/charkour/zundo)
+- **Backend:** [Express](https://expressjs.com/) with the AWS SDK for S3
 
 ## 🎨 Theme & Design
 
