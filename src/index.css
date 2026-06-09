@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;500;600;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg font-medium
+           transition-all duration-200 active:scale-95 shadow-md;
+  }
+
+  .btn-ghost {
+    @apply px-3 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-200/60 rounded-lg
+           transition-all duration-200;
+  }
+
+  .input-field {
+    @apply bg-white border border-surface-300 rounded-lg px-3 py-1.5 text-sm text-surface-900
+           focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500
+           transition-all duration-200;
+  }
+
+  .panel-section {
+    @apply border-b border-surface-200 pb-3 mb-3;
+  }
+}
