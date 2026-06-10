@@ -48,17 +48,17 @@ const TEMPLATE_CSS = `
   .ws-grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 300; color: #555; border: none; }
   .ws-grade-table tr:first-child td { border-bottom: 1px solid #777; }
   .ws-grade-table td:not(:last-child) { border-right: 1px solid #777; }
-  .ws-header-mid { flex: 1; padding: 0 5px; display: flex; flex-direction: column; overflow: hidden; }
+  .ws-header-mid { flex: 1; padding: 0 15px; display: flex; flex-direction: column; overflow: hidden; }
   .ws-activity-id { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
   .ws-activity-title { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ws-form-fields { display: flex; flex-direction: column; gap: 8px; }
-  .ws-form-row { display: flex; align-items: baseline; gap: 6px; font-size: 12px; color: #333; }
+  .ws-form-row { display: flex; align-items: baseline; gap: 2px; font-size: 12px; color: #333; width: 100%; }
   .ws-f-label { font-weight: 400; white-space: nowrap; color: #333; }
-  .ws-f-line-dashed { flex: 1; border-bottom: 1px dashed #777; min-width: 20px; margin-bottom: 3px; }
-  .ws-f-line-sm-dashed { width: 75px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
-  .ws-d-line-dashed { width: 22px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
-  .ws-d-line-y-dashed { width: 38px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
-  .ws-d-sep { font-weight: 400; margin: 0 1px; color: #666; }
+  .ws-f-line-dashed { flex: 1; border-bottom: 1px dashed #555; margin-bottom: 4px; min-width: 20px; }
+  .ws-f-line-sm-dashed { width: 60px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
+  .ws-d-line-dashed { width: 22px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
+  .ws-d-line-y-dashed { width: 35px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
+  .ws-d-sep { font-weight: 400; margin: 0 1px; color: #333; }
   .ws-header-right { width: 125px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
   .ws-header-right img { width: 125px; height: 125px; display: block; }
 
@@ -150,24 +150,24 @@ const TEMPLATE_HEADER = `
       <div class="ws-activity-title">Addition with two digit numbers</div>
       <div class="ws-form-fields">
         <div class="ws-form-row">
-          <span class="ws-f-label">ID</span>
+          <span class="ws-f-label" style="width: 45px; display: inline-block;">ID</span>
           <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
-          <span class="ws-f-label">Name</span>
+          <span class="ws-f-label" style="width: 45px; display: inline-block;">Name</span>
           <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
-          <span class="ws-f-label">Date</span>
+          <span class="ws-f-label" style="width: 45px; display: inline-block;">Date</span>
           <div class="ws-d-line-dashed"></div>
           <span class="ws-d-sep">/</span>
           <div class="ws-d-line-dashed"></div>
           <span class="ws-d-sep">/</span>
           <div class="ws-d-line-y-dashed"></div>
-          <span class="ws-f-label" style="margin-left:8px">Start time</span>
+          <span class="ws-f-label" style="margin-left:12px">Start time</span>
           <div class="ws-f-line-sm-dashed"></div>
-          <span class="ws-f-label" style="margin-left:8px">Finish time</span>
-          <div class="ws-f-line-sm-dashed"></div>
+          <span class="ws-f-label" style="margin-left:12px">Finish time</span>
+          <div class="ws-f-line-dashed"></div>
         </div>
       </div>
     </div>
