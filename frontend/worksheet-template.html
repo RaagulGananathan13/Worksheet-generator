@@ -60,17 +60,17 @@
     .grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 300; color: #555; border: none; }
     .grade-table tr:first-child td { border-bottom: 1px solid #777; }
     .grade-table td:not(:last-child) { border-right: 1px solid #777; }
-    .header-mid { flex: 1; padding: 0 15px; display: flex; flex-direction: column; overflow: hidden; }
-    .activity-id { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
-    .activity-title { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .form-fields { display: flex; flex-direction: column; gap: 8px; }
-    .form-row { display: flex; align-items: baseline; gap: 2px; font-size: 12px; color: #333; width: 100%; }
-    .f-label { font-weight: 400; white-space: nowrap; color: #333; }
-    .f-line-dashed { flex: 1; border-bottom: 1px dashed #555; margin-bottom: 4px; min-width: 20px; }
-    .f-line-sm-dashed { width: 60px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
-    .d-line-dashed { width: 22px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
-    .d-line-y-dashed { width: 35px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
-    .d-sep { font-weight: 400; margin: 0 1px; color: #333; }
+    .header-mid { flex: 1 !important; padding: 0 15px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; overflow: hidden !important; }
+    .activity-id { font-size: 15px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 4px 0 !important; line-height: 1.2 !important; }
+    .activity-title { font-size: 14px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 16px 0 !important; line-height: 1.2 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .form-fields { display: flex !important; flex-direction: column !important; gap: 8px !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    .form-row { display: flex !important; align-items: baseline !important; gap: 2px !important; font-size: 12px !important; color: #333 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+    .f-label { font-weight: 400 !important; white-space: nowrap !important; color: #333 !important; }
+    .f-line-dashed { flex: 1 !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; min-width: 20px !important; }
+    .f-line-sm-dashed { width: 60px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
+    .d-line-dashed { width: 22px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
+    .d-line-y-dashed { width: 35px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
+    .d-sep { font-weight: 400 !important; margin: 0 -2px !important; color: #333 !important; }
     .header-right { width: 125px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; padding-top: 0; }
     .header-right img { width: 125px; height: 125px; display: block; }
 
@@ -190,13 +190,9 @@
           </div>
           <div class="form-row">
             <span class="f-label" style="width: 45px; display: inline-block;">Date</span>
-            <div class="d-line-dashed"></div>
-            <span class="d-sep">/</span>
-            <div class="d-line-dashed"></div>
-            <span class="d-sep">/</span>
-            <div class="d-line-y-dashed"></div>
+            <div class="d-line-dashed"></div><span class="d-sep">/</span><div class="d-line-dashed"></div><span class="d-sep">/</span><div class="d-line-y-dashed"></div>
             <span class="f-label" style="margin-left:12px">Start time</span>
-            <div class="f-line-sm-dashed"></div>
+            <div class="f-line-dashed"></div>
             <span class="f-label" style="margin-left:12px">Finish time</span>
             <div class="f-line-dashed"></div>
           </div>

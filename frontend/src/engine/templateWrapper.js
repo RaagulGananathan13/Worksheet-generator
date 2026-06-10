@@ -48,17 +48,17 @@ const TEMPLATE_CSS = `
   .ws-grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 300; color: #555; border: none; }
   .ws-grade-table tr:first-child td { border-bottom: 1px solid #777; }
   .ws-grade-table td:not(:last-child) { border-right: 1px solid #777; }
-  .ws-header-mid { flex: 1; padding: 0 15px; display: flex; flex-direction: column; overflow: hidden; }
-  .ws-activity-id { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
-  .ws-activity-title { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ws-form-fields { display: flex; flex-direction: column; gap: 8px; }
-  .ws-form-row { display: flex; align-items: baseline; gap: 2px; font-size: 12px; color: #333; width: 100%; }
-  .ws-f-label { font-weight: 400; white-space: nowrap; color: #333; }
-  .ws-f-line-dashed { flex: 1; border-bottom: 1px dashed #555; margin-bottom: 4px; min-width: 20px; }
-  .ws-f-line-sm-dashed { width: 60px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
-  .ws-d-line-dashed { width: 22px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
-  .ws-d-line-y-dashed { width: 35px; border-bottom: 1px dashed #555; margin-bottom: 4px; }
-  .ws-d-sep { font-weight: 400; margin: 0 1px; color: #333; }
+  .ws-header-mid { flex: 1 !important; padding: 0 15px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; overflow: hidden !important; }
+  .ws-activity-id { font-size: 15px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 4px 0 !important; line-height: 1.2 !important; }
+  .ws-activity-title { font-size: 14px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 16px 0 !important; line-height: 1.2 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-form-fields { display: flex !important; flex-direction: column !important; gap: 8px !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+  .ws-form-row { display: flex !important; align-items: baseline !important; gap: 2px !important; font-size: 12px !important; color: #333 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+  .ws-f-label { font-weight: 400 !important; white-space: nowrap !important; color: #333 !important; }
+  .ws-f-line-dashed { flex: 1 !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; min-width: 20px !important; }
+  .ws-f-line-sm-dashed { width: 60px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
+  .ws-d-line-dashed { width: 22px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
+  .ws-d-line-y-dashed { width: 35px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
+  .ws-d-sep { font-weight: 400 !important; margin: 0 -2px !important; color: #333 !important; }
   .ws-header-right { width: 125px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
   .ws-header-right img { width: 125px; height: 125px; display: block; }
 
@@ -146,13 +146,9 @@ const TEMPLATE_HEADER = `
         </div>
         <div class="ws-form-row">
           <span class="ws-f-label" style="width: 45px; display: inline-block;">Date</span>
-          <div class="ws-d-line-dashed"></div>
-          <span class="ws-d-sep">/</span>
-          <div class="ws-d-line-dashed"></div>
-          <span class="ws-d-sep">/</span>
-          <div class="ws-d-line-y-dashed"></div>
+          <div class="ws-d-line-dashed"></div><span class="ws-d-sep">/</span><div class="ws-d-line-dashed"></div><span class="ws-d-sep">/</span><div class="ws-d-line-y-dashed"></div>
           <span class="ws-f-label" style="margin-left:12px">Start time</span>
-          <div class="ws-f-line-sm-dashed"></div>
+          <div class="ws-f-line-dashed"></div>
           <span class="ws-f-label" style="margin-left:12px">Finish time</span>
           <div class="ws-f-line-dashed"></div>
         </div>
