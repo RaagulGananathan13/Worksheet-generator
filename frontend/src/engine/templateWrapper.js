@@ -59,8 +59,8 @@ const TEMPLATE_CSS = `
   .ws-d-line-dashed { width: 22px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
   .ws-d-line-y-dashed { width: 38px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
   .ws-d-sep { font-weight: 400; margin: 0 1px; color: #666; }
-  .ws-header-right { width: 115px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
-  .ws-header-right img { width: 115px; height: 115px; display: block; }
+  .ws-header-right { width: 125px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
+  .ws-header-right img { width: 125px; height: 125px; display: block; }
 
   /* ═══ BODY ═══ */
   .ws-body{
@@ -70,14 +70,12 @@ const TEMPLATE_CSS = `
   }
   .ws-wm-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
   .ws-wm{
-    position:absolute;font-family:'Poppins',sans-serif;
-    font-size:130px;font-weight:700;font-style:italic;
-    color:rgba(0,0,0,.035);user-select:none;letter-spacing:-3px;
-    line-height:1;transform:rotate(-15deg);
+    position:absolute;width:180px;opacity:0.06;filter:grayscale(100%);
+    pointer-events:none;user-select:none;transform:rotate(-15deg);
   }
-  .ws-wm1{top:8%;right:10%}
-  .ws-wm2{top:42%;left:5%}
-  .ws-wm3{bottom:8%;right:18%}
+  .ws-wm1{top:20%;right:12%}
+  .ws-wm2{top:55%;left:8%}
+  .ws-wm3{bottom:10%;right:15%}
   .ws-body-content{position:relative;z-index:1}
   /* Strip shadows/margins from user's original container */
   .ws-body-content>*{
@@ -242,9 +240,9 @@ ${originalStyles}
 ${TEMPLATE_HEADER}
   <div class="ws-body">
     <div class="ws-wm-wrap">
-      <div class="ws-wm ws-wm1">GB</div>
-      <div class="ws-wm ws-wm2">GB</div>
-      <div class="ws-wm ws-wm3">GB</div>
+      <img src="watermark.svg" class="ws-wm ws-wm1" alt="Watermark">
+      <img src="watermark.svg" class="ws-wm ws-wm2" alt="Watermark">
+      <img src="watermark.svg" class="ws-wm ws-wm3" alt="Watermark">
     </div>
     <div class="ws-body-content">
       ${bodyContent}
