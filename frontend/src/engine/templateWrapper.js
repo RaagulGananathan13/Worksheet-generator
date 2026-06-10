@@ -41,33 +41,26 @@ const TEMPLATE_CSS = `
   }
 
   /* ═══ HEADER ═══ */
-  .ws-header{
-    padding:7mm 12mm 5mm 10mm;
-    border-bottom:1.5px solid #222;
-    display:flex;
-    gap:0;
-    flex-shrink:0;
-  }
-  .ws-header-left{width:150px;flex-shrink:0;display:flex;flex-direction:column;gap:8px}
-  .ws-header-left img{width:140px;height:auto;display:block}
-  .ws-grade-table{border-collapse:collapse}
-  .ws-grade-table td{
-    width:40px;height:30px;border:1.5px solid #333;
-    text-align:center;font-size:14px;font-weight:500;color:#111;
-  }
-  .ws-header-mid{flex:1;padding:2px 12px 0 8px;display:flex;flex-direction:column}
-  .ws-activity-id{font-size:14.5px;font-weight:600;color:#111;margin-bottom:1px}
-  .ws-activity-title{font-size:12.5px;font-weight:400;color:#333;margin-bottom:10px}
-  .ws-form-fields{display:flex;flex-direction:column;gap:7px}
-  .ws-form-row{display:flex;align-items:baseline;gap:6px;font-size:12px;color:#111}
-  .ws-f-label{font-weight:500;white-space:nowrap}
-  .ws-f-line{flex:1;border-bottom:1px solid #444;min-width:30px;margin-bottom:2px}
-  .ws-f-line-sm{width:75px;border-bottom:1px solid #444;margin-bottom:2px}
-  .ws-d-line{width:22px;border-bottom:1px solid #444;margin-bottom:2px}
-  .ws-d-line-y{width:38px;border-bottom:1px solid #444;margin-bottom:2px}
-  .ws-d-sep{font-weight:500;margin:0 1px}
-  .ws-header-right{width:90px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:flex-end}
-  .ws-header-right img{width:85px;height:85px;display:block}
+  .ws-header { padding: 7mm 12mm 5mm 8mm; border-bottom: none; display: flex; gap: 15px; flex-shrink: 0; }
+  .ws-header-left { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .ws-header-left img { width: 140px; height: auto; display: block; margin-left: -10px; }
+  .ws-grade-table { border-collapse: collapse; margin-left: 4px; }
+  .ws-grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 300; color: #555; border: none; }
+  .ws-grade-table tr:first-child td { border-bottom: 1px solid #777; }
+  .ws-grade-table td:not(:last-child) { border-right: 1px solid #777; }
+  .ws-header-mid { flex: 1; padding: 0 5px; display: flex; flex-direction: column; overflow: hidden; }
+  .ws-activity-id { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .ws-activity-title { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-form-fields { display: flex; flex-direction: column; gap: 8px; }
+  .ws-form-row { display: flex; align-items: baseline; gap: 6px; font-size: 12px; color: #333; }
+  .ws-f-label { font-weight: 400; white-space: nowrap; color: #333; }
+  .ws-f-line-dashed { flex: 1; border-bottom: 1px dashed #777; min-width: 20px; margin-bottom: 3px; }
+  .ws-f-line-sm-dashed { width: 75px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
+  .ws-d-line-dashed { width: 22px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
+  .ws-d-line-y-dashed { width: 38px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
+  .ws-d-sep { font-weight: 400; margin: 0 1px; color: #666; }
+  .ws-header-right { width: 115px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
+  .ws-header-right img { width: 115px; height: 115px; display: block; }
 
   /* ═══ BODY ═══ */
   .ws-body{
@@ -102,55 +95,81 @@ const TEMPLATE_CSS = `
   }
 
   /* ═══ FOOTER ═══ */
-  .ws-footer{
-    padding:2mm 8mm 4mm 8mm;
-    border-top:1px solid #222;
-    flex-shrink:0;
-    margin-top:auto;
+  .ws-footer {
+    padding: 3mm 15mm 6mm 15mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    color: #111;
+    flex-shrink: 0;
+    margin-top: auto;
   }
-  .ws-footer-row{
-    display:flex;align-items:center;justify-content:space-between;
-    font-size:7px;color:#333;width:100%;gap:4px;
+  .ws-footer-left {
+    flex: 1;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
   }
-  .ws-footer-row span{display:inline-block;white-space:nowrap}
-  .ws-fc{font-weight:400;flex-shrink:0}
-  .ws-fs{font-weight:500;color:#111;flex-shrink:0}
-  .ws-fn{font-weight:400;flex:1;text-align:center;font-size:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .ws-fp{font-weight:700;font-size:10px;color:#111;flex-shrink:0}
+  .ws-footer-center {
+    flex: 2;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .ws-footer-right {
+    flex: 1;
+    text-align: right;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .ws-vertical-copyright {
+    position: absolute;
+    left: -193px;
+    width: 400px;
+    top: 50%;
+    text-align: center;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: #111;
+    pointer-events: njpg;
+  }
 `;
 
 const TEMPLATE_HEADER = `
   <div class="ws-header">
     <div class="ws-header-left">
-      <img src="gb-logo.jpg" alt="GeniusBees">
+      <img src="logo.jpg" alt="GeniusBees">
       <table class="ws-grade-table">
-        <tr><td>A+</td><td>B+</td><td>C+</td></tr>
-        <tr><td>A</td><td>B</td><td>C</td></tr>
+        <tr><td>A+</td><td>B+</td><td>C</td></tr>
+        <tr><td>A</td><td>B</td><td>D</td></tr>
       </table>
     </div>
     <div class="ws-header-mid">
-      <div class="ws-activity-id">Activity ID : 1ABC</div>
+      <div class="ws-activity-id">Activity ID : 140100100001</div>
       <div class="ws-activity-title">Addition with two digit numbers</div>
       <div class="ws-form-fields">
         <div class="ws-form-row">
           <span class="ws-f-label">ID</span>
-          <div class="ws-f-line"></div>
+          <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
           <span class="ws-f-label">Name</span>
-          <div class="ws-f-line"></div>
+          <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
-          <span class="ws-f-label">Data</span>
-          <div class="ws-d-line"></div>
+          <span class="ws-f-label">Date</span>
+          <div class="ws-d-line-dashed"></div>
           <span class="ws-d-sep">/</span>
-          <div class="ws-d-line"></div>
+          <div class="ws-d-line-dashed"></div>
           <span class="ws-d-sep">/</span>
-          <div class="ws-d-line-y"></div>
-          <span class="ws-f-label" style="margin-left:10px">Start time</span>
-          <div class="ws-f-line-sm"></div>
-          <span class="ws-f-label" style="margin-left:8px">Finished time</span>
-          <div class="ws-f-line-sm"></div>
+          <div class="ws-d-line-y-dashed"></div>
+          <span class="ws-f-label" style="margin-left:8px">Start time</span>
+          <div class="ws-f-line-sm-dashed"></div>
+          <span class="ws-f-label" style="margin-left:8px">Finish time</span>
+          <div class="ws-f-line-sm-dashed"></div>
         </div>
       </div>
     </div>
@@ -160,13 +179,11 @@ const TEMPLATE_HEADER = `
   </div>`;
 
 const TEMPLATE_FOOTER = `
+  <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
-    <div class="ws-footer-row">
-      <span class="ws-fc">Copyright© 2026 GeniusBees. inc. All rights reserved.</span>
-      <span class="ws-fs">www.geniusbees.com</span>
-      <span class="ws-fn">This worksheet is for the use of registered GeniusBees.Com students only. No other use is permitted.</span>
-      <span class="ws-fp">Page :1</span>
-    </div>
+    <span class="ws-footer-left">www.geniusbees.com</span>
+    <span class="ws-footer-center">This worksheet is for the use of registered Geniusbees.com students only.</span>
+    <span class="ws-footer-right">Page :1</span>
   </div>`;
 
 /**

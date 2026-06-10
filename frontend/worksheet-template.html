@@ -1,217 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeniusBees Worksheet - Addition with two digit numbers</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-  @page{size:A4;margin:0}
-  body{
-    font-family:'Poppins',Arial,sans-serif;
-    background:#e8e8e8;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-  .page{
-    width:210mm;
-    min-height:297mm;
-    margin:10mm auto;
-    background:#fff;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 2px 20px rgba(0,0,0,.15);
-    display:flex;
-    flex-direction:column;
-  }
-  @media print{
-    body{background:none}
-    .page{margin:0;box-shadow:none;width:210mm;height:297mm}
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeniusBees Worksheet - Addition with two digit numbers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-  /* ═══════ HEADER ═══════ */
-  .header{
-    padding:7mm 12mm 5mm 10mm;
-    border-bottom:1.5px solid #222;
-    display:flex;
-    gap:0;
-  }
+    @page {
+      size: A4;
+      margin: 0
+    }
 
-  /* Left column: logo + grade table stacked */
-  .header-left{
-    width:150px;
-    flex-shrink:0;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
-  .header-left img{
-    width:140px;
-    height:auto;
-    display:block;
-  }
-  .grade-table{border-collapse:collapse}
-  .grade-table td{
-    width:40px;height:30px;
-    border:1.5px solid #333;
-    text-align:center;
-    font-size:14px;font-weight:500;color:#111;
-  }
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: #e8e8e8;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
 
-  /* Middle column: activity info + form fields */
-  .header-mid{
-    flex:1;
-    padding:2px 12px 0 8px;
-    display:flex;
-    flex-direction:column;
-  }
-  .activity-id{
-    font-size:14.5px;font-weight:600;color:#111;
-    margin-bottom:1px;
-  }
-  .activity-title{
-    font-size:12.5px;font-weight:400;color:#333;
-    margin-bottom:10px;
-  }
-  .form-fields{
-    display:flex;flex-direction:column;gap:7px;
-  }
-  .form-row{
-    display:flex;align-items:baseline;gap:6px;
-    font-size:12px;color:#111;
-  }
-  .f-label{font-weight:500;white-space:nowrap}
-  .f-line{flex:1;border-bottom:1px solid #444;min-width:30px;margin-bottom:2px}
-  .f-line-sm{width:75px;border-bottom:1px solid #444;margin-bottom:2px}
-  .d-line{width:22px;border-bottom:1px solid #444;margin-bottom:2px}
-  .d-line-y{width:38px;border-bottom:1px solid #444;margin-bottom:2px}
-  .d-sep{font-weight:500;margin:0 1px}
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 10mm auto;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, .15);
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* Right column: QR code */
-  .header-right{
-    width:90px;
-    flex-shrink:0;
-    display:flex;
-    align-items:flex-start;
-    justify-content:flex-end;
-    padding-top:0;
-  }
-  .header-right img{
-    width:85px;height:85px;
-    display:block;
-  }
+    @media print {
+      body {
+        background: none
+      }
 
-  /* ═══════ BODY ═══════ */
-  .body{
-    flex:1;position:relative;
-    padding:10mm 12mm;min-height:190mm;
-  }
-  .wm-wrap{
-    position:absolute;inset:0;overflow:hidden;
-    pointer-events:none;z-index:0;
-  }
-  .wm{
-    position:absolute;
-    font-family:'Poppins',sans-serif;
-    font-size:130px;font-weight:700;font-style:italic;
-    color:rgba(0,0,0,.035);
-    user-select:none;letter-spacing:-3px;line-height:1;
-    transform:rotate(-15deg);
-  }
-  .wm1{top:8%;right:10%}
-  .wm2{top:42%;left:5%}
-  .wm3{bottom:8%;right:18%}
-  .body-content{position:relative;z-index:1}
+      .page {
+        margin: 0;
+        box-shadow: none;
+        width: 210mm;
+        height: 297mm
+      }
+    }
 
-  /* ═══════ FOOTER ═══════ */
-  .footer{
-    padding:3mm 10mm 6mm 10mm;
-    border-top:1.5px solid #222;
-  }
-  .footer-row{
-    display:flex;align-items:baseline;
-    justify-content:space-between;gap:8px;
-    font-size:8px;color:#333;
-  }
-  .footer-row span{white-space:nowrap}
-  .fc{font-weight:400}
-  .fs{font-weight:500;color:#111}
-  .fn{font-weight:400;flex:1;text-align:center;font-size:7.5px}
-  .fp{font-weight:700;font-size:11px;color:#111}
-</style>
+    /* ═══════ HEADER ═══════ */
+    .header { padding: 7mm 12mm 5mm 8mm; border-bottom: none; display: flex; gap: 15px; }
+    .header-left { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+    .header-left img { width: 140px; height: auto; display: block; margin-left: -10px; }
+    .grade-table { border-collapse: collapse; margin-left: 4px; }
+    .grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 300; color: #555; border: none; }
+    .grade-table tr:first-child td { border-bottom: 1px solid #777; }
+    .grade-table td:not(:last-child) { border-right: 1px solid #777; }
+    .header-mid { flex: 1; padding: 0 5px; display: flex; flex-direction: column; overflow: hidden; }
+    .activity-id { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .activity-title { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .form-fields { display: flex; flex-direction: column; gap: 8px; }
+    .form-row { display: flex; align-items: baseline; gap: 6px; font-size: 12px; color: #333; }
+    .f-label { font-weight: 400; white-space: nowrap; color: #333; }
+    .f-line-dashed { flex: 1; border-bottom: 1px dashed #777; min-width: 20px; margin-bottom: 3px; }
+    .f-line-sm-dashed { width: 75px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
+    .d-line-dashed { width: 22px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
+    .d-line-y-dashed { width: 38px; border-bottom: 1px dashed #777; margin-bottom: 3px; }
+    .d-sep { font-weight: 400; margin: 0 1px; color: #666; }
+    .header-right { width: 115px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; padding-top: 0; }
+    .header-right img { width: 115px; height: 115px; display: block; }
+
+    /* ═══════ BODY ═══════ */
+    .body {
+      flex: 1;
+      position: relative;
+      padding: 10mm 12mm;
+      min-height: 190mm;
+    }
+
+    .wm-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wm {
+      position: absolute;
+      font-family: 'Poppins', sans-serif;
+      font-size: 130px;
+      font-weight: 700;
+      font-style: italic;
+      color: rgba(0, 0, 0, .035);
+      user-select: none;
+      letter-spacing: -3px;
+      line-height: 1;
+      transform: rotate(-15deg);
+    }
+
+    .wm1 {
+      top: 8%;
+      right: 10%
+    }
+
+    .wm2 {
+      top: 42%;
+      left: 5%
+    }
+
+    .wm3 {
+      bottom: 8%;
+      right: 18%
+    }
+
+    .body-content {
+      position: relative;
+      z-index: 1
+    }
+
+    /* ═══════ FOOTER ═══════ */
+    .footer {
+      padding: 3mm 15mm 6mm 15mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Times New Roman', Times, serif;
+      color: #111;
+    }
+
+    .footer-left {
+      flex: 1;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .footer-center {
+      flex: 2;
+      text-align: center;
+      font-size: 9px;
+      font-weight: 500;
+    }
+
+    .footer-right {
+      flex: 1;
+      text-align: right;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .vertical-copyright {
+      position: absolute;
+      left: -193px;
+      width: 400px;
+      top: 50%;
+      text-align: center;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 10px;
+      font-weight: 500;
+      color: #111;
+      pointer-events: none;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="page">
+  <div class="page">
 
-  <!-- ═══════ HEADER ═══════ -->
-  <div class="header">
+    <!-- ═══════ HEADER ═══════ -->
+    <div class="header">
 
-    <!-- LEFT: Logo + Grade Table -->
-    <div class="header-left">
-      <img src="gb-logo.jpg" alt="GeniusBees">
-      <table class="grade-table">
-        <tr><td>A+</td><td>B+</td><td>C+</td></tr>
-        <tr><td>A</td><td>B</td><td>C</td></tr>
-      </table>
-    </div>
+      <!-- LEFT: Logo + Grade Table -->
+      <div class="header-left">
+        <img src="logo.jpg" alt="GeniusBees">
+        <table class="grade-table">
+          <tr>
+            <td>A+</td>
+            <td>B+</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>A</td>
+            <td>B</td>
+            <td>D</td>
+          </tr>
+        </table>
+      </div>
 
-    <!-- MIDDLE: Activity Info + Form Fields -->
-    <div class="header-mid">
-      <div class="activity-id">Activity ID : 1ABC</div>
-      <div class="activity-title">Addition with two digit numbers</div>
-      <div class="form-fields">
-        <div class="form-row">
-          <span class="f-label">ID</span>
-          <div class="f-line"></div>
-        </div>
-        <div class="form-row">
-          <span class="f-label">Name</span>
-          <div class="f-line"></div>
-        </div>
-        <div class="form-row">
-          <span class="f-label">Data</span>
-          <div class="d-line"></div>
-          <span class="d-sep">/</span>
-          <div class="d-line"></div>
-          <span class="d-sep">/</span>
-          <div class="d-line-y"></div>
-          <span class="f-label" style="margin-left:10px">Start time</span>
-          <div class="f-line-sm"></div>
-          <span class="f-label" style="margin-left:8px">Finished time</span>
-          <div class="f-line-sm"></div>
+      <!-- MIDDLE: Activity Info + Form Fields -->
+      <div class="header-mid">
+        <div class="activity-id">Activity ID : 140100100001</div>
+        <div class="activity-title">Addition with two digit numbers</div>
+        <div class="form-fields">
+          <div class="form-row">
+            <span class="f-label">ID</span>
+            <div class="f-line-dashed"></div>
+          </div>
+          <div class="form-row">
+            <span class="f-label">Name</span>
+            <div class="f-line-dashed"></div>
+          </div>
+          <div class="form-row">
+            <span class="f-label">Date</span>
+            <div class="d-line-dashed"></div>
+            <span class="d-sep">/</span>
+            <div class="d-line-dashed"></div>
+            <span class="d-sep">/</span>
+            <div class="d-line-y-dashed"></div>
+            <span class="f-label" style="margin-left:8px">Start time</span>
+            <div class="f-line-sm-dashed"></div>
+            <span class="f-label" style="margin-left:8px">Finish time</span>
+            <div class="f-line-sm-dashed"></div>
+          </div>
         </div>
       </div>
+
+      <!-- RIGHT: QR Code -->
+      <div class="header-right">
+        <img src="image.png" alt="QR Code">
+      </div>
+
     </div>
 
-    <!-- RIGHT: QR Code -->
-    <div class="header-right">
-      <img src="image.png" alt="QR Code">
+    <!-- ═══════ BODY ═══════ -->
+    <div class="body">
+      <div class="wm-wrap">
+        <div class="wm wm1">GB</div>
+        <div class="wm wm2">GB</div>
+        <div class="wm wm3">GB</div>
+      </div>
+      <div class="body-content"></div>
+    </div>
+
+    <div class="vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
+
+    <!-- ═══════ FOOTER ═══════ -->
+    <div class="footer">
+      <span class="footer-left">www.geniusbees.com</span>
+      <span class="footer-center">This worksheet is for the use of registered Geniusbees.com students only.</span>
+      <span class="footer-right">Page :1</span>
     </div>
 
   </div>
-
-  <!-- ═══════ BODY ═══════ -->
-  <div class="body">
-    <div class="wm-wrap">
-      <div class="wm wm1">GB</div>
-      <div class="wm wm2">GB</div>
-      <div class="wm wm3">GB</div>
-    </div>
-    <div class="body-content"></div>
-  </div>
-
-  <!-- ═══════ FOOTER ═══════ -->
-  <div class="footer">
-    <div class="footer-row">
-      <span class="fc">Copyright© 2026 GeniusBees. inc. All rights reserved.</span>
-      <span class="fs">www.geniusbees.com</span>
-      <span class="fn">This worksheet is for the use of registered GeniusBees.Com students only. No other use is permitted.</span>
-      <span class="fp">Page :1</span>
-    </div>
-  </div>
-
-</div>
 </body>
+
 </html>
