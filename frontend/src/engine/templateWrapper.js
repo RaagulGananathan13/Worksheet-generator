@@ -41,7 +41,7 @@ const TEMPLATE_CSS = `
   }
 
   /* ═══ HEADER ═══ */
-  .ws-header { padding: 7mm 12mm 5mm 8mm; border-bottom: none; display: flex; gap: 15px; flex-shrink: 0; }
+  .ws-header { padding: 7mm 12mm 5mm 12mm; border-bottom: none; display: flex; gap: 15px; flex-shrink: 0; }
   .ws-header-left { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
   .ws-header-left img { width: 140px; height: auto; display: block; margin-left: -10px; }
   .ws-grade-table { border-collapse: collapse; margin-left: 4px; }
@@ -66,7 +66,7 @@ const TEMPLATE_CSS = `
   .ws-body{
     flex:1;
     position:relative;
-    padding:3mm 8mm 4mm 8mm;
+    padding:3mm 12mm 4mm 12mm;
   }
   .ws-wm-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
   .ws-wm{
@@ -94,7 +94,7 @@ const TEMPLATE_CSS = `
 
   /* ═══ FOOTER ═══ */
   .ws-footer {
-    padding: 3mm 15mm 6mm 15mm;
+    padding: 3mm 12mm 6mm 32mm;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -103,36 +103,23 @@ const TEMPLATE_CSS = `
     flex-shrink: 0;
     margin-top: auto;
   }
-  .ws-footer-left {
-    flex: 1;
-    text-align: left;
-    font-size: 10px;
-    font-weight: 500;
-  }
-  .ws-footer-center {
-    flex: 2;
-    text-align: center;
-    font-size: 9px;
-    font-weight: 500;
-  }
-  .ws-footer-right {
-    flex: 1;
-    text-align: right;
-    font-size: 10px;
-    font-weight: bold;
+  .ws-footer-text {
+    font-size: 12px;
+    font-weight: 400;
   }
   .ws-vertical-copyright {
     position: absolute;
-    left: -193px;
+    left: -175px;
     width: 400px;
     top: 50%;
     text-align: center;
     transform: translateY(-50%) rotate(90deg);
     font-family: 'Times New Roman', Times, serif;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 400;
     color: #111;
-    pointer-events: njpg;
+    pointer-events: none;
+    white-space: nowrap;
   }
 `;
 
@@ -179,9 +166,8 @@ const TEMPLATE_HEADER = `
 const TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
-    <span class="ws-footer-left">www.geniusbees.com</span>
-    <span class="ws-footer-center">This worksheet is for the use of registered Geniusbees.com students only.</span>
-    <span class="ws-footer-right">Page :1</span>
+    <span class="ws-footer-text">www.geniusbees.com</span>
+    <span class="ws-footer-text">This worksheet is for the use of registered Geniusbees.com students only.</span>
   </div>`;
 
 /**
