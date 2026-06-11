@@ -146,9 +146,9 @@ const TEMPLATE_HEADER = `
         <div class="ws-form-row">
           <span class="ws-f-label" style="width: 45px; display: inline-block;">Date</span>
           <div class="ws-d-line-dashed"></div><span class="ws-d-sep">/</span><div class="ws-d-line-dashed"></div><span class="ws-d-sep">/</span><div class="ws-d-line-y-dashed"></div>
-          <span class="ws-f-label" style="margin-left:12px">Start time</span>
+          <span class="ws-f-label" style="margin-left:4px">Start time</span>
           <div class="ws-f-line-dashed"></div>
-          <span class="ws-f-label" style="margin-left:12px">Finish time</span>
+          <span class="ws-f-label" style="margin-left:4px">Finish time</span>
           <div class="ws-f-line-dashed"></div>
         </div>
       </div>
