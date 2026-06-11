@@ -136,15 +136,15 @@ const TEMPLATE_HEADER = `
       <div class="ws-activity-title">Addition with two digit numbers</div>
       <div class="ws-form-fields">
         <div class="ws-form-row">
-          <span class="ws-f-label" style="width: 45px; display: inline-block;">ID</span>
+          <span class="ws-f-label">ID</span>
           <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
-          <span class="ws-f-label" style="width: 45px; display: inline-block;">Name</span>
+          <span class="ws-f-label">Name</span>
           <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
-          <span class="ws-f-label" style="width: 45px; display: inline-block;">Date</span>
+          <span class="ws-f-label">Date</span>
           <div class="ws-d-line-dashed"></div><span class="ws-d-sep">/</span><div class="ws-d-line-dashed"></div><span class="ws-d-sep">/</span><div class="ws-d-line-y-dashed"></div>
           <span class="ws-f-label" style="margin-left:4px">Start time</span>
           <div class="ws-f-line-dashed"></div>
@@ -159,6 +159,7 @@ const TEMPLATE_HEADER = `
 const TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
+    <span class="ws-footer-text">www.geniusbees.com</span>
     <span class="ws-footer-text">Info@geniusbees.com</span>
     <span class="ws-footer-text">This worksheet is for the use of registered Geniusbees.com students only.</span>
   </div>`;
