@@ -60,7 +60,6 @@ const TEMPLATE_CSS = `
   .ws-d-line-y-dashed { width: 35px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
   .ws-d-sep { font-weight: 400 !important; margin: 0 -2px !important; color: #333 !important; }
   .ws-header-right { width: 125px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
-  .ws-header-right img { width: 125px; height: 125px; display: block; }
 
   /* ═══ BODY ═══ */
   .ws-body{
@@ -154,15 +153,13 @@ const TEMPLATE_HEADER = `
         </div>
       </div>
     </div>
-    <div class="ws-header-right">
-      <img src="image.png" alt="QR Code">
-    </div>
+    <div class="ws-header-right"></div>
   </div>`;
 
 const TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
-    <span class="ws-footer-text">www.geniusbees.com</span>
+    <span class="ws-footer-text">Info@geniusbees.com</span>
     <span class="ws-footer-text">This worksheet is for the use of registered Geniusbees.com students only.</span>
   </div>`;
 
