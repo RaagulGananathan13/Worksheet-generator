@@ -58,7 +58,7 @@ const TEMPLATE_CSS = `
   .ws-f-line-sm-dashed { width: 60px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
   .ws-d-line-dashed { width: 22px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
   .ws-d-line-y-dashed { width: 35px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
-  .ws-d-sep { font-weight: 400 !important; margin: 0 -2px !important; color: #333 !important; }
+  .ws-d-sep { font-weight: 400 !important; margin: 0 4px !important; color: #333 !important; }
   .ws-header-right { width: 125px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: flex-end; }
 
   /* ═══ BODY ═══ */
