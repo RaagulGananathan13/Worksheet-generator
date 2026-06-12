@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { AlertCircle, ArrowRight, Clipboard, Trash2 } from 'lucide-react';
+import { AlertCircle, ArrowRight, ArrowLeft, Clipboard, Trash2 } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
 import { parseHTMLString } from '../../engine/htmlParser';
 import { detectBlocks } from '../../engine/detectionEngine';
@@ -72,6 +72,13 @@ export default function UploadScreen() {
         {/* Header with GB Logo */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-surface-200 shrink-0">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setView('dashboard')}
+              className="p-1.5 text-surface-400 hover:text-brand-orange hover:bg-accent-50 rounded-lg transition-all"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
             <img src="/gb-logo.jpg" alt="GeniusBees" className="h-9 object-contain" />
             <div className="w-px h-7 bg-surface-200" />
             <div>

@@ -7,7 +7,7 @@ const useWorksheetStore = create()(
   temporal(
     (set, get) => ({
       // === View State ===
-      view: 'upload', // 'upload' | 'editor'
+      view: 'auth', // 'auth' | 'dashboard' | 'upload' | 'editor'
 
       // === Worksheet Data ===
       originalHTML: '',       // Last saved version

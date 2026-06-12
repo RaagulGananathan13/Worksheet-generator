@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import { X, Download, FileCode, Printer, FileText } from 'lucide-react';
+import { X, Download, FileCode, Printer, FileText, FolderOpen, Loader2, CheckCircle2 } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
+import useAuthStore from '../../store/authStore';
 
 export default function ExportModal() {
   const originalHTML = useWorksheetStore((s) => s.originalHTML);
@@ -8,8 +9,10 @@ export default function ExportModal() {
   const hasUnsavedChanges = useWorksheetStore((s) => s.hasUnsavedChanges);
   const worksheetMeta = useWorksheetStore((s) => s.worksheetMeta);
   const setShowExportModal = useWorksheetStore((s) => s.setShowExportModal);
+  const token = useAuthStore((s) => s.token);
+
   const [fileName, setFileName] = useState((worksheetMeta.title || 'worksheet').trim());
-  const [folderPath, setFolderPath] = useState('worksheets');
+  const [activityName, setActivityName] = useState('');
   const [s3Status, setS3Status] = useState('');
   const [s3Error, setS3Error] = useState('');
   const [isSavingToS3, setIsSavingToS3] = useState(false);
@@ -260,6 +263,7 @@ ${bodyContent}
     setShowExportModal(false);
   }, [currentHTML, setShowExportModal]);
 
+  // ── Save to S3 (HTML + PDF pair) ──
   const handleSaveToS3 = useCallback(async () => {
     setS3Error('');
     setS3Status('');
@@ -270,11 +274,12 @@ ${bodyContent}
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           html: currentHTML,
           fileName,
-          folderPath,
+          activityName: activityName || 'general',
         }),
       });
 
@@ -284,13 +289,17 @@ ${bodyContent}
         throw new Error(data.message || data.error || 'Failed to save to S3');
       }
 
-      setS3Status(`Saved to ${data.location}`);
+      setS3Status(
+        data.pdfLocation
+          ? `Saved HTML + PDF to ${data.htmlLocation}`
+          : `Saved HTML to ${data.htmlLocation} (PDF generation pending)`
+      );
     } catch (error) {
       setS3Error(error.message || 'Failed to save to S3');
     } finally {
       setIsSavingToS3(false);
     }
-  }, [currentHTML, fileName, folderPath]);
+  }, [currentHTML, fileName, activityName, token]);
 
   const handlePrint = useCallback(() => {
     handleExportPDF();
@@ -314,6 +323,7 @@ ${bodyContent}
           </div>
         )}
 
+        {/* S3 Upload Section */}
         <div className="mb-4 space-y-3 rounded-xl border border-surface-200 bg-surface-50 p-4">
           <div>
             <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">File Name</label>
@@ -325,26 +335,46 @@ ${bodyContent}
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">S3 Folder</label>
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">
+              <span className="flex items-center gap-1">
+                <FolderOpen className="w-3 h-3" />
+                Activity Name
+              </span>
+            </label>
             <input
-              value={folderPath}
-              onChange={(e) => setFolderPath(e.target.value)}
+              value={activityName}
+              onChange={(e) => setActivityName(e.target.value)}
               className="input-field w-full text-xs"
-              placeholder="class-worksheets/grade-3"
+              placeholder="e.g., Addition Two Digits"
             />
-            <p className="mt-1 text-[10px] text-surface-400">This becomes the S3 key prefix. Leave it as-is or change it per worksheet.</p>
+            <p className="mt-1 text-[10px] text-surface-400">
+              Creates a folder in S3 with this name. Both HTML and PDF will be stored together.
+            </p>
           </div>
           <button
             onClick={handleSaveToS3}
             disabled={isSavingToS3 || !currentHTML.trim()}
-            className="w-full rounded-xl bg-brand-orange px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-brand-orange-dark disabled:cursor-not-allowed disabled:bg-surface-300"
+            className="w-full rounded-xl bg-brand-orange px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-brand-orange-dark disabled:cursor-not-allowed disabled:bg-surface-300 flex items-center justify-center gap-2"
           >
-            {isSavingToS3 ? 'Saving to S3...' : 'Save to S3'}
+            {isSavingToS3 ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Generating PDF & Saving...
+              </>
+            ) : (
+              'Save to S3 (HTML + PDF)'
+            )}
           </button>
-          {s3Status && <p className="text-xs text-success-500">{s3Status}</p>}
+          {s3Status && (
+            <div className="flex items-start gap-2 text-xs text-success-500">
+              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+              <span>{s3Status}</span>
+            </div>
+          )}
           {s3Error && <p className="text-xs text-danger-500">{s3Error}</p>}
         </div>
 
+        {/* Export Buttons */}
         <div className="space-y-2.5">
           <button onClick={handleExportPDF}
             className="w-full flex items-center gap-4 p-4 rounded-xl bg-surface-50 hover:bg-accent-50

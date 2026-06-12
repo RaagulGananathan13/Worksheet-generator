@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import {
   Upload, Download, Undo2, Redo2, Save, RotateCcw,
-  ZoomIn, ZoomOut, Grid3x3, Maximize
+  ZoomIn, ZoomOut, Grid3x3, Maximize, LayoutDashboard, LogOut, User
 } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
+import useAuthStore from '../../store/authStore';
 
 export default function Toolbar() {
   const zoom = useWorksheetStore((s) => s.zoom);
@@ -19,6 +20,9 @@ export default function Toolbar() {
   const saveChanges = useWorksheetStore((s) => s.saveChanges);
   const discardChanges = useWorksheetStore((s) => s.discardChanges);
   const fitToScreen = useWorksheetStore((s) => s.fitToScreen);
+
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
 
   const handleUndo = useCallback(() => {
     useWorksheetStore.temporal.getState().undo();
@@ -48,6 +52,17 @@ export default function Toolbar() {
     setView('upload');
   }, [hasUnsavedChanges, setView]);
 
+  const handleDashboard = useCallback(() => {
+    if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Go to dashboard anyway?')) return;
+    setView('dashboard');
+  }, [hasUnsavedChanges, setView]);
+
+  const handleLogout = useCallback(() => {
+    if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Logout anyway?')) return;
+    logout();
+    setView('auth');
+  }, [hasUnsavedChanges, logout, setView]);
+
   const handleFitToScreen = useCallback(() => {
     const container = document.querySelector('.flex-1.relative.overflow-hidden');
     if (container) fitToScreen(container.clientWidth, container.clientHeight);
@@ -66,6 +81,11 @@ export default function Toolbar() {
         </span>
         <div className="w-px h-6 bg-surface-200 hidden sm:block" />
 
+        <button onClick={handleDashboard}
+          className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-brand-orange hover:bg-accent-50 rounded-lg transition-all" title="Dashboard">
+          <LayoutDashboard className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">Dashboard</span>
+        </button>
         <button onClick={handleNew}
           className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="New Worksheet">
           <Upload className="w-3.5 h-3.5" />
@@ -119,7 +139,7 @@ export default function Toolbar() {
         </button>
       </div>
 
-      {/* Right: Zoom controls */}
+      {/* Right: User + Zoom controls */}
       <div className="flex items-center gap-1">
         {hasUnsavedChanges && (
           <span className="text-[10px] text-brand-orange font-medium hidden lg:flex items-center gap-1 mr-1">
@@ -165,6 +185,21 @@ export default function Toolbar() {
 
         <button onClick={handleFitToScreen} className="p-1.5 text-surface-500 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Fit to Screen">
           <Maximize className="w-3.5 h-3.5" />
+        </button>
+
+        <div className="w-px h-5 bg-surface-200 mx-0.5" />
+
+        {/* User info + Logout */}
+        <div className="hidden lg:flex items-center gap-1.5 px-2 py-1 bg-surface-50 rounded-lg border border-surface-200">
+          <User className="w-3 h-3 text-surface-400" />
+          <span className="text-[10px] text-surface-600 font-medium max-w-[100px] truncate">
+            {user?.email?.split('@')[0]}
+          </span>
+        </div>
+
+        <button onClick={handleLogout}
+          className="p-1.5 text-surface-400 hover:text-danger-500 hover:bg-red-50 rounded-lg transition-all" title="Logout">
+          <LogOut className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

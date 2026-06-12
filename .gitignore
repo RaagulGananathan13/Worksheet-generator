@@ -18,6 +18,10 @@ server/.env
 server/.env.*
 !server/.env.example
 
+# Backend data (user/worksheet JSON storage)
+backend/data/users.json
+backend/data/worksheets.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
