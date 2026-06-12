@@ -9,6 +9,7 @@ import ExportModal from '../ExportModal/ExportModal';
 export default function EditorLayout() {
   const containerRef = useRef(null);
   const showExportModal = useWorksheetStore((s) => s.showExportModal);
+  const readOnly = useWorksheetStore((s) => s.readOnly);
   const [panelOpen, setPanelOpen] = useState(true);
   const [panelWidth, setPanelWidth] = useState(300);
   const isResizing = useRef(false);
@@ -61,29 +62,32 @@ export default function EditorLayout() {
           <Canvas containerRef={containerRef} />
         </div>
 
-        {/* Panel toggle button */}
-        <button
-          onClick={() => setPanelOpen(!panelOpen)}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-surface-200 rounded-l-lg p-1.5 shadow-md
-                     text-surface-500 hover:text-brand-orange hover:border-brand-orange/30 transition-all"
-          style={{ right: panelOpen ? panelWidth : 0 }}
-          title={panelOpen ? 'Collapse panel' : 'Expand panel'}>
-          {panelOpen ? <PanelRightClose className="w-4 h-4" /> : <PanelRightOpen className="w-4 h-4" />}
-        </button>
-
-        {/* Resize handle + Property Panel */}
-        {panelOpen && (
+        {/* Property Panel — completely hidden in read-only mode */}
+        {!readOnly && (
           <>
-            {/* Resize handle */}
-            <div
-              onMouseDown={startResize}
-              className="w-1 hover:w-1.5 bg-surface-200 hover:bg-brand-orange/40 cursor-col-resize transition-all shrink-0"
-              title="Drag to resize panel"
-            />
-            {/* Right Property Panel */}
-            <div style={{ width: panelWidth }} className="shrink-0 overflow-hidden transition-all duration-200">
-              <PropertyPanel />
-            </div>
+            {/* Panel toggle button */}
+            <button
+              onClick={() => setPanelOpen(!panelOpen)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-surface-200 rounded-l-lg p-1.5 shadow-md
+                         text-surface-500 hover:text-brand-orange hover:border-brand-orange/30 transition-all"
+              style={{ right: panelOpen ? panelWidth : 0 }}
+              title={panelOpen ? 'Collapse panel' : 'Expand panel'}>
+              {panelOpen ? <PanelRightClose className="w-4 h-4" /> : <PanelRightOpen className="w-4 h-4" />}
+            </button>
+
+            {/* Resize handle + Property Panel */}
+            {panelOpen && (
+              <>
+                <div
+                  onMouseDown={startResize}
+                  className="w-1 hover:w-1.5 bg-surface-200 hover:bg-brand-orange/40 cursor-col-resize transition-all shrink-0"
+                  title="Drag to resize panel"
+                />
+                <div style={{ width: panelWidth }} className="shrink-0 overflow-hidden transition-all duration-200">
+                  <PropertyPanel />
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

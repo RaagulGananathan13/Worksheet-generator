@@ -23,6 +23,7 @@ export default function Dashboard() {
   const setOriginalHTML = useWorksheetStore((s) => s.setOriginalHTML);
   const setBlocks = useWorksheetStore((s) => s.setBlocks);
   const setWorksheetMeta = useWorksheetStore((s) => s.setWorksheetMeta);
+  const setReadOnly = useWorksheetStore((s) => s.setReadOnly);
 
   // ─── Fetch worksheets ──────────────────────────────────
 
@@ -72,6 +73,7 @@ export default function Dashboard() {
           ...worksheetMeta,
           title: data.worksheet.fileName || worksheetMeta.title,
         });
+        setReadOnly(!data.worksheet.isOwner);
         setView('editor');
       } catch (err) {
         alert(err.message || 'Failed to load worksheet content.');
@@ -79,7 +81,7 @@ export default function Dashboard() {
         setViewingId(null);
       }
     },
-    [token, setOriginalHTML, setBlocks, setWorksheetMeta, setView]
+    [token, setOriginalHTML, setBlocks, setWorksheetMeta, setView, setReadOnly]
   );
 
   // ─── Delete worksheet ──────────────────────────────────

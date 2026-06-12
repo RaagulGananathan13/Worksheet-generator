@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import worksheetRoutes from './routes/worksheetRoutes.js';
 import { closeBrowser } from './services/pdfGenerator.js';
+import { initDatabase } from './services/db.js';
 
 const app = express();
 const port = Number(process.env.PORT || 3001);
@@ -24,11 +25,19 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/worksheets', worksheetRoutes);
 
-// ─── Start Server ──────────────────────────────────────────
+// ─── Start Server (after DB init) ──────────────────────────
 
-app.listen(port, () => {
-  console.log(`Worksheet backend listening on http://localhost:${port}`);
-});
+(async () => {
+  try {
+    await initDatabase();
+    app.listen(port, () => {
+      console.log(`Worksheet backend listening on http://localhost:${port}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err.message);
+    process.exit(1);
+  }
+})();
 
 // ─── Graceful Shutdown ─────────────────────────────────────
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import {
   Upload, Download, Undo2, Redo2, Save, RotateCcw,
-  ZoomIn, ZoomOut, Grid3x3, Maximize, LayoutDashboard, LogOut, User
+  ZoomIn, ZoomOut, Grid3x3, Maximize, LayoutDashboard, LogOut, User, Eye
 } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
 import useAuthStore from '../../store/authStore';
@@ -10,6 +10,7 @@ export default function Toolbar() {
   const zoom = useWorksheetStore((s) => s.zoom);
   const worksheetMeta = useWorksheetStore((s) => s.worksheetMeta);
   const hasUnsavedChanges = useWorksheetStore((s) => s.hasUnsavedChanges);
+  const readOnly = useWorksheetStore((s) => s.readOnly);
   const setZoom = useWorksheetStore((s) => s.setZoom);
   const zoomIn = useWorksheetStore((s) => s.zoomIn);
   const zoomOut = useWorksheetStore((s) => s.zoomOut);
@@ -25,13 +26,15 @@ export default function Toolbar() {
   const logout = useAuthStore((s) => s.logout);
 
   const handleUndo = useCallback(() => {
+    if (readOnly) return;
     useWorksheetStore.temporal.getState().undo();
     setTimeout(() => useWorksheetStore.getState()._syncAfterUndoRedo(), 0);
-  }, []);
+  }, [readOnly]);
   const handleRedo = useCallback(() => {
+    if (readOnly) return;
     useWorksheetStore.temporal.getState().redo();
     setTimeout(() => useWorksheetStore.getState()._syncAfterUndoRedo(), 0);
-  }, []);
+  }, [readOnly]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -39,13 +42,13 @@ export default function Toolbar() {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
       else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); handleRedo(); }
-      else if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (useWorksheetStore.getState().hasUnsavedChanges) saveChanges(); }
+      else if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (!readOnly && useWorksheetStore.getState().hasUnsavedChanges) saveChanges(); }
       else if ((e.ctrlKey || e.metaKey) && e.key === 'e') { e.preventDefault(); setShowExportModal(true); }
       else if (e.key === '0' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); setZoom(1); }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [handleUndo, handleRedo, saveChanges, setShowExportModal, setZoom]);
+  }, [handleUndo, handleRedo, saveChanges, setShowExportModal, setZoom, readOnly]);
 
   const handleNew = useCallback(() => {
     if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Discard and start new?')) return;
@@ -53,15 +56,15 @@ export default function Toolbar() {
   }, [hasUnsavedChanges, setView]);
 
   const handleDashboard = useCallback(() => {
-    if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Go to dashboard anyway?')) return;
+    if (!readOnly && hasUnsavedChanges && !window.confirm('You have unsaved changes. Go to dashboard anyway?')) return;
     setView('dashboard');
-  }, [hasUnsavedChanges, setView]);
+  }, [hasUnsavedChanges, setView, readOnly]);
 
   const handleLogout = useCallback(() => {
-    if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Logout anyway?')) return;
+    if (!readOnly && hasUnsavedChanges && !window.confirm('You have unsaved changes. Logout anyway?')) return;
     logout();
     setView('auth');
-  }, [hasUnsavedChanges, logout, setView]);
+  }, [hasUnsavedChanges, logout, setView, readOnly]);
 
   const handleFitToScreen = useCallback(() => {
     const container = document.querySelector('.flex-1.relative.overflow-hidden');
@@ -79,6 +82,15 @@ export default function Toolbar() {
         <span className="text-xs font-semibold text-surface-800 hidden sm:block truncate max-w-[160px]">
           {worksheetMeta.title || 'Worksheet'}
         </span>
+
+        {/* Read-only badge */}
+        {readOnly && (
+          <span className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-[10px] font-semibold">
+            <Eye className="w-3 h-3" />
+            View Only
+          </span>
+        )}
+
         <div className="w-px h-6 bg-surface-200 hidden sm:block" />
 
         <button onClick={handleDashboard}
@@ -86,51 +98,61 @@ export default function Toolbar() {
           <LayoutDashboard className="w-3.5 h-3.5" />
           <span className="hidden md:inline">Dashboard</span>
         </button>
-        <button onClick={handleNew}
-          className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="New Worksheet">
-          <Upload className="w-3.5 h-3.5" />
-          <span className="hidden md:inline">New</span>
-        </button>
-        <button onClick={() => setShowExportModal(true)}
-          className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Export (Ctrl+E)">
-          <Download className="w-3.5 h-3.5" />
-          <span className="hidden md:inline">Export</span>
-        </button>
+
+        {/* Hide New and Export for read-only */}
+        {!readOnly && (
+          <>
+            <button onClick={handleNew}
+              className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="New Worksheet">
+              <Upload className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">New</span>
+            </button>
+            <button onClick={() => setShowExportModal(true)}
+              className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Export (Ctrl+E)">
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Export</span>
+            </button>
+          </>
+        )}
       </div>
 
-      {/* Center: Save / Discard + Undo/Redo */}
+      {/* Center: Save / Discard + Undo/Redo — hidden in read-only */}
       <div className="flex items-center gap-1">
-        <button onClick={saveChanges} disabled={!hasUnsavedChanges} title="Save (Ctrl+S)"
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-            hasUnsavedChanges
-              ? 'bg-brand-orange hover:bg-brand-orange-dark text-white shadow-sm'
-              : 'bg-surface-100 text-surface-400 cursor-not-allowed border border-surface-200'
-          }`}>
-          <Save className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Save</span>
-          {hasUnsavedChanges && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-        </button>
+        {!readOnly && (
+          <>
+            <button onClick={saveChanges} disabled={!hasUnsavedChanges} title="Save (Ctrl+S)"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                hasUnsavedChanges
+                  ? 'bg-brand-orange hover:bg-brand-orange-dark text-white shadow-sm'
+                  : 'bg-surface-100 text-surface-400 cursor-not-allowed border border-surface-200'
+              }`}>
+              <Save className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Save</span>
+              {hasUnsavedChanges && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+            </button>
 
-        <button onClick={discardChanges} disabled={!hasUnsavedChanges} title="Discard Changes"
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-            hasUnsavedChanges
-              ? 'bg-red-50 hover:bg-red-100 text-danger-500 border border-red-200'
-              : 'bg-surface-100 text-surface-400 cursor-not-allowed border border-surface-200'
-          }`}>
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Discard</span>
-        </button>
+            <button onClick={discardChanges} disabled={!hasUnsavedChanges} title="Discard Changes"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                hasUnsavedChanges
+                  ? 'bg-red-50 hover:bg-red-100 text-danger-500 border border-red-200'
+                  : 'bg-surface-100 text-surface-400 cursor-not-allowed border border-surface-200'
+              }`}>
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Discard</span>
+            </button>
 
-        <div className="w-px h-5 bg-surface-200 mx-0.5" />
+            <div className="w-px h-5 bg-surface-200 mx-0.5" />
 
-        <button onClick={handleUndo} className="p-1.5 text-surface-500 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Undo (Ctrl+Z)">
-          <Undo2 className="w-4 h-4" />
-        </button>
-        <button onClick={handleRedo} className="p-1.5 text-surface-500 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Redo (Ctrl+Shift+Z)">
-          <Redo2 className="w-4 h-4" />
-        </button>
+            <button onClick={handleUndo} className="p-1.5 text-surface-500 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Undo (Ctrl+Z)">
+              <Undo2 className="w-4 h-4" />
+            </button>
+            <button onClick={handleRedo} className="p-1.5 text-surface-500 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Redo (Ctrl+Shift+Z)">
+              <Redo2 className="w-4 h-4" />
+            </button>
 
-        <div className="w-px h-5 bg-surface-200 mx-0.5" />
+            <div className="w-px h-5 bg-surface-200 mx-0.5" />
+          </>
+        )}
 
         <button onClick={() => setShowGrid(!showGrid)}
           className={`p-1.5 rounded-lg transition-all ${showGrid ? 'text-brand-orange bg-accent-50' : 'text-surface-500 hover:text-surface-900 hover:bg-surface-100'}`}
@@ -141,7 +163,7 @@ export default function Toolbar() {
 
       {/* Right: User + Zoom controls */}
       <div className="flex items-center gap-1">
-        {hasUnsavedChanges && (
+        {!readOnly && hasUnsavedChanges && (
           <span className="text-[10px] text-brand-orange font-medium hidden lg:flex items-center gap-1 mr-1">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
             Unsaved

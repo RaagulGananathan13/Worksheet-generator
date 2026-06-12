@@ -174,6 +174,11 @@ export async function generatePDFFromHTML(html) {
       const naturalHeight = pageEl.scrollHeight;
       const A4_HEIGHT_PX = 297 * (96 / 25.4); // ≈ 1122.52px
 
+      // --- CRITICAL: Remove temporary inline styles so CSS rules take over ---
+      pageEl.style.removeProperty('height');
+      pageEl.style.removeProperty('max-height');
+      if (wsBody) wsBody.style.removeProperty('overflow');
+
       // --- Calculate scale factor ---
       let scaleFactor = 1;
       if (naturalHeight > A4_HEIGHT_PX) {
@@ -193,6 +198,18 @@ export async function generatePDFFromHTML(html) {
           width: ${210 / scaleFactor}mm !important;
           height: ${297 / scaleFactor}mm !important;
           max-height: ${297 / scaleFactor}mm !important;
+          display: flex !important;
+          flex-direction: column !important;
+          overflow: hidden !important;
+        }
+        .ws-body, .body {
+          flex: 1 1 auto !important;
+          min-height: 0 !important;
+          overflow: hidden !important;
+        }
+        .ws-footer, .footer {
+          flex-shrink: 0 !important;
+          margin-top: auto !important;
         }
       `;
       document.head.appendChild(scaleStyle);

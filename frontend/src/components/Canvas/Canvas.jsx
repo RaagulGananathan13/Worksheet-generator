@@ -16,6 +16,7 @@ export default function Canvas({ containerRef }) {
   const zoom = useWorksheetStore((s) => s.zoom);
   const panOffset = useWorksheetStore((s) => s.panOffset);
   const showGrid = useWorksheetStore((s) => s.showGrid);
+  const readOnly = useWorksheetStore((s) => s.readOnly);
   const setZoom = useWorksheetStore((s) => s.setZoom);
   const setPanOffset = useWorksheetStore((s) => s.setPanOffset);
   const setSelectedElement = useWorksheetStore((s) => s.setSelectedElement);
@@ -27,22 +28,23 @@ export default function Canvas({ containerRef }) {
   draftRef.current = draftHTML;
 
   const editableSrcdoc = useMemo(
-    () => buildEditableSrcdoc(draftRef.current || originalHTML),
+    () => readOnly ? buildReadOnlySrcdoc(draftRef.current || originalHTML) : buildEditableSrcdoc(draftRef.current || originalHTML),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [originalHTML, reloadCounter]
+    [originalHTML, reloadCounter, readOnly]
   );
 
   // Listen for messages from the iframe
   useEffect(() => {
     function handleMessage(e) {
       if (!e.data || typeof e.data !== 'object') return;
+      if (readOnly) return; // Block all mutations in read-only mode
       if (e.data.type === 'ELEMENT_SELECTED') setSelectedElement(e.data.data);
       if (e.data.type === 'ELEMENT_DESELECTED') setSelectedElement(null);
       if (e.data.type === 'HTML_UPDATED') setDraftHTML(e.data.html);
     }
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [setSelectedElement, setDraftHTML]);
+  }, [setSelectedElement, setDraftHTML, readOnly]);
 
   // Zoom with Ctrl+Scroll, Pan with regular scroll
   const zoomRef = useRef(zoom);
@@ -512,4 +514,37 @@ img[data-ws-id].ws-selected { outline: 2px solid rgba(234,88,12,0.8) !important;
     return html.replace('</body>', editorCSS + editorScript + '\n</body>');
   }
   return html + editorCSS + editorScript;
+}
+
+/* ─── Read-only srcdoc: no editing, no selection, just pure viewing ─── */
+function buildReadOnlySrcdoc(html) {
+  if (!html) return '';
+
+  // Inject a style that disables all interaction
+  const readOnlyCSS = `
+<style id="ws-readonly-styles">
+  * { cursor: default !important; user-select: text !important; }
+  [contenteditable] { cursor: default !important; }
+  body { pointer-events: auto; }
+</style>`;
+
+  // Inject a script that removes all contenteditable attributes and prevents editing
+  const readOnlyScript = `
+<script id="ws-readonly-script">
+(function(){
+  // Remove all contenteditable attributes
+  document.querySelectorAll('[contenteditable]').forEach(function(el){
+    el.removeAttribute('contenteditable');
+  });
+  // Block any text input
+  document.addEventListener('keydown', function(e){
+    if(e.target.isContentEditable) e.preventDefault();
+  });
+})();
+` + `</${'script'}>`;
+
+  if (html.includes('</body>')) {
+    return html.replace('</body>', readOnlyCSS + readOnlyScript + '\n</body>');
+  }
+  return html + readOnlyCSS + readOnlyScript;
 }

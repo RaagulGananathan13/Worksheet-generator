@@ -1,14 +1,9 @@
 import { Router } from 'express';
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
 import { requireAuth } from '../middleware/authMiddleware.js';
 import { generatePDFFromHTML } from '../services/pdfGenerator.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const WORKSHEETS_FILE = join(__dirname, '..', 'data', 'worksheets.json');
+import { getPool } from '../services/db.js';
 
 const router = Router();
 
@@ -31,21 +26,6 @@ function getKeyPrefix() {
 }
 
 // ─── Helpers ───────────────────────────────────────────────
-
-function loadWorksheets() {
-  try {
-    const data = readFileSync(WORKSHEETS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-function saveWorksheets(worksheets) {
-  const dir = dirname(WORKSHEETS_FILE);
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-  writeFileSync(WORKSHEETS_FILE, JSON.stringify(worksheets, null, 2), 'utf-8');
-}
 
 function buildFileName(value) {
   const raw = typeof value === 'string' ? value.trim() : '';
@@ -78,6 +58,23 @@ function normalizePrefix(value) {
 
 function joinKeyParts(...parts) {
   return parts.filter(Boolean).join('/').replace(/\/+/g, '/');
+}
+
+/** Convert MySQL row (snake_case) to API response (camelCase) */
+function toApiWorksheet(row, requestUserId) {
+  return {
+    id: row.id,
+    fileName: row.file_name,
+    activityName: row.activity_name,
+    activityFolder: row.activity_folder,
+    s3HtmlKey: row.s3_html_key,
+    s3PdfKey: row.s3_pdf_key,
+    ownerId: row.owner_id,
+    ownerEmail: row.owner_email,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    isOwner: row.owner_id === requestUserId,
+  };
 }
 
 // ─── POST /api/worksheets/s3 — Save HTML + PDF pair ────────
@@ -130,9 +127,15 @@ router.post('/s3', requireAuth, async (req, res) => {
       console.error('PDF generation/upload failed (HTML was still saved):', pdfError.message);
     }
 
-    // 3. Save worksheet metadata
-    const worksheets = loadWorksheets();
+    // 3. Save worksheet metadata to MySQL
+    const pool = getPool();
     const worksheetId = randomUUID();
+
+    await pool.execute(
+      `INSERT INTO worksheets (id, file_name, activity_name, activity_folder, s3_html_key, s3_pdf_key, owner_id, owner_email)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [worksheetId, rawFileName, activityName.trim(), activityFolder, htmlKey, pdfUploaded ? pdfKey : null, req.user.id, req.user.email]
+    );
 
     const worksheetRecord = {
       id: worksheetId,
@@ -143,12 +146,8 @@ router.post('/s3', requireAuth, async (req, res) => {
       s3PdfKey: pdfUploaded ? pdfKey : null,
       ownerId: req.user.id,
       ownerEmail: req.user.email,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      isOwner: true,
     };
-
-    worksheets.push(worksheetRecord);
-    saveWorksheets(worksheets);
 
     res.json({
       message: pdfUploaded
@@ -170,19 +169,14 @@ router.post('/s3', requireAuth, async (req, res) => {
 
 // ─── GET /api/worksheets — List all worksheets ─────────────
 
-router.get('/', requireAuth, (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   try {
-    const worksheets = loadWorksheets();
-    // Return all worksheets with ownership flag
-    const result = worksheets.map((w) => ({
-      ...w,
-      isOwner: w.ownerId === req.user.id,
-    }));
+    const pool = getPool();
+    const [rows] = await pool.execute('SELECT * FROM worksheets ORDER BY created_at DESC');
 
-    // Sort by most recent first
-    result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const worksheets = rows.map((row) => toApiWorksheet(row, req.user.id));
 
-    res.json({ worksheets: result });
+    res.json({ worksheets });
   } catch (error) {
     console.error('Failed to list worksheets:', error);
     res.status(500).json({ message: 'Failed to load worksheets.' });
@@ -191,21 +185,16 @@ router.get('/', requireAuth, (req, res) => {
 
 // ─── GET /api/worksheets/:id — Get single worksheet ────────
 
-router.get('/:id', requireAuth, (req, res) => {
+router.get('/:id', requireAuth, async (req, res) => {
   try {
-    const worksheets = loadWorksheets();
-    const worksheet = worksheets.find((w) => w.id === req.params.id);
+    const pool = getPool();
+    const [rows] = await pool.execute('SELECT * FROM worksheets WHERE id = ?', [req.params.id]);
 
-    if (!worksheet) {
+    if (rows.length === 0) {
       return res.status(404).json({ message: 'Worksheet not found.' });
     }
 
-    res.json({
-      worksheet: {
-        ...worksheet,
-        isOwner: worksheet.ownerId === req.user.id,
-      },
-    });
+    res.json({ worksheet: toApiWorksheet(rows[0], req.user.id) });
   } catch (error) {
     console.error('Failed to get worksheet:', error);
     res.status(500).json({ message: 'Failed to load worksheet.' });
@@ -216,13 +205,14 @@ router.get('/:id', requireAuth, (req, res) => {
 
 router.get('/:id/content', requireAuth, async (req, res) => {
   try {
-    const worksheets = loadWorksheets();
-    const worksheet = worksheets.find((w) => w.id === req.params.id);
+    const pool = getPool();
+    const [rows] = await pool.execute('SELECT * FROM worksheets WHERE id = ?', [req.params.id]);
 
-    if (!worksheet) {
+    if (rows.length === 0) {
       return res.status(404).json({ message: 'Worksheet not found.' });
     }
 
+    const worksheet = rows[0];
     const bucketName = getBucketName();
     const s3Client = getS3Client();
 
@@ -232,7 +222,7 @@ router.get('/:id/content', requireAuth, async (req, res) => {
 
     const response = await s3Client.send(new GetObjectCommand({
       Bucket: bucketName,
-      Key: worksheet.s3HtmlKey,
+      Key: worksheet.s3_html_key,
     }));
 
     // Stream the S3 body to a string
@@ -243,10 +233,7 @@ router.get('/:id/content', requireAuth, async (req, res) => {
     const html = Buffer.concat(chunks).toString('utf-8');
 
     res.json({
-      worksheet: {
-        ...worksheet,
-        isOwner: worksheet.ownerId === req.user.id,
-      },
+      worksheet: toApiWorksheet(worksheet, req.user.id),
       html,
     });
   } catch (error) {
@@ -259,14 +246,16 @@ router.get('/:id/content', requireAuth, async (req, res) => {
 
 router.put('/:id', requireAuth, async (req, res) => {
   try {
-    const worksheets = loadWorksheets();
-    const index = worksheets.findIndex((w) => w.id === req.params.id);
+    const pool = getPool();
+    const [rows] = await pool.execute('SELECT * FROM worksheets WHERE id = ?', [req.params.id]);
 
-    if (index === -1) {
+    if (rows.length === 0) {
       return res.status(404).json({ message: 'Worksheet not found.' });
     }
 
-    if (worksheets[index].ownerId !== req.user.id) {
+    const worksheet = rows[0];
+
+    if (worksheet.owner_id !== req.user.id) {
       return res.status(403).json({ message: 'You can only update your own worksheets.' });
     }
 
@@ -275,15 +264,13 @@ router.put('/:id', requireAuth, async (req, res) => {
       return res.status(400).json({ message: 'Worksheet HTML is required.' });
     }
 
-    const worksheet = worksheets[index];
-
     const bucketName = getBucketName();
     const s3Client = getS3Client();
 
     // Re-upload HTML
     await s3Client.send(new PutObjectCommand({
       Bucket: bucketName,
-      Key: worksheet.s3HtmlKey,
+      Key: worksheet.s3_html_key,
       Body: html,
       ContentType: 'text/html; charset=utf-8',
       CacheControl: 'no-cache',
@@ -293,7 +280,7 @@ router.put('/:id', requireAuth, async (req, res) => {
     let pdfUploaded = false;
     try {
       const pdfBuffer = await generatePDFFromHTML(html);
-      const pdfKey = worksheet.s3PdfKey || worksheet.s3HtmlKey.replace(/\.html$/, '.pdf');
+      const pdfKey = worksheet.s3_pdf_key || worksheet.s3_html_key.replace(/\.html$/, '.pdf');
       await s3Client.send(new PutObjectCommand({
         Bucket: bucketName,
         Key: pdfKey,
@@ -301,21 +288,23 @@ router.put('/:id', requireAuth, async (req, res) => {
         ContentType: 'application/pdf',
         CacheControl: 'no-cache',
       }));
-      worksheet.s3PdfKey = pdfKey;
+      await pool.execute('UPDATE worksheets SET s3_pdf_key = ? WHERE id = ?', [pdfKey, worksheet.id]);
       pdfUploaded = true;
     } catch (pdfError) {
       console.error('PDF re-generation failed:', pdfError.message);
     }
 
-    worksheet.updatedAt = new Date().toISOString();
-    worksheets[index] = worksheet;
-    saveWorksheets(worksheets);
+    // Update timestamp
+    await pool.execute('UPDATE worksheets SET updated_at = NOW() WHERE id = ?', [worksheet.id]);
+
+    // Re-fetch updated record
+    const [updated] = await pool.execute('SELECT * FROM worksheets WHERE id = ?', [worksheet.id]);
 
     res.json({
       message: pdfUploaded
         ? 'Worksheet updated (HTML + PDF).'
         : 'Worksheet HTML updated. PDF re-generation failed.',
-      worksheet,
+      worksheet: toApiWorksheet(updated[0], req.user.id),
     });
   } catch (error) {
     console.error('Worksheet update failed:', error);
@@ -327,40 +316,40 @@ router.put('/:id', requireAuth, async (req, res) => {
 
 router.delete('/:id', requireAuth, async (req, res) => {
   try {
-    const worksheets = loadWorksheets();
-    const index = worksheets.findIndex((w) => w.id === req.params.id);
+    const pool = getPool();
+    const [rows] = await pool.execute('SELECT * FROM worksheets WHERE id = ?', [req.params.id]);
 
-    if (index === -1) {
+    if (rows.length === 0) {
       return res.status(404).json({ message: 'Worksheet not found.' });
     }
 
-    if (worksheets[index].ownerId !== req.user.id) {
+    const worksheet = rows[0];
+
+    if (worksheet.owner_id !== req.user.id) {
       return res.status(403).json({ message: 'You can only delete your own worksheets.' });
     }
-
-    const worksheet = worksheets[index];
 
     const bucketName = getBucketName();
     const s3Client = getS3Client();
 
     // Delete from S3
     if (bucketName) {
-      console.log(`Deleting S3 objects: ${worksheet.s3HtmlKey}, ${worksheet.s3PdfKey || '(no PDF)'}`);
+      console.log(`Deleting S3 objects: ${worksheet.s3_html_key}, ${worksheet.s3_pdf_key || '(no PDF)'}`);
 
       const deletePromises = [
         s3Client.send(new DeleteObjectCommand({
           Bucket: bucketName,
-          Key: worksheet.s3HtmlKey,
-        })).then(() => console.log(`  ✓ Deleted HTML: ${worksheet.s3HtmlKey}`))
+          Key: worksheet.s3_html_key,
+        })).then(() => console.log(`  ✓ Deleted HTML: ${worksheet.s3_html_key}`))
           .catch((err) => console.error(`  ✗ Failed to delete HTML: ${err.message}`)),
       ];
 
-      if (worksheet.s3PdfKey) {
+      if (worksheet.s3_pdf_key) {
         deletePromises.push(
           s3Client.send(new DeleteObjectCommand({
             Bucket: bucketName,
-            Key: worksheet.s3PdfKey,
-          })).then(() => console.log(`  ✓ Deleted PDF: ${worksheet.s3PdfKey}`))
+            Key: worksheet.s3_pdf_key,
+          })).then(() => console.log(`  ✓ Deleted PDF: ${worksheet.s3_pdf_key}`))
             .catch((err) => console.error(`  ✗ Failed to delete PDF: ${err.message}`)),
         );
       }
@@ -370,9 +359,8 @@ router.delete('/:id', requireAuth, async (req, res) => {
       console.warn('AWS_S3_BUCKET not configured — skipping S3 deletion.');
     }
 
-    // Remove from local storage
-    worksheets.splice(index, 1);
-    saveWorksheets(worksheets);
+    // Remove from MySQL
+    await pool.execute('DELETE FROM worksheets WHERE id = ?', [worksheet.id]);
 
     res.json({ message: 'Worksheet deleted successfully.' });
   } catch (error) {

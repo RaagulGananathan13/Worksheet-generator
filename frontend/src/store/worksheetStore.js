@@ -31,9 +31,11 @@ const useWorksheetStore = create()(
       panOffset: { x: 0, y: 0 },
       showGrid: true,
       showExportModal: false,
+      readOnly: false,
 
       // === Actions: View ===
       setView: (view) => set({ view }),
+      setReadOnly: (readOnly) => set({ readOnly }),
 
       // === Actions: Worksheet ===
       setOriginalHTML: (html) => set({ originalHTML: html, draftHTML: html }),

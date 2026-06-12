@@ -15,6 +15,7 @@ export default function UploadScreen() {
   const setBlocks = useWorksheetStore((s) => s.setBlocks);
   const setOriginalHTML = useWorksheetStore((s) => s.setOriginalHTML);
   const setWorksheetMeta = useWorksheetStore((s) => s.setWorksheetMeta);
+  const setReadOnly = useWorksheetStore((s) => s.setReadOnly);
 
   const isValidHTML = useCallback((str) => {
     const trimmed = str.trim();
@@ -55,13 +56,14 @@ export default function UploadScreen() {
       
       setBlocks(blocks);
       setWorksheetMeta(worksheetMeta);
+      setReadOnly(false);
       setView('editor');
     } catch (err) {
       setError(`Parsing failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, [htmlInput, isValidHTML, setOriginalHTML, setBlocks, setWorksheetMeta, setView]);
+  }, [htmlInput, isValidHTML, setOriginalHTML, setBlocks, setWorksheetMeta, setView, setReadOnly]);
 
   const hasHTML = htmlInput.trim().length > 0;
 
