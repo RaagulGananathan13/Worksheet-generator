@@ -41,11 +41,7 @@ export default function UploadScreen() {
   }, []);
 
   const handleProceedToEditor = useCallback(async () => {
-    if (!htmlInput.trim()) {
-      setError('Please paste some HTML code first.');
-      return;
-    }
-    if (!isValidHTML(htmlInput)) {
+    if (htmlInput.trim() && !isValidHTML(htmlInput)) {
       setError("This doesn't look like valid HTML. Please paste a complete HTML worksheet.");
       return;
     }
@@ -56,11 +52,7 @@ export default function UploadScreen() {
       setOriginalHTML(wrappedHTML);
       const { elements, worksheetMeta } = await parseHTMLString(wrappedHTML);
       const blocks = detectBlocks(elements, worksheetMeta);
-      if (blocks.length === 0) {
-        setError('No editable elements detected. Try a different worksheet.');
-        setLoading(false);
-        return;
-      }
+      
       setBlocks(blocks);
       setWorksheetMeta(worksheetMeta);
       setView('editor');
@@ -130,11 +122,7 @@ export default function UploadScreen() {
           <button
             onClick={handleProceedToEditor}
             disabled={loading}
-            className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 shadow-md active:scale-[0.98] ${
-              hasHTML
-                ? 'bg-brand-orange hover:bg-brand-orange-dark text-white'
-                : 'bg-surface-200 text-surface-500 cursor-not-allowed shadow-none'
-            }`}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 shadow-md active:scale-[0.98] bg-brand-orange hover:bg-brand-orange-dark text-white"
           >
             {loading ? (
               <>
