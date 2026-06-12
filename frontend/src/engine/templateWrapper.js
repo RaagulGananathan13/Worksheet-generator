@@ -161,7 +161,7 @@ const TEMPLATE_FOOTER = `
   <div class="ws-footer">
     <span class="ws-footer-text">www.geniusbees.com</span>
     <span class="ws-footer-text">info@geniusbees.com</span>
-    <span class="ws-footer-text">This worksheet is for the use of registered Geniusbees.com students only.</span>
+    <span class="ws-footer-text">This worksheet is for the use of registered geniusbees.com students only.</span>
   </div>`;
 
 /**
