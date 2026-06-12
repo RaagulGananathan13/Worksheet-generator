@@ -122,6 +122,7 @@ export async function generatePDFFromHTML(html) {
           .ws-header { flex-shrink: 0 !important; }
           .ws-body { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
           .ws-footer { flex-shrink: 0 !important; margin-top: auto !important; width: 100% !important; }
+          .ws-vertical-copyright, .vertical-copyright { left: -170px !important; }
         }
       `;
       document.head.appendChild(style);

@@ -123,6 +123,9 @@ body {
   text-overflow: ellipsis !important;
   font-size: 6px !important;
 }
+.ws-vertical-copyright, .vertical-copyright {
+  left: -170px !important;
+}
 </style>
 </head>
 <body>

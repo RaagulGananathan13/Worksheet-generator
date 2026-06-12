@@ -1,351 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeniusBees Worksheet - Addition with two digit numbers</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeniusBees Worksheet - Addition with two digit numbers</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
-    }
+      @page {
+        size: A4;
+        margin: 0;
+      }
 
-    @page {
-      size: A4;
-      margin: 0
-    }
-
-    body {
-      font-family: 'Poppins', Arial, sans-serif;
-      background: #e8e8e8;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-
-    .page {
-      width: 210mm;
-      min-height: 297mm;
-      margin: 10mm auto;
-      background: #fff;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, .15);
-      display: flex;
-      flex-direction: column;
-    }
-
-    @media print {
       body {
-        background: none
+        font-family: "Poppins", Arial, sans-serif;
+        background: #e8e8e8;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
 
       .page {
-        margin: 0;
-        box-shadow: none;
         width: 210mm;
-        height: 297mm
+        min-height: 297mm;
+        margin: 10mm auto;
+        background: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
       }
-    }
 
-    /* ═══════ HEADER ═══════ */
-    .header {
-      padding: 7mm 12mm 5mm 12mm;
-      border-bottom: none;
-      display: flex;
-      gap: 15px;
-    }
+      @media print {
+        body {
+          background: none;
+        }
 
-    .header-left {
-      width: 120px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-    }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          width: 210mm;
+          height: 297mm;
+        }
+      }
 
-    .header-left img {
-      width: 140px;
-      height: auto;
-      display: block;
-      margin-left: -10px;
-    }
+      /* ═══════ HEADER ═══════ */
+      .header {
+        padding: 7mm 12mm 5mm 12mm;
+        border-bottom: none;
+        display: flex;
+        gap: 15px;
+      }
 
-    .grade-table {
-      border-collapse: collapse;
-      margin-left: 4px;
-    }
+      .header-left {
+        width: 120px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
 
-    .grade-table td {
-      width: 40px;
-      height: 35px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 300;
-      color: #555;
-      border: none;
-    }
+      .header-left img {
+        width: 140px;
+        height: auto;
+        display: block;
+        margin-left: -10px;
+      }
 
-    .grade-table tr:first-child td {
-      border-bottom: 1px solid #777;
-    }
+      .grade-table {
+        border-collapse: collapse;
+        margin-left: 4px;
+      }
 
-    .grade-table td:not(:last-child) {
-      border-right: 1px solid #777;
-    }
+      .grade-table td {
+        width: 40px;
+        height: 35px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 300;
+        color: #555;
+        border: none;
+      }
 
-    .header-mid {
-      flex: 1 !important;
-      padding: 0 15px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: center !important;
-      overflow: hidden !important;
-    }
+      .grade-table tr:first-child td {
+        border-bottom: 1px solid #777;
+      }
 
-    .activity-id {
-      font-size: 15px !important;
-      font-weight: 700 !important;
-      color: #111 !important;
-      margin: 0 0 4px 0 !important;
-      line-height: 1.2 !important;
-    }
+      .grade-table td:not(:last-child) {
+        border-right: 1px solid #777;
+      }
 
-    .activity-title {
-      font-size: 14px !important;
-      font-weight: 700 !important;
-      color: #111 !important;
-      margin: 0 0 16px 0 !important;
-      line-height: 1.2 !important;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+      .header-mid {
+        flex: 1 !important;
+        padding: 0 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+      }
 
-    .form-fields {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 8px !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
-    }
+      .activity-id {
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #111 !important;
+        margin: 0 0 4px 0 !important;
+        line-height: 1.2 !important;
+      }
 
-    .form-row {
-      display: flex !important;
-      align-items: baseline !important;
-      gap: 2px !important;
-      font-size: 12px !important;
-      color: #333 !important;
-      width: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      line-height: 1.2 !important;
-    }
+      .activity-title {
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: #111 !important;
+        margin: 0 0 16px 0 !important;
+        line-height: 1.2 !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-    .f-label {
-      font-weight: 400 !important;
-      white-space: nowrap !important;
-      color: #333 !important;
-    }
+      .form-fields {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
 
-    .f-line-dashed {
-      flex: 1 !important;
-      border-bottom: 1px dashed #555 !important;
-      margin-bottom: 4px !important;
-      min-width: 20px !important;
-    }
+      .form-row {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 2px !important;
+        font-size: 12px !important;
+        color: #333 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+      }
 
-    .f-line-sm-dashed {
-      width: 60px !important;
-      border-bottom: 1px dashed #555 !important;
-      margin-bottom: 4px !important;
-    }
+      .f-label {
+        font-weight: 400 !important;
+        white-space: nowrap !important;
+        color: #333 !important;
+      }
 
-    .d-line-dashed {
-      width: 22px !important;
-      border-bottom: 1px dashed #555 !important;
-      margin-bottom: 4px !important;
-    }
+      .f-line-dashed {
+        flex: 1 !important;
+        border-bottom: 1px dashed #555 !important;
+        margin-bottom: 4px !important;
+        min-width: 20px !important;
+      }
 
-    .d-line-y-dashed {
-      width: 35px !important;
-      border-bottom: 1px dashed #555 !important;
-      margin-bottom: 4px !important;
-    }
+      .f-line-sm-dashed {
+        width: 60px !important;
+        border-bottom: 1px dashed #555 !important;
+        margin-bottom: 4px !important;
+      }
 
-    .d-sep {
-      font-weight: 400 !important;
-      margin: 0 4px !important;
-      color: #333 !important;
-    }
+      .d-line-dashed {
+        width: 22px !important;
+        border-bottom: 1px dashed #555 !important;
+        margin-bottom: 4px !important;
+      }
 
-    .header-right {
-      width: 125px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-      padding-top: 0;
-    }
+      .d-line-y-dashed {
+        width: 35px !important;
+        border-bottom: 1px dashed #555 !important;
+        margin-bottom: 4px !important;
+      }
 
-    /* ═══════ BODY ═══════ */
-    .body {
-      flex: 1;
-      position: relative;
-      padding: 10mm 12mm 10mm 12mm;
-      min-height: 190mm;
-    }
+      .d-sep {
+        font-weight: 400 !important;
+        margin: 0 4px !important;
+        color: #333 !important;
+      }
 
-    .wm-wrap {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: 0;
-    }
+      .header-right {
+        width: 125px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        padding-top: 0;
+      }
 
-    .wm {
-      position: absolute;
-      width: 180px;
-      opacity: 0.06;
-      filter: grayscale(100%);
-      pointer-events: none;
-      user-select: none;
-      transform: rotate(-15deg);
-    }
+      /* ═══════ BODY ═══════ */
+      .body {
+        flex: 1;
+        position: relative;
+        padding: 10mm 12mm 10mm 12mm;
+        min-height: 190mm;
+      }
 
-    .wm1 {
-      top: 20%;
-      right: 12%;
-    }
+      .wm-wrap {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
 
-    .wm2 {
-      top: 55%;
-      left: 8%;
-    }
+      .wm {
+        position: absolute;
+        width: 180px;
+        opacity: 0.06;
+        filter: grayscale(100%);
+        pointer-events: none;
+        user-select: none;
+        transform: rotate(-15deg);
+      }
 
-    .wm3 {
-      bottom: 10%;
-      right: 15%;
-    }
+      .wm1 {
+        top: 20%;
+        right: 12%;
+      }
 
-    .body-content {
-      position: relative;
-      z-index: 1
-    }
+      .wm2 {
+        top: 55%;
+        left: 8%;
+      }
 
-    /* ═══════ FOOTER ═══════ */
-    .footer {
-      padding: 3mm 12mm 6mm 32mm;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Times New Roman', Times, serif;
-      color: #111;
-    }
+      .wm3 {
+        bottom: 10%;
+        right: 15%;
+      }
 
-    .footer-text {
-      font-size: 12px;
-      font-weight: 400;
-    }
+      .body-content {
+        position: relative;
+        z-index: 1;
+      }
 
-    .vertical-copyright {
-      position: absolute;
-      left: -195px;
-      width: 400px;
-      top: 50%;
-      text-align: center;
-      transform: translateY(-50%) rotate(90deg);
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 10px;
-      font-weight: 400;
-      color: #111;
-      white-space: nowrap;
-    }
-  </style>
-</head>
+      /* ═══════ FOOTER ═══════ */
+      .footer {
+        padding: 3mm 12mm 6mm 32mm;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        color: #111;
+      }
 
-<body>
+      .footer-text {
+        font-size: 12px;
+        font-weight: 400;
+      }
 
-  <div class="page">
+      .vertical-copyright {
+        position: absolute;
+        left: -170px;
+        width: 400px;
+        top: 50%;
+        text-align: center;
+        transform: translateY(-50%) rotate(90deg);
+        font-family: "Times New Roman", Times, serif;
+        font-size: 10px;
+        font-weight: 400;
+        color: #111;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
 
-    <!-- ═══════ HEADER ═══════ -->
-    <div class="header">
+  <body>
+    <div class="page">
+      <!-- ═══════ HEADER ═══════ -->
+      <div class="header">
+        <!-- LEFT: Logo + Grade Table -->
+        <div class="header-left">
+          <img src="logo.jpg" alt="GeniusBees" />
+          <table class="grade-table">
+            <tr>
+              <td>A+</td>
+              <td>B+</td>
+              <td>C</td>
+            </tr>
+            <tr>
+              <td>A</td>
+              <td>B</td>
+              <td>D</td>
+            </tr>
+          </table>
+        </div>
 
-      <!-- LEFT: Logo + Grade Table -->
-      <div class="header-left">
-        <img src="logo.jpg" alt="GeniusBees">
-        <table class="grade-table">
-          <tr>
-            <td>A+</td>
-            <td>B+</td>
-            <td>C</td>
-          </tr>
-          <tr>
-            <td>A</td>
-            <td>B</td>
-            <td>D</td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- MIDDLE: Activity Info + Form Fields -->
-      <div class="header-mid">
-        <div class="activity-id">Activity ID : 140100100001</div>
-        <div class="activity-title">Addition with two digit numbers</div>
-        <div class="form-fields">
-          <div class="form-row">
-            <span class="f-label">ID</span>
-            <div class="f-line-dashed"></div>
-          </div>
-          <div class="form-row">
-            <span class="f-label">Name</span>
-            <div class="f-line-dashed"></div>
-          </div>
-          <div class="form-row">
-            <span class="f-label">Date</span>
-            <div class="d-line-dashed"></div><span class="d-sep">/</span>
-            <div class="d-line-dashed"></div><span class="d-sep">/</span>
-            <div class="d-line-y-dashed"></div>
-            <span class="f-label" style="margin-left:4px">Start time</span>
-            <div class="f-line-dashed"></div>
-            <span class="f-label" style="margin-left:4px">Finish time</span>
-            <div class="f-line-dashed"></div>
+        <!-- MIDDLE: Activity Info + Form Fields -->
+        <div class="header-mid">
+          <div class="activity-id">Activity ID : 140100100001</div>
+          <div class="activity-title">Addition with two digit numbers</div>
+          <div class="form-fields">
+            <div class="form-row">
+              <span class="f-label">ID</span>
+              <div class="f-line-dashed"></div>
+            </div>
+            <div class="form-row">
+              <span class="f-label">Name</span>
+              <div class="f-line-dashed"></div>
+            </div>
+            <div class="form-row">
+              <span class="f-label">Date</span>
+              <div class="d-line-dashed"></div>
+              <span class="d-sep">/</span>
+              <div class="d-line-dashed"></div>
+              <span class="d-sep">/</span>
+              <div class="d-line-y-dashed"></div>
+              <span class="f-label" style="margin-left: 4px">Start time</span>
+              <div class="f-line-dashed"></div>
+              <span class="f-label" style="margin-left: 4px">Finish time</span>
+              <div class="f-line-dashed"></div>
+            </div>
           </div>
         </div>
+
+        <!-- RIGHT: Empty space (previously QR Code) -->
+        <div class="header-right"></div>
       </div>
 
-      <!-- RIGHT: Empty space (previously QR Code) -->
-      <div class="header-right"></div>
-
-    </div>
-
-    <!-- ═══════ BODY ═══════ -->
-    <div class="body">
-      <div class="wm-wrap">
-        <img src="watermark.svg" class="wm wm1" alt="Watermark">
-        <img src="watermark.svg" class="wm wm2" alt="Watermark">
-        <img src="watermark.svg" class="wm wm3" alt="Watermark">
+      <!-- ═══════ BODY ═══════ -->
+      <div class="body">
+        <div class="wm-wrap">
+          <img src="watermark.svg" class="wm wm1" alt="Watermark" />
+          <img src="watermark.svg" class="wm wm2" alt="Watermark" />
+          <img src="watermark.svg" class="wm wm3" alt="Watermark" />
+        </div>
+        <div class="body-content"></div>
       </div>
-      <div class="body-content"></div>
+
+      <div class="vertical-copyright">
+        Copyright&copy; 2026 GeniusBees Inc. All rights reserved.
+      </div>
+
+      <!-- ═══════ FOOTER ═══════ -->
+      <div class="footer">
+        <span class="footer-text">www.geniusbees.com</span>
+        <span class="footer-text">info@geniusbees.com</span>
+        <span class="footer-text"
+          >This worksheet is for the use of registered geniusbees.com students
+          only.</span
+        >
+      </div>
     </div>
-
-    <div class="vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
-
-    <!-- ═══════ FOOTER ═══════ -->
-    <div class="footer">
-      <span class="footer-text">www.geniusbees.com</span>
-      <span class="footer-text">info@geniusbees.com</span>
-      <span class="footer-text">This worksheet is for the use of registered geniusbees.com students only.</span>
-    </div>
-
-  </div>
-</body>
-
+  </body>
 </html>
