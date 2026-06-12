@@ -160,7 +160,7 @@ const TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
     <span class="ws-footer-text">www.geniusbees.com</span>
-    <span class="ws-footer-text">Info@geniusbees.com</span>
+    <span class="ws-footer-text">info@geniusbees.com</span>
     <span class="ws-footer-text">This worksheet is for the use of registered Geniusbees.com students only.</span>
   </div>`;
 
