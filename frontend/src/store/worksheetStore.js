@@ -142,7 +142,9 @@ const useWorksheetStore = create()(
         }),
 
       // === Actions: Modals ===
+      showCodeViewer: false,
       setShowExportModal: (show) => set({ showExportModal: show }),
+      setShowCodeViewer: (show) => set({ showCodeViewer: show }),
       setShowGrid: (show) => set({ showGrid: show }),
     }),
     {

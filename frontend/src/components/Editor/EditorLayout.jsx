@@ -5,10 +5,12 @@ import Toolbar from '../Toolbar/Toolbar';
 import Canvas from '../Canvas/Canvas';
 import PropertyPanel from '../PropertyPanel/PropertyPanel';
 import ExportModal from '../ExportModal/ExportModal';
+import CodeViewer from '../CodeViewer/CodeViewer';
 
 export default function EditorLayout() {
   const containerRef = useRef(null);
   const showExportModal = useWorksheetStore((s) => s.showExportModal);
+  const showCodeViewer = useWorksheetStore((s) => s.showCodeViewer);
   const readOnly = useWorksheetStore((s) => s.readOnly);
   const [panelOpen, setPanelOpen] = useState(true);
   const [panelWidth, setPanelWidth] = useState(300);
@@ -94,6 +96,9 @@ export default function EditorLayout() {
 
       {/* Export Modal */}
       {showExportModal && <ExportModal />}
+
+      {/* Code Viewer Modal */}
+      {showCodeViewer && <CodeViewer />}
     </div>
   );
 }

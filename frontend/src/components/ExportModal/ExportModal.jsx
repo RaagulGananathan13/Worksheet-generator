@@ -9,6 +9,7 @@ export default function ExportModal() {
   const hasUnsavedChanges = useWorksheetStore((s) => s.hasUnsavedChanges);
   const worksheetMeta = useWorksheetStore((s) => s.worksheetMeta);
   const setShowExportModal = useWorksheetStore((s) => s.setShowExportModal);
+  const readOnly = useWorksheetStore((s) => s.readOnly);
   const token = useAuthStore((s) => s.token);
 
   const [fileName, setFileName] = useState((worksheetMeta.title || 'worksheet').trim());
@@ -326,7 +327,8 @@ ${bodyContent}
           </div>
         )}
 
-        {/* S3 Upload Section */}
+        {/* S3 Upload Section — owner only (hidden for read-only viewers) */}
+        {!readOnly && (
         <div className="mb-4 space-y-3 rounded-xl border border-surface-200 bg-surface-50 p-4">
           <div>
             <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">File Name</label>
@@ -376,6 +378,7 @@ ${bodyContent}
           )}
           {s3Error && <p className="text-xs text-danger-500">{s3Error}</p>}
         </div>
+        )}
 
         {/* Export Buttons */}
         <div className="space-y-2.5">

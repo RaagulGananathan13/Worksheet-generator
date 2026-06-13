@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import {
   Upload, Download, Undo2, Redo2, Save, RotateCcw,
-  ZoomIn, ZoomOut, Grid3x3, Maximize, LayoutDashboard, LogOut, User, Eye
+  ZoomIn, ZoomOut, Grid3x3, Maximize, LayoutDashboard, LogOut, User, Eye, Code2
 } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
 import useAuthStore from '../../store/authStore';
@@ -99,20 +99,29 @@ export default function Toolbar() {
           <span className="hidden md:inline">Dashboard</span>
         </button>
 
-        {/* Hide New and Export for read-only */}
+        {/* New button — owner only */}
         {!readOnly && (
-          <>
-            <button onClick={handleNew}
-              className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="New Worksheet">
-              <Upload className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">New</span>
-            </button>
-            <button onClick={() => setShowExportModal(true)}
-              className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Export (Ctrl+E)">
-              <Download className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Export</span>
-            </button>
-          </>
+          <button onClick={handleNew}
+            className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="New Worksheet">
+            <Upload className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">New</span>
+          </button>
+        )}
+
+        {/* Export — available for everyone (owner + viewer) */}
+        <button onClick={() => setShowExportModal(true)}
+          className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all" title="Export (Ctrl+E)">
+          <Download className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">Export</span>
+        </button>
+
+        {/* View Code — read-only viewers can see HTML source */}
+        {readOnly && (
+          <button onClick={() => useWorksheetStore.getState().setShowCodeViewer(true)}
+            className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all" title="View HTML Code">
+            <Code2 className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Code</span>
+          </button>
         )}
       </div>
 
