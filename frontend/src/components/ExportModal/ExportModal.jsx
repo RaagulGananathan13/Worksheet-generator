@@ -124,7 +124,7 @@ body {
   font-size: 6px !important;
 }
 .ws-vertical-copyright, .vertical-copyright {
-  left: -170px !important;
+  left: -193px !important;
 }
 </style>
 </head>

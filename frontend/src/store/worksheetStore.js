@@ -148,6 +148,18 @@ const useWorksheetStore = create()(
     {
       partialize: (state) => ({ draftHTML: state.draftHTML }),
       limit: HISTORY_LIMIT,
+      // Throttle history: only record a snapshot after 1s of inactivity
+      // This batches rapid edits (typing, dragging) into single undo steps
+      handleSet: (handleSet) => {
+        let timeoutId = null;
+        return (state) => {
+          if (timeoutId) clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            handleSet(state);
+            timeoutId = null;
+          }, 1000);
+        };
+      },
     }
   )
 );

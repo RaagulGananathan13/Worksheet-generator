@@ -108,7 +108,7 @@ const TEMPLATE_CSS = `
   }
   .ws-vertical-copyright {
     position: absolute;
-    left: -170px;
+    left: -193px;
     width: 400px;
     top: 50%;
     text-align: center;

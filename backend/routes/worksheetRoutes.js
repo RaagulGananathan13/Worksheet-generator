@@ -220,17 +220,28 @@ router.get('/:id/content', requireAuth, async (req, res) => {
       return res.status(500).json({ message: 'AWS_S3_BUCKET is not configured.' });
     }
 
-    const response = await s3Client.send(new GetObjectCommand({
-      Bucket: bucketName,
-      Key: worksheet.s3_html_key,
-    }));
+    let html;
+    try {
+      const response = await s3Client.send(new GetObjectCommand({
+        Bucket: bucketName,
+        Key: worksheet.s3_html_key,
+      }));
 
-    // Stream the S3 body to a string
-    const chunks = [];
-    for await (const chunk of response.Body) {
-      chunks.push(chunk);
+      const chunks = [];
+      for await (const chunk of response.Body) {
+        chunks.push(chunk);
+      }
+      html = Buffer.concat(chunks).toString('utf-8');
+    } catch (s3Err) {
+      if (s3Err.Code === 'NoSuchKey' || s3Err.name === 'NoSuchKey') {
+        // S3 file was deleted — clean up the stale DB record
+        await pool.execute('DELETE FROM worksheets WHERE id = ?', [req.params.id]);
+        return res.status(404).json({
+          message: 'This worksheet was deleted from storage. The record has been cleaned up.',
+        });
+      }
+      throw s3Err; // Re-throw other S3 errors
     }
-    const html = Buffer.concat(chunks).toString('utf-8');
 
     res.json({
       worksheet: toApiWorksheet(worksheet, req.user.id),

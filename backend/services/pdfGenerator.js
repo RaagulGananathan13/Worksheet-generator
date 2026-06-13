@@ -154,7 +154,7 @@ export async function generatePDFFromHTML(html) {
           white-space: nowrap !important;
         }
         .ws-vertical-copyright, .vertical-copyright {
-          left: -170px !important;
+          left: -193px !important;
         }
       `;
       document.head.appendChild(baseStyle);
