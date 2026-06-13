@@ -115,12 +115,12 @@ export default function Toolbar() {
           <span className="hidden md:inline">Export</span>
         </button>
 
-        {/* View Code — read-only viewers can see HTML source */}
-        {readOnly && (
-          <button onClick={() => useWorksheetStore.getState().setShowCodeViewer(true)}
-            className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all" title="View HTML Code">
+        {/* Edit Source — go back to upload screen */}
+        {!readOnly && (
+          <button onClick={() => setView('upload')}
+            className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Edit HTML Source">
             <Code2 className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Code</span>
+            <span className="hidden md:inline">Edit Source</span>
           </button>
         )}
       </div>
@@ -130,22 +130,20 @@ export default function Toolbar() {
         {!readOnly && (
           <>
             <button onClick={saveChanges} disabled={!hasUnsavedChanges} title="Save (Ctrl+S)"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-                hasUnsavedChanges
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${hasUnsavedChanges
                   ? 'bg-brand-orange hover:bg-brand-orange-dark text-white shadow-sm'
                   : 'bg-surface-100 text-surface-400 cursor-not-allowed border border-surface-200'
-              }`}>
+                }`}>
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Save</span>
               {hasUnsavedChanges && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
             </button>
 
             <button onClick={discardChanges} disabled={!hasUnsavedChanges} title="Discard Changes"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                hasUnsavedChanges
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${hasUnsavedChanges
                   ? 'bg-red-50 hover:bg-red-100 text-danger-500 border border-red-200'
                   : 'bg-surface-100 text-surface-400 cursor-not-allowed border border-surface-200'
-              }`}>
+                }`}>
               <RotateCcw className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Discard</span>
             </button>
@@ -189,7 +187,7 @@ export default function Toolbar() {
                      [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5
                      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-orange [&::-webkit-slider-thumb]:shadow-sm
                      [&::-webkit-slider-thumb]:cursor-pointer"
-          style={{ background: `linear-gradient(to right, #F57C00 0%, #F57C00 ${((zoom*100-25)/175)*100}%, #E0E0E0 ${((zoom*100-25)/175)*100}%, #E0E0E0 100%)` }}
+          style={{ background: `linear-gradient(to right, #F57C00 0%, #F57C00 ${((zoom * 100 - 25) / 175) * 100}%, #E0E0E0 ${((zoom * 100 - 25) / 175) * 100}%, #E0E0E0 100%)` }}
         />
 
         <div className="relative group">
@@ -200,8 +198,7 @@ export default function Toolbar() {
           <div className="absolute top-full right-0 mt-1 bg-white border border-surface-200 rounded-lg shadow-lg py-1 hidden group-hover:block z-50 min-w-[70px]">
             {zoomPresets.map(p => (
               <button key={p} onClick={() => setZoom(p / 100)}
-                className={`w-full text-left px-3 py-1 text-xs hover:bg-surface-100 transition-colors ${
-                  Math.round(zoom*100) === p ? 'text-brand-orange font-medium' : 'text-surface-600'}`}>
+                className={`w-full text-left px-3 py-1 text-xs hover:bg-surface-100 transition-colors ${Math.round(zoom * 100) === p ? 'text-brand-orange font-medium' : 'text-surface-600'}`}>
                 {p}%
               </button>
             ))}

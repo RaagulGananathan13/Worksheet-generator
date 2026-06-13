@@ -8,7 +8,7 @@ let pool = null;
 export async function initDatabase() {
   const host = process.env.DB_HOST || 'localhost';
   const user = process.env.DB_USER || 'root';
-  const password = process.env.DB_PASSWORD || 'root';
+  const password = process.env.DB_PASSWORD;
   const database = process.env.DB_NAME || 'worksheet_generator';
 
   // 1. Connect without database to create it if needed

@@ -6,7 +6,9 @@ import { detectBlocks } from '../../engine/detectionEngine';
 import { wrapInTemplate } from '../../engine/templateWrapper';
 
 export default function UploadScreen() {
-  const [htmlInput, setHtmlInput] = useState('');
+  const rawHTML = useWorksheetStore((s) => s.rawHTML);
+  const setRawHTML = useWorksheetStore((s) => s.setRawHTML);
+  const [htmlInput, setHtmlInput] = useState(rawHTML || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const textareaRef = useRef(null);
@@ -48,6 +50,7 @@ export default function UploadScreen() {
     }
     setLoading(true);
     setError('');
+    setRawHTML(htmlInput);
     try {
       const wrappedHTML = wrapInTemplate(htmlInput);
       setOriginalHTML(wrappedHTML);

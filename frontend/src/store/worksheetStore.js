@@ -10,6 +10,7 @@ const useWorksheetStore = create()(
       view: 'auth', // 'auth' | 'dashboard' | 'upload' | 'editor'
 
       // === Worksheet Data ===
+      rawHTML: '',            // The raw HTML string pasted by the user
       originalHTML: '',       // Last saved version
       draftHTML: '',           // Current unsaved edits
       hasUnsavedChanges: false,
@@ -38,6 +39,7 @@ const useWorksheetStore = create()(
       setReadOnly: (readOnly) => set({ readOnly }),
 
       // === Actions: Worksheet ===
+      setRawHTML: (html) => set({ rawHTML: html }),
       setOriginalHTML: (html) => set({ originalHTML: html, draftHTML: html }),
       setWorksheetMeta: (meta) => set((s) => ({ worksheetMeta: { ...s.worksheetMeta, ...meta } })),
 
