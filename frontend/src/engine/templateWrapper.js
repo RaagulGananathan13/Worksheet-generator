@@ -122,6 +122,52 @@ const TEMPLATE_CSS = `
   }
 `;
 
+/**
+ * Normalization overrides — injected AFTER user styles to guarantee precedence.
+ * 1. Forces Poppins font on all body content
+ * 2. Replaces all list bullets with the honeycomb hexagon SVG
+ */
+const NORMALIZE_CSS = `
+  /* ═══ FONT NORMALIZATION: Force Poppins on all uploaded content ═══ */
+  .ws-body-content,
+  .ws-body-content *,
+  .ws-body-content *::before,
+  .ws-body-content *::after {
+    font-family: 'Poppins', Arial, sans-serif !important;
+  }
+
+  /* ═══ HONEYCOMB BULLET NORMALIZATION ═══ */
+  .ws-body-content ul,
+  .ws-body-content ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+  .ws-body-content li {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding-left: 0 !important;
+    margin-bottom: 6px !important;
+  }
+  .ws-body-content li::before {
+    content: '' !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    margin-top: 2px !important;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='12,2 21,7 21,17 12,22 3,17 3,7' fill='none' stroke='%23777777' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='12,6 17,9 17,15 12,18 7,15 7,9' fill='none' stroke='%23999999' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain !important;
+  }
+  /* Hide any existing custom bullet/marker icons inside list items */
+  .ws-body-content li > [class*="bullet"],
+  .ws-body-content li > [class*="marker"],
+  .ws-body-content li > [class*="list-icon"] {
+    display: none !important;
+  }
+`;
+
 const TEMPLATE_HEADER = `
   <div class="ws-header">
     <div class="ws-header-left">
@@ -198,12 +244,42 @@ function extractHeadStyles(html) {
 }
 
 /**
+ * Strip font-family and list-style declarations from user's extracted styles
+ * so they don't conflict with our Poppins + honeycomb normalization.
+ */
+function normalizeUploadedStyles(stylesHtml) {
+  let normalized = stylesHtml;
+  // Remove font-family declarations from style blocks
+  normalized = normalized.replace(/font-family\s*:[^;}"']+;?/gi, '');
+  // Remove list-style declarations
+  normalized = normalized.replace(/list-style(?:-type|-image|-position)?\s*:[^;}"']+;?/gi, '');
+  // Remove external font links (we supply our own Poppins)
+  normalized = normalized.replace(/<link[^>]*fonts\.googleapis\.com[^>]*\/?>/gi, '');
+  return normalized;
+}
+
+/**
+ * Strip font-family and list-style from inline styles in body HTML.
+ */
+function normalizeUploadedBody(bodyHtml) {
+  let normalized = bodyHtml;
+  // Remove font-family from inline styles
+  normalized = normalized.replace(/font-family\s*:[^;}"']+;?/gi, '');
+  // Remove list-style from inline styles
+  normalized = normalized.replace(/list-style(?:-type|-image|-position)?\s*:[^;}"']+;?/gi, '');
+  return normalized;
+}
+
+/**
  * Wrap user HTML content inside the GeniusBees template.
  * Preserves original CSS while adding template structure.
+ * Normalizes fonts to Poppins and bullets to honeycomb.
  */
 export function wrapInTemplate(userHTML) {
   const bodyContent = extractBodyContent(userHTML);
   const originalStyles = extractHeadStyles(userHTML);
+  const normalizedStyles = normalizeUploadedStyles(originalStyles);
+  const normalizedBody = normalizeUploadedBody(bodyContent);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -213,7 +289,8 @@ export function wrapInTemplate(userHTML) {
 <title>GeniusBees Worksheet</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>${TEMPLATE_CSS}</style>
-${originalStyles}
+${normalizedStyles}
+<style>${NORMALIZE_CSS}</style>
 </head>
 <body>
 <div class="ws-page">
@@ -225,7 +302,7 @@ ${TEMPLATE_HEADER}
       <img src="watermark.svg" class="ws-wm ws-wm3" alt="Watermark">
     </div>
     <div class="ws-body-content">
-      ${bodyContent}
+      ${normalizedBody}
     </div>
   </div>
 ${TEMPLATE_FOOTER}
@@ -243,4 +320,4 @@ export function getExportHTML(store) {
   return html;
 }
 
-export { TEMPLATE_CSS, TEMPLATE_HEADER, TEMPLATE_FOOTER };
+export { TEMPLATE_CSS, NORMALIZE_CSS, TEMPLATE_HEADER, TEMPLATE_FOOTER };
