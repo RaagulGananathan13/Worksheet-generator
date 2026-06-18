@@ -6,8 +6,8 @@
 
 const TEMPLATE_CSS = `
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-  @page{size:A4;margin:0}
-  html{height:100%}
+  @page{size:210mm 297mm;margin:0}
+  html{height:100%;margin:0;padding:0}
   body{
     font-family:'Poppins',Arial,sans-serif;
     background:#fff;
@@ -17,24 +17,26 @@ const TEMPLATE_CSS = `
     print-color-adjust:exact;
   }
   .ws-page{
-    width:100%;
-    min-height:100%;
+    width:210mm;
+    min-height:297mm;
     background:#fff;
     position:relative;
     display:flex;
     flex-direction:column;
-    margin:0;padding:0;
+    margin:0 auto;
+    padding:0;
     box-shadow:none;
     border:none;
     outline:none;
+    overflow:hidden;
   }
   @media print{
-    html,body{height:auto!important}
-    body{background:none;margin:0;padding:0}
-    .ws-page{margin:0;width:210mm;min-height:0;height:auto;display:block;overflow:visible}
+    html,body{width:210mm!important;height:297mm!important;margin:0!important;padding:0!important;overflow:hidden!important}
+    body{background:none}
+    .ws-page{margin:0!important;width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;box-shadow:none!important}
     .ws-header{break-inside:avoid;page-break-inside:avoid}
-    .ws-body{flex:none}
-    .ws-footer{break-inside:avoid;page-break-inside:avoid;position:relative;margin-top:0}
+    .ws-body{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+    .ws-footer{break-inside:avoid;page-break-inside:avoid;position:relative;margin-top:auto!important;flex-shrink:0!important}
     .ws-footer-row{display:flex!important;width:100%!important}
     .ws-footer-row span{display:inline-block!important}
     .ws-body-content>*{break-inside:auto}

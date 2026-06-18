@@ -161,8 +161,8 @@ export default function Canvas({ containerRef }) {
         <div
           ref={canvasRef}
           style={{
-            width: 794,
-            minHeight: 1123,
+            width: '210mm',
+            minHeight: '297mm',
             transform: `scale(${zoom}) translate(${panOffset.x / zoom}px, ${panOffset.y / zoom}px)`,
             transformOrigin: 'top center',
             background: '#fff',
@@ -176,7 +176,7 @@ export default function Canvas({ containerRef }) {
             key={reloadCounter}
             srcDoc={editableSrcdoc}
             title="Worksheet Editor"
-            style={{ width: '100%', minHeight: 1123, border: 'none', display: 'block' }}
+            style={{ width: '210mm', minHeight: '297mm', border: 'none', display: 'block' }}
             sandbox="allow-same-origin allow-scripts"
           />
         </div>

@@ -77,6 +77,30 @@ function toApiWorksheet(row, requestUserId) {
   };
 }
 
+// ─── POST /api/worksheets/generate-pdf — Generate A4 PDF download ──
+
+router.post('/generate-pdf', requireAuth, async (req, res) => {
+  try {
+    const html = typeof req.body?.html === 'string' ? req.body.html.trim() : '';
+    if (!html) {
+      return res.status(400).json({ message: 'Worksheet HTML is required.' });
+    }
+
+    const fileName = buildFileName(req.body?.fileName || 'worksheet');
+    const pdfBuffer = await generatePDFFromHTML(html);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${fileName}.pdf"`,
+      'Content-Length': pdfBuffer.length,
+    });
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('PDF generation failed:', error);
+    res.status(500).json({ message: 'Failed to generate PDF.', error: error.message });
+  }
+});
+
 // ─── POST /api/worksheets/s3 — Save HTML + PDF pair ────────
 
 router.post('/s3', requireAuth, async (req, res) => {

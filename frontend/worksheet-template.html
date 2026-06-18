@@ -18,7 +18,7 @@
       }
 
       @page {
-        size: A4;
+        size: 210mm 297mm;
         margin: 0;
       }
 
@@ -42,15 +42,23 @@
       }
 
       @media print {
-        body {
+        html, body {
+          width: 210mm !important;
+          height: 297mm !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
           background: none;
         }
 
         .page {
-          margin: 0;
-          box-shadow: none;
-          width: 210mm;
-          height: 297mm;
+          margin: 0 !important;
+          box-shadow: none !important;
+          width: 210mm !important;
+          height: 297mm !important;
+          min-height: 297mm !important;
+          max-height: 297mm !important;
+          overflow: hidden !important;
         }
       }
 
