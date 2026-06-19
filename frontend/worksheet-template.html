@@ -63,6 +63,9 @@
       }
 
       /* ═══════ HEADER ═══════ */
+      .header, .header * {
+        font-family: "Poppins", Arial, sans-serif !important;
+      }
       .header {
         padding: 7mm 12mm 5mm 12mm;
         border-bottom: none;
@@ -251,13 +254,18 @@
       }
 
       /* ═══════ FOOTER ═══════ */
+      .footer, .footer *, .vertical-copyright {
+        font-family: "Times New Roman", Times, serif !important;
+      }
       .footer {
-        padding: 3mm 12mm 6mm 32mm;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        color: #111;
+        padding: 3mm 12mm 6mm 32mm !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        color: #111 !important;
+        box-sizing: border-box !important;
       }
 
       .footer-text {
@@ -272,7 +280,6 @@
         top: 50%;
         text-align: center;
         transform: translateY(-50%) rotate(90deg);
-        font-family: "Times New Roman", Times, serif;
         font-size: 10px;
         font-weight: 400;
         color: #111;

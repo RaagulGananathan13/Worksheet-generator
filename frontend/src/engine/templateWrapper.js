@@ -43,6 +43,7 @@ const TEMPLATE_CSS = `
   }
 
   /* ═══ HEADER ═══ */
+  .ws-header, .ws-header * { font-family: 'Poppins', Arial, sans-serif !important; }
   .ws-header { padding: 7mm 12mm 5mm 12mm; border-bottom: none; display: flex; gap: 15px; flex-shrink: 0; }
   .ws-header-left { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
   .ws-header-left img { width: 140px; height: auto; display: block; margin-left: -10px; }
@@ -94,15 +95,18 @@ const TEMPLATE_CSS = `
   }
 
   /* ═══ FOOTER ═══ */
+  .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Times New Roman', Times, serif !important; }
   .ws-footer {
-    padding: 3mm 12mm 6mm 32mm;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Times New Roman', Times, serif;
-    color: #111;
-    flex-shrink: 0;
-    margin-top: auto;
+    padding: 3mm 12mm 6mm 32mm !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    color: #111 !important;
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+    box-sizing: border-box !important;
   }
   .ws-footer-text {
     font-size: 12px;
@@ -115,7 +119,6 @@ const TEMPLATE_CSS = `
     top: 50%;
     text-align: center;
     transform: translateY(-50%) rotate(90deg);
-    font-family: 'Times New Roman', Times, serif;
     font-size: 10px;
     font-weight: 400;
     color: #111;
