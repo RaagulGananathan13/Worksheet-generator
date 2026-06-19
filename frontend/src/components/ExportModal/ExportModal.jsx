@@ -46,8 +46,18 @@ export default function ExportModal() {
       });
 
       if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.message || 'PDF generation failed');
+        const errorText = await response.text().catch(() => '');
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        try {
+          const json = JSON.parse(errorText);
+          errorMessage = json.message || json.error || errorMessage;
+        } catch (e) {
+          // If it's HTML (like Nginx 413 Payload Too Large), show a snippet of the text
+          if (errorText) {
+            errorMessage += ' - ' + errorText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 100);
+          }
+        }
+        throw new Error(errorMessage);
       }
 
       // Download the PDF
