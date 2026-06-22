@@ -17,6 +17,7 @@ export default function ExportModal() {
   const [s3Status, setS3Status] = useState('');
   const [s3Error, setS3Error] = useState('');
   const [isSavingToS3, setIsSavingToS3] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const currentHTML = useMemo(() => (
     (hasUnsavedChanges && draftHTML) ? draftHTML : originalHTML
@@ -135,122 +136,77 @@ ${bodyContent}
 </html>`;
   }, [currentHTML, extractBodyContent]);
 
-  // ── DYNAMIC SCALE-TO-FIT: Measures content, scales if needed ──
-  const handleExportPDF = useCallback(() => {
+  // ── SERVER-SIDE PDF EXPORT: Guarantees true A4 (595×842pt) via Puppeteer ──
+  const handleExportPDF = useCallback(async () => {
+    setIsGeneratingPDF(true);
+    try {
+      const response = await fetch('/api/worksheets/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          html: currentHTML,
+          fileName: fileName || 'worksheet',
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || 'PDF generation failed');
+      }
+
+      // Download the PDF
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${(fileName || 'worksheet').replace(/[^a-zA-Z0-9._-]/g, '-')}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setShowExportModal(false);
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('PDF generation failed: ' + error.message);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  }, [currentHTML, fileName, token, setShowExportModal]);
+
+  // ── BROWSER PRINT: Uses system print dialog with A4 CSS hints ──
+  const handlePrint = useCallback(() => {
     const html = buildPrintDocument();
 
-    // Create a measurement iframe at exact A4 width (offscreen but rendered)
-    const measureFrame = document.createElement('iframe');
-    measureFrame.style.cssText =
-      'position:fixed; left:-9999px; top:0; width:210mm; border:none; background:white;';
-    document.body.appendChild(measureFrame);
+    const printFrame = document.createElement('iframe');
+    printFrame.style.cssText =
+      'position:fixed; left:-9999px; top:0; width:210mm; height:297mm; border:none;';
+    document.body.appendChild(printFrame);
 
-    const mDoc = measureFrame.contentDocument || measureFrame.contentWindow.document;
-    mDoc.open();
-    mDoc.write(html);
-    mDoc.close();
+    const pDoc = printFrame.contentDocument || printFrame.contentWindow.document;
+    pDoc.open();
+    pDoc.write(html);
+    pDoc.close();
 
-    const finalize = () => {
-      // ── Step 1: Measure natural content height ──
-      const page = mDoc.querySelector('.ws-page');
-      if (!page) {
-        console.error('No .ws-page found');
-        try { document.body.removeChild(measureFrame); } catch (e) {}
-        return;
-      }
-
-      // Remove fixed height to measure natural content flow
-      page.style.height = 'auto';
-      page.style.maxHeight = 'none';
-      page.style.overflow = 'visible';
-      const wsBody = mDoc.querySelector('.ws-body');
-      if (wsBody) wsBody.style.overflow = 'visible';
-
-      // Force layout recalc
-      void page.offsetHeight;
-
-      const naturalHeight = page.scrollHeight;
-      const A4_HEIGHT_PX = 297 * (96 / 25.4); // ≈ 1122.52px
-
-      // ── Step 2: Calculate scale factor ──
-      let scaleFactor = 1;
-      if (naturalHeight > A4_HEIGHT_PX) {
-        scaleFactor = A4_HEIGHT_PX / naturalHeight;
-        scaleFactor = Math.max(scaleFactor, 0.5); // Floor at 50%
-      }
-
-      // ── Step 3: Build FINAL print document with scale ──
-      const printFrame = document.createElement('iframe');
-      printFrame.style.cssText =
-        'position:fixed; left:-9999px; top:0; width:210mm; height:297mm; border:none;';
-      document.body.appendChild(printFrame);
-
-      const pDoc = printFrame.contentDocument || printFrame.contentWindow.document;
-
-      let finalHTML = html;
-      if (scaleFactor < 1) {
-        // Use CSS zoom (better print support than transform)
-        const scaleCSS = `
-          <style id="ws-scale-fit">
-            body {
-              zoom: ${scaleFactor} !important;
-              width: ${210 / scaleFactor}mm !important;
-              height: ${297 / scaleFactor}mm !important;
-            }
-            .ws-page {
-              width: ${210 / scaleFactor}mm !important;
-              height: ${297 / scaleFactor}mm !important;
-              max-height: ${297 / scaleFactor}mm !important;
-            }
-          </style>`;
-        finalHTML = html.replace('</head>', scaleCSS + '\n</head>');
-      }
-
-      pDoc.open();
-      pDoc.write(finalHTML);
-      pDoc.close();
-
-      // ── Step 4: Print ──
-      let printed = false;
-      const triggerPrint = () => {
-        if (printed) return; // Prevent double-firing
-        printed = true;
+    let printed = false;
+    const triggerPrint = () => {
+      if (printed) return;
+      printed = true;
+      setTimeout(() => {
+        try {
+          printFrame.contentWindow.focus();
+          printFrame.contentWindow.print();
+        } catch (e) {
+          console.error('Print error:', e);
+        }
         setTimeout(() => {
-          try {
-            printFrame.contentWindow.focus();
-            printFrame.contentWindow.print();
-          } catch (e) {
-            console.error('Print error:', e);
-          }
-          setTimeout(() => {
-            try { document.body.removeChild(printFrame); } catch (e) {}
-            try { document.body.removeChild(measureFrame); } catch (e) {}
-          }, 5000);
-        }, 600);
-      };
-
-      printFrame.onload = triggerPrint;
-      setTimeout(triggerPrint, 3000);
+          try { document.body.removeChild(printFrame); } catch (e) {}
+        }, 5000);
+      }, 600);
     };
 
-    // Wait for fonts & images in measurement frame
-    let finalized = false;
-    const safeFinalize = () => {
-      if (finalized) return;
-      finalized = true;
-      finalize();
-    };
-
-    measureFrame.onload = () => {
-      const win = measureFrame.contentWindow;
-      if (win.document.fonts && win.document.fonts.ready) {
-        win.document.fonts.ready.then(() => setTimeout(safeFinalize, 200));
-      } else {
-        setTimeout(safeFinalize, 800);
-      }
-    };
-    setTimeout(safeFinalize, 4000); // Ultimate fallback
-
+    printFrame.onload = triggerPrint;
+    setTimeout(triggerPrint, 3000);
     setShowExportModal(false);
   }, [buildPrintDocument, setShowExportModal]);
 
@@ -304,10 +260,6 @@ ${bodyContent}
       setIsSavingToS3(false);
     }
   }, [currentHTML, fileName, activityName, token]);
-
-  const handlePrint = useCallback(() => {
-    handleExportPDF();
-  }, [handleExportPDF]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in"
@@ -383,14 +335,22 @@ ${bodyContent}
         {/* Export Buttons */}
         <div className="space-y-2.5">
           <button onClick={handleExportPDF}
+            disabled={isGeneratingPDF}
             className="w-full flex items-center gap-4 p-4 rounded-xl bg-surface-50 hover:bg-accent-50
-                       border border-surface-200 hover:border-brand-orange/30 transition-all duration-200 group">
+                       border border-surface-200 hover:border-brand-orange/30 transition-all duration-200 group
+                       disabled:opacity-60 disabled:cursor-wait">
             <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-danger-500" />
+              {isGeneratingPDF ? (
+                <Loader2 className="w-5 h-5 text-danger-500 animate-spin" />
+              ) : (
+                <FileText className="w-5 h-5 text-danger-500" />
+              )}
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-surface-900">Export as PDF</p>
-              <p className="text-xs text-surface-500">Auto-scaled to fit A4 perfectly</p>
+              <p className="text-sm font-medium text-surface-900">
+                {isGeneratingPDF ? 'Generating PDF...' : 'Export as PDF'}
+              </p>
+              <p className="text-xs text-surface-500">A4 format • 210mm × 297mm</p>
             </div>
             <Download className="w-4 h-4 text-surface-400 ml-auto group-hover:text-brand-orange transition-colors" />
           </button>
@@ -425,7 +385,7 @@ ${bodyContent}
         </div>
 
         <p className="text-[10px] text-surface-400 mt-4 text-center">
-          A4 format • 210mm × 297mm • Dynamic scale-to-fit
+          A4 format • 210mm × 297mm • Server-side generation
         </p>
       </div>
     </div>

@@ -91,18 +91,31 @@ export async function generatePDFFromHTML(html) {
     // ── Step 4: Emulate print media for correct CSS rules ──
     await page.emulateMediaType('print');
 
-    // ── Step 5: Inject base A4 CSS + measure + scale (mirrors frontend ws-export-fix exactly) ──
+    // ── Step 5: Strip @page CSS rules + inject base A4 layout CSS ──
+    // Puppeteer's format:'A4' with preferCSSPageSize:false is the sole authority
+    // on page size. Remove any @page rules that could conflict.
     await page.evaluate(() => {
+      // Remove @page rules from all stylesheets to prevent conflicts
+      for (const sheet of document.styleSheets) {
+        try {
+          const rules = sheet.cssRules || sheet.rules;
+          for (let i = rules.length - 1; i >= 0; i--) {
+            if (rules[i].type === CSSRule.PAGE_RULE) {
+              sheet.deleteRule(i);
+            }
+          }
+        } catch (e) { /* cross-origin stylesheets — ignore */ }
+      }
+
       // Find the page container (supports both new .ws-page and old .page class)
       const pageEl = document.querySelector('.ws-page') || document.querySelector('.page');
       if (!pageEl) return;
 
-      // --- Inject base A4 export CSS (identical to frontend ws-export-fix) ---
+      // --- Inject base A4 layout CSS (no @page — Puppeteer API handles page size) ---
       const baseStyle = document.createElement('style');
       baseStyle.id = 'ws-pdf-base';
       baseStyle.innerHTML = `
         *, *::before, *::after { box-sizing: border-box; }
-        @page { size: A4; margin: 0; }
         html {
           width: 210mm; height: 297mm;
           margin: 0; padding: 0;
@@ -216,11 +229,13 @@ export async function generatePDFFromHTML(html) {
     });
 
     // ── Step 6: Generate PDF ──
+    // format:'A4' = exactly 595.28×841.89pt (210mm × 297mm)
+    // preferCSSPageSize:false ensures Puppeteer's format is the sole authority
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: { top: '0', right: '0', bottom: '0', left: '0' },
-      preferCSSPageSize: true,
+      preferCSSPageSize: false,
     });
 
     return Buffer.from(pdfBuffer);
