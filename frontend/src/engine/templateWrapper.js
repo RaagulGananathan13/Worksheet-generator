@@ -98,7 +98,8 @@ const TEMPLATE_CSS = `
     padding: 3mm 12mm 6mm 32mm !important;
     display: flex !important;
     flex-direction: row !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
+    gap: 30px !important;
     align-items: center !important;
     width: 100% !important;
     color: #111 !important;

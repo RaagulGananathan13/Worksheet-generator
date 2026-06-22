@@ -157,7 +157,7 @@ export async function generatePDFFromHTML(html) {
         .ws-footer-row {
           display: flex !important;
           align-items: center !important;
-          justify-content: space-between !important;
+          justify-content: flex-start !important;
           width: 100% !important;
           font-size: 7px !important;
           gap: 4px !important;
