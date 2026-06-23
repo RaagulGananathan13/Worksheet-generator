@@ -104,10 +104,7 @@ const TEMPLATE_CSS = `
     box-sizing: border-box !important;
   }
   .ws-footer-copyright {
-    font-size: 7pt !important;
-    font-weight: 400 !important;
-    margin-bottom: 5px !important;
-    text-align: center !important;
+    display: none !important;
   }
   .ws-footer-info {
     font-size: 9pt !important;
@@ -172,7 +169,6 @@ const TEMPLATE_HEADER = `
 const TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
-    <div class="ws-footer-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
     <div class="ws-footer-info">
       <span>www.geniusbees.com</span>
       <span>info@geniusbees.com</span>
