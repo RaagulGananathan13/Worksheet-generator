@@ -246,9 +246,9 @@ export async function generatePDFFromHTML(html) {
         .ws-footer-info, .footer-info {
           font-size: 9pt !important;
           display: flex !important;
-          justify-content: center !important;
-          gap: 70px !important;
-          flex-wrap: wrap !important;
+          justify-content: space-between !important;
+          width: 100% !important;
+          align-items: center !important;
           font-weight: 400 !important;
         }
         .ws-footer-info span, .footer-info span {
