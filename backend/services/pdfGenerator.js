@@ -167,7 +167,7 @@ export async function generatePDFFromHTML(html) {
           font-size: 9pt !important;
           display: flex !important;
           justify-content: center !important;
-          gap: 50px !important;
+          gap: 70px !important;
           flex-wrap: wrap !important;
           font-weight: 400 !important;
         }
@@ -247,7 +247,7 @@ export async function generatePDFFromHTML(html) {
           font-size: 9pt !important;
           display: flex !important;
           justify-content: center !important;
-          gap: 50px !important;
+          gap: 70px !important;
           flex-wrap: wrap !important;
           font-weight: 400 !important;
         }
