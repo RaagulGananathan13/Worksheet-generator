@@ -98,7 +98,7 @@ const TEMPLATE_CSS = `
     padding: 3mm 12mm 5mm 12mm !important;
     display: flex !important;
     flex-direction: row !important;
-    justify-content: flex-start !important;
+    justify-content: flex-end !important;
     align-items: center !important;
     gap: 40px !important;
     width: 100% !important;

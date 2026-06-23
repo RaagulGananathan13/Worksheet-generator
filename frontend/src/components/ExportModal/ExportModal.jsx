@@ -106,7 +106,7 @@ body {
   margin-top: auto !important;
   display: flex !important;
   flex-direction: row !important;
-  justify-content: flex-start !important;
+  justify-content: flex-end !important;
   align-items: center !important;
   gap: 40px !important;
   box-sizing: border-box !important;
