@@ -165,23 +165,14 @@ export async function generatePDFFromHTML(html) {
         }
         .ws-footer-info, .footer-info {
           font-size: 9pt !important;
-          display: grid !important;
-          grid-template-columns: 1fr auto 1fr !important;
+          display: flex !important;
+          justify-content: space-between !important;
           width: 100% !important;
           align-items: center !important;
           font-weight: 400 !important;
         }
         .ws-footer-info span, .footer-info span {
           white-space: nowrap !important;
-        }
-        .ws-footer-info span:first-child, .footer-info span:first-child {
-          text-align: left !important;
-        }
-        .ws-footer-info span:nth-child(2), .footer-info span:nth-child(2) {
-          text-align: center !important;
-        }
-        .ws-footer-info span:last-child, .footer-info span:last-child {
-          text-align: right !important;
         }
         .ws-vertical-copyright, .vertical-copyright {
           left: -193px !important;
