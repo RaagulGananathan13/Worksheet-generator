@@ -102,21 +102,32 @@ body {
 .ws-footer {
   flex-shrink: 0 !important;
   width: 100% !important;
-  padding: 3mm 12mm 5mm 12mm !important;
+  text-align: center !important;
+  padding: 0 12mm 15px 12mm !important;
   margin-top: auto !important;
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  color: #111 !important;
   box-sizing: border-box !important;
 }
-.ws-footer-text, .footer-text {
-  font-size: 10px !important;
+.ws-footer-copyright, .footer-copyright {
+  font-size: 7pt !important;
   font-weight: 400 !important;
+  margin-bottom: 5px !important;
+  text-align: center !important;
+}
+.ws-footer-info, .footer-info {
+  font-size: 9pt !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 50px !important;
+  flex-wrap: wrap !important;
+  font-weight: 400 !important;
+}
+.ws-footer-info span, .footer-info span {
   white-space: nowrap !important;
 }
 .ws-vertical-copyright, .vertical-copyright {
   left: -193px !important;
+  font-size: 7pt !important;
 }
 </style>
 </head>

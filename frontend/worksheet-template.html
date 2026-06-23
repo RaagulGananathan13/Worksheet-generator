@@ -250,19 +250,30 @@
         font-family: "Times New Roman", Times, serif !important;
       }
       .footer {
-        padding: 3mm 12mm 5mm 12mm !important;
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: center !important;
         width: 100% !important;
+        text-align: center !important;
+        padding: 0 12mm 15px 12mm !important;
         color: #111 !important;
         box-sizing: border-box !important;
       }
 
-      .footer-text {
-        font-size: 10px !important;
+      .footer-copyright {
+        font-size: 7pt !important;
         font-weight: 400 !important;
+        margin-bottom: 5px !important;
+        text-align: center !important;
+      }
+
+      .footer-info {
+        font-size: 9pt !important;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 50px !important;
+        flex-wrap: wrap !important;
+        font-weight: 400 !important;
+      }
+
+      .footer-info span {
         white-space: nowrap !important;
       }
 
@@ -273,7 +284,7 @@
         top: 50%;
         text-align: center;
         transform: translateY(-50%) rotate(90deg);
-        font-size: 10px;
+        font-size: 7pt;
         font-weight: 400;
         color: #111;
         white-space: nowrap;
@@ -350,12 +361,12 @@
 
       <!-- ═══════ FOOTER ═══════ -->
       <div class="footer">
-        <span class="footer-text">www.geniusbees.com</span>
-        <span class="footer-text">info@geniusbees.com</span>
-        <span class="footer-text"
-          >This worksheet is for the use of registered geniusbees.com students
-          only.</span
-        >
+        <div class="footer-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
+        <div class="footer-info">
+          <span>www.geniusbees.com</span>
+          <span>info@geniusbees.com</span>
+          <span>This worksheet is for the use of registered geniusbees.com students only.</span>
+        </div>
       </div>
     </div>
   </body>

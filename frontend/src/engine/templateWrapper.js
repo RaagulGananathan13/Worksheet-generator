@@ -35,8 +35,8 @@ const TEMPLATE_CSS = `
     .ws-header{break-inside:avoid;page-break-inside:avoid}
     .ws-body{flex:none}
     .ws-footer{break-inside:avoid;page-break-inside:avoid;position:relative;margin-top:0}
-    .ws-footer-row{display:flex!important;width:100%!important}
-    .ws-footer-row span{display:inline-block!important}
+    .ws-footer-copyright{display:block!important;width:100%!important;text-align:center!important}
+    .ws-footer-info{display:flex!important;width:100%!important;justify-content:center!important}
     .ws-body-content>*{break-inside:auto}
   }
 
@@ -95,21 +95,29 @@ const TEMPLATE_CSS = `
   /* ═══ FOOTER ═══ */
   .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Times New Roman', Times, serif !important; }
   .ws-footer {
-    padding: 3mm 12mm 5mm 12mm !important;
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
-    gap: 40px !important;
     width: 100% !important;
+    text-align: center !important;
+    padding: 0 12mm 15px 12mm !important;
     color: #111 !important;
     flex-shrink: 0 !important;
     margin-top: auto !important;
     box-sizing: border-box !important;
   }
-  .ws-footer-text {
-    font-size: 10px !important;
+  .ws-footer-copyright {
+    font-size: 7pt !important;
     font-weight: 400 !important;
+    margin-bottom: 5px !important;
+    text-align: center !important;
+  }
+  .ws-footer-info {
+    font-size: 9pt !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 50px !important;
+    flex-wrap: wrap !important;
+    font-weight: 400 !important;
+  }
+  .ws-footer-info span {
     white-space: nowrap !important;
   }
   .ws-vertical-copyright {
@@ -119,7 +127,7 @@ const TEMPLATE_CSS = `
     top: 50%;
     text-align: center;
     transform: translateY(-50%) rotate(90deg);
-    font-size: 10px;
+    font-size: 7pt;
     font-weight: 400;
     color: #111;
     pointer-events: none;
@@ -164,9 +172,12 @@ const TEMPLATE_HEADER = `
 const TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
   <div class="ws-footer">
-    <span class="ws-footer-text">www.geniusbees.com</span>
-    <span class="ws-footer-text">info@geniusbees.com</span>
-    <span class="ws-footer-text">This worksheet is for the use of registered geniusbees.com students only.</span>
+    <div class="ws-footer-copyright">Copyright&copy; 2026 GeniusBees Inc. All rights reserved.</div>
+    <div class="ws-footer-info">
+      <span>www.geniusbees.com</span>
+      <span>info@geniusbees.com</span>
+      <span>This worksheet is for the use of registered geniusbees.com students only.</span>
+    </div>
   </div>`;
 
 /**
