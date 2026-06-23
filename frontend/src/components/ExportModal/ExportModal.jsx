@@ -106,9 +106,8 @@ body {
   margin-top: auto !important;
   display: flex !important;
   flex-direction: row !important;
-  justify-content: flex-end !important;
+  justify-content: space-between !important;
   align-items: center !important;
-  gap: 40px !important;
   box-sizing: border-box !important;
 }
 .ws-footer-text, .footer-text {

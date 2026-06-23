@@ -155,9 +155,8 @@ export async function generatePDFFromHTML(html) {
           margin-top: auto !important;
           display: flex !important;
           flex-direction: row !important;
-          justify-content: flex-end !important;
+          justify-content: space-between !important;
           align-items: center !important;
-          gap: 40px !important;
           box-sizing: border-box !important;
         }
         .ws-footer-text, .footer-text {
@@ -225,9 +224,8 @@ export async function generatePDFFromHTML(html) {
           padding: 3mm 12mm 5mm 12mm !important;
           display: flex !important;
           flex-direction: row !important;
-          justify-content: flex-end !important;
+          justify-content: space-between !important;
           align-items: center !important;
-          gap: 40px !important;
         }
         .ws-footer-text, .footer-text {
           font-size: 10px !important;
