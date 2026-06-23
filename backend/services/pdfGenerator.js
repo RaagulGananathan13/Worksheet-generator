@@ -151,19 +151,18 @@ export async function generatePDFFromHTML(html) {
         .ws-footer, .footer {
           flex-shrink: 0 !important;
           width: 100% !important;
-          padding: 2mm 8mm 4mm 8mm !important;
+          padding: 3mm 8mm 5mm 8mm !important;
           margin-top: auto !important;
-        }
-        .ws-footer-row {
           display: flex !important;
-          align-items: center !important;
+          flex-direction: row !important;
           justify-content: flex-start !important;
-          width: 100% !important;
-          font-size: 7px !important;
-          gap: 4px !important;
+          align-items: center !important;
+          gap: 24px !important;
+          box-sizing: border-box !important;
         }
-        .ws-footer-row span {
-          display: inline-block !important;
+        .ws-footer-text, .footer-text {
+          font-size: 10px !important;
+          font-weight: 400 !important;
           white-space: nowrap !important;
         }
         .ws-vertical-copyright, .vertical-copyright {
@@ -223,6 +222,17 @@ export async function generatePDFFromHTML(html) {
         .ws-footer, .footer {
           flex-shrink: 0 !important;
           margin-top: auto !important;
+          padding: 3mm 8mm 5mm 8mm !important;
+          display: flex !important;
+          flex-direction: row !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 24px !important;
+        }
+        .ws-footer-text, .footer-text {
+          font-size: 10px !important;
+          font-weight: 400 !important;
+          white-space: nowrap !important;
         }
       `;
       document.head.appendChild(scaleStyle);

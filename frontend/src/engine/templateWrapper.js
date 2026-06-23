@@ -95,12 +95,12 @@ const TEMPLATE_CSS = `
   /* ═══ FOOTER ═══ */
   .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Times New Roman', Times, serif !important; }
   .ws-footer {
-    padding: 3mm 12mm 6mm 32mm !important;
+    padding: 3mm 8mm 5mm 8mm !important;
     display: flex !important;
     flex-direction: row !important;
     justify-content: flex-start !important;
-    gap: 30px !important;
     align-items: center !important;
+    gap: 24px !important;
     width: 100% !important;
     color: #111 !important;
     flex-shrink: 0 !important;
@@ -108,8 +108,9 @@ const TEMPLATE_CSS = `
     box-sizing: border-box !important;
   }
   .ws-footer-text {
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 10px !important;
+    font-weight: 400 !important;
+    white-space: nowrap !important;
   }
   .ws-vertical-copyright {
     position: absolute;

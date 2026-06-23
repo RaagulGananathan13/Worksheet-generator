@@ -102,28 +102,19 @@ body {
 .ws-footer {
   flex-shrink: 0 !important;
   width: 100% !important;
-  padding: 2mm 8mm 4mm 8mm !important;
+  padding: 3mm 8mm 5mm 8mm !important;
   margin-top: auto !important;
-}
-.ws-footer-row {
   display: flex !important;
-  align-items: center !important;
+  flex-direction: row !important;
   justify-content: flex-start !important;
-  width: 100% !important;
-  font-size: 7px !important;
-  gap: 4px !important;
+  align-items: center !important;
+  gap: 24px !important;
+  box-sizing: border-box !important;
 }
-.ws-footer-row span {
-  display: inline-block !important;
+.ws-footer-text, .footer-text {
+  font-size: 10px !important;
+  font-weight: 400 !important;
   white-space: nowrap !important;
-}
-.ws-fn {
-  flex: 1 !important;
-  text-align: center !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  font-size: 6px !important;
 }
 .ws-vertical-copyright, .vertical-copyright {
   left: -193px !important;
