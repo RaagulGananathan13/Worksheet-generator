@@ -108,14 +108,23 @@ const TEMPLATE_CSS = `
   }
   .ws-footer-info {
     font-size: 9pt !important;
-    display: flex !important;
-    justify-content: center !important;
-    gap: 70px !important;
-    flex-wrap: wrap !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr !important;
+    width: 100% !important;
+    align-items: center !important;
     font-weight: 400 !important;
   }
   .ws-footer-info span {
     white-space: nowrap !important;
+  }
+  .ws-footer-info span:first-child {
+    text-align: left !important;
+  }
+  .ws-footer-info span:nth-child(2) {
+    text-align: center !important;
+  }
+  .ws-footer-info span:last-child {
+    text-align: right !important;
   }
   .ws-vertical-copyright {
     position: absolute;
