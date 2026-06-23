@@ -151,13 +151,13 @@ export async function generatePDFFromHTML(html) {
         .ws-footer, .footer {
           flex-shrink: 0 !important;
           width: 100% !important;
-          padding: 3mm 8mm 5mm 8mm !important;
+          padding: 3mm 12mm 5mm 12mm !important;
           margin-top: auto !important;
           display: flex !important;
           flex-direction: row !important;
-          justify-content: flex-end !important;
+          justify-content: flex-start !important;
           align-items: center !important;
-          gap: 24px !important;
+          gap: 40px !important;
           box-sizing: border-box !important;
         }
         .ws-footer-text, .footer-text {
@@ -222,12 +222,12 @@ export async function generatePDFFromHTML(html) {
         .ws-footer, .footer {
           flex-shrink: 0 !important;
           margin-top: auto !important;
-          padding: 3mm 8mm 5mm 8mm !important;
+          padding: 3mm 12mm 5mm 12mm !important;
           display: flex !important;
           flex-direction: row !important;
-          justify-content: flex-end !important;
+          justify-content: flex-start !important;
           align-items: center !important;
-          gap: 24px !important;
+          gap: 40px !important;
         }
         .ws-footer-text, .footer-text {
           font-size: 10px !important;

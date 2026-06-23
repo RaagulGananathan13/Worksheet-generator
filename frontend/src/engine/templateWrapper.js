@@ -95,12 +95,12 @@ const TEMPLATE_CSS = `
   /* ═══ FOOTER ═══ */
   .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Times New Roman', Times, serif !important; }
   .ws-footer {
-    padding: 3mm 8mm 5mm 8mm !important;
+    padding: 3mm 12mm 5mm 12mm !important;
     display: flex !important;
     flex-direction: row !important;
-    justify-content: flex-end !important;
+    justify-content: flex-start !important;
     align-items: center !important;
-    gap: 24px !important;
+    gap: 40px !important;
     width: 100% !important;
     color: #111 !important;
     flex-shrink: 0 !important;
