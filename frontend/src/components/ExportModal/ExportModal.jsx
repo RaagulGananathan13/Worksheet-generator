@@ -26,7 +26,7 @@ export default function ExportModal() {
   // ──────────────────────────────────────────────────────────────
   //  DYNAMIC PDF EXPORT ENGINE
   //  Strategy: Render → Measure → Scale → Print
-  //  Guarantees single-page A4 with footer pinned to bottom.
+  //  Guarantees single-page Letter with footer pinned to bottom.
   // ──────────────────────────────────────────────────────────────
 
   // Extract body innerHTML from stored full-document HTML
@@ -59,30 +59,30 @@ ${fontLinks.join('\n')}
 ${styles.join('\n')}
 </style>
 <style id="ws-export-fix">
-/* ═══ EXPORT ENGINE: Exact A4 single-page layout ═══ */
+/* ═══ EXPORT ENGINE: Exact Letter single-page layout ═══ */
 *, *::before, *::after { box-sizing: border-box; }
-@page { size: A4; margin: 0; }
+@page { size: 216mm 279mm; margin: 0; }
 html {
-  width: 210mm;
-  height: 297mm;
+  width: 216mm;
+  height: 279mm;
   margin: 0; padding: 0;
   overflow: hidden;
 }
 body {
-  width: 210mm;
-  height: 297mm;
+  width: 216mm;
+  height: 279mm;
   margin: 0; padding: 0;
   background: white;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   overflow: hidden;
 }
-/* Page fills exactly one A4 — flex column pins footer to bottom */
+/* Page fills exactly one Letter — flex column pins footer to bottom */
 .ws-page {
-  width: 210mm !important;
-  height: 297mm !important;
+  width: 216mm !important;
+  height: 279mm !important;
   min-height: 0 !important;
-  max-height: 297mm !important;
+  max-height: 279mm !important;
   margin: 0 !important;
   padding: 0 !important;
   box-shadow: none !important;
@@ -137,7 +137,7 @@ ${bodyContent}
 </html>`;
   }, [currentHTML, extractBodyContent]);
 
-  // ── SERVER-SIDE PDF EXPORT: Guarantees true A4 (595×842pt) via Puppeteer ──
+  // ── SERVER-SIDE PDF EXPORT: Guarantees true Letter (612×792pt) via Puppeteer ──
   const handleExportPDF = useCallback(async () => {
     setIsGeneratingPDF(true);
     try {
@@ -175,13 +175,13 @@ ${bodyContent}
     }
   }, [currentHTML, fileName, token, setShowExportModal]);
 
-  // ── BROWSER PRINT: Uses system print dialog with A4 CSS hints ──
+  // ── BROWSER PRINT: Uses system print dialog with Letter CSS hints ──
   const handlePrint = useCallback(() => {
     const html = buildPrintDocument();
 
     const printFrame = document.createElement('iframe');
     printFrame.style.cssText =
-      'position:fixed; left:-9999px; top:0; width:210mm; height:297mm; border:none;';
+      'position:fixed; left:-9999px; top:0; width:216mm; height:279mm; border:none;';
     document.body.appendChild(printFrame);
 
     const pDoc = printFrame.contentDocument || printFrame.contentWindow.document;
@@ -351,7 +351,7 @@ ${bodyContent}
               <p className="text-sm font-medium text-surface-900">
                 {isGeneratingPDF ? 'Generating PDF...' : 'Export as PDF'}
               </p>
-              <p className="text-xs text-surface-500">A4 format • 210mm × 297mm</p>
+              <p className="text-xs text-surface-500">Letter format • 216mm × 279mm</p>
             </div>
             <Download className="w-4 h-4 text-surface-400 ml-auto group-hover:text-brand-orange transition-colors" />
           </button>
@@ -386,7 +386,7 @@ ${bodyContent}
         </div>
 
         <p className="text-[10px] text-surface-400 mt-4 text-center">
-          A4 format • 210mm × 297mm • Server-side generation
+          Letter format • 216mm × 279mm • Server-side generation
         </p>
       </div>
     </div>

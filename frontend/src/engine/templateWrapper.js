@@ -6,7 +6,7 @@
 
 const TEMPLATE_CSS = `
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-  @page{size:A4;margin:0}
+  @page{size:216mm 279mm;margin:0}
   html{height:100%}
   body{
     font-family:'Poppins',Arial,sans-serif;
@@ -31,7 +31,7 @@ const TEMPLATE_CSS = `
   @media print{
     html,body{height:auto!important}
     body{background:none;margin:0;padding:0}
-    .ws-page{margin:0;width:210mm;min-height:0;height:auto;display:block;overflow:visible}
+    .ws-page{margin:0;width:216mm;min-height:0;height:auto;display:block;overflow:visible}
     .ws-header{break-inside:avoid;page-break-inside:avoid}
     .ws-body{flex:none}
     .ws-footer{break-inside:avoid;page-break-inside:avoid;position:relative;margin-top:0}

@@ -44,10 +44,10 @@ function getBase64Image(fileName, mimeType) {
 /**
  * Convert an HTML string to a PDF buffer.
  * Mirrors the frontend ExportModal's dynamic scale-to-fit logic exactly:
- *   1. Set viewport to A4 width (210mm ≈ 794px at 96dpi)
- *   2. Inject base A4 export CSS (same as frontend ws-export-fix)
+ *   1. Set viewport to Letter width (216mm ≈ 816px at 96dpi)
+ *   2. Inject base Letter export CSS (same as frontend ws-export-fix)
  *   3. Measure natural content height
- *   4. Calculate zoom scale factor if content overflows A4
+ *   4. Calculate zoom scale factor if content overflows Letter
  *   5. Inject scale CSS and generate PDF
  *
  * @param {string} html - Full HTML document string
@@ -71,10 +71,10 @@ export async function generatePDFFromHTML(html) {
       processedHtml = processedHtml.replace(/src=["']\/?watermark\.svg["']/g, `src="${watermarkBase64}"`);
     }
 
-    // ── Step 2: Set viewport to exact A4 dimensions (matches frontend iframe width:210mm) ──
+    // ── Step 2: Set viewport to exact Letter dimensions (matches frontend iframe width:216mm) ──
     await page.setViewport({
-      width: 794,   // 210mm at 96dpi
-      height: 1123, // 297mm at 96dpi
+      width: 816,   // 216mm at 96dpi
+      height: 1054, // 279mm at 96dpi
       deviceScaleFactor: 1,
     });
 
@@ -91,8 +91,8 @@ export async function generatePDFFromHTML(html) {
     // ── Step 4: Emulate print media for correct CSS rules ──
     await page.emulateMediaType('print');
 
-    // ── Step 5: Strip @page CSS rules + inject base A4 layout CSS ──
-    // Puppeteer's format:'A4' with preferCSSPageSize:false is the sole authority
+    // ── Step 5: Strip @page CSS rules + inject base Letter layout CSS ──
+    // Puppeteer's format:'Letter' with preferCSSPageSize:false is the sole authority
     // on page size. Remove any @page rules that could conflict.
     await page.evaluate(() => {
       // Remove @page rules from all stylesheets to prevent conflicts
@@ -111,18 +111,18 @@ export async function generatePDFFromHTML(html) {
       const pageEl = document.querySelector('.ws-page') || document.querySelector('.page');
       if (!pageEl) return;
 
-      // --- Inject base A4 layout CSS (no @page — Puppeteer API handles page size) ---
+      // --- Inject base Letter layout CSS (no @page — Puppeteer API handles page size) ---
       const baseStyle = document.createElement('style');
       baseStyle.id = 'ws-pdf-base';
       baseStyle.innerHTML = `
         *, *::before, *::after { box-sizing: border-box; }
         html {
-          width: 210mm; height: 297mm;
+          width: 216mm; height: 279mm;
           margin: 0; padding: 0;
           overflow: hidden;
         }
         body {
-          width: 210mm; height: 297mm;
+          width: 216mm; height: 279mm;
           margin: 0; padding: 0;
           background: white;
           -webkit-print-color-adjust: exact;
@@ -130,10 +130,10 @@ export async function generatePDFFromHTML(html) {
           overflow: hidden;
         }
         .ws-page, .page {
-          width: 210mm !important;
-          height: 297mm !important;
+          width: 216mm !important;
+          height: 279mm !important;
           min-height: 0 !important;
-          max-height: 297mm !important;
+          max-height: 279mm !important;
           margin: 0 !important;
           padding: 0 !important;
           box-shadow: none !important;
@@ -194,7 +194,7 @@ export async function generatePDFFromHTML(html) {
       void pageEl.offsetHeight;
 
       const naturalHeight = pageEl.scrollHeight;
-      const A4_HEIGHT_PX = 297 * (96 / 25.4); // ≈ 1122.52px
+      const LETTER_HEIGHT_PX = 279 * (96 / 25.4); // ≈ 1053.54px
 
       // --- CRITICAL: Remove temporary inline styles so CSS rules take over ---
       pageEl.style.removeProperty('height');
@@ -203,8 +203,8 @@ export async function generatePDFFromHTML(html) {
 
       // --- Calculate scale factor ---
       let scaleFactor = 1;
-      if (naturalHeight > A4_HEIGHT_PX) {
-        scaleFactor = Math.max(A4_HEIGHT_PX / naturalHeight, 0.5);
+      if (naturalHeight > LETTER_HEIGHT_PX) {
+        scaleFactor = Math.max(LETTER_HEIGHT_PX / naturalHeight, 0.5);
       }
 
       // --- Inject scale-to-fit CSS ---
@@ -213,13 +213,13 @@ export async function generatePDFFromHTML(html) {
       scaleStyle.innerHTML = `
         body {
           zoom: ${scaleFactor} !important;
-          width: ${210 / scaleFactor}mm !important;
-          height: ${297 / scaleFactor}mm !important;
+          width: ${216 / scaleFactor}mm !important;
+          height: ${279 / scaleFactor}mm !important;
         }
         .ws-page, .page {
-          width: ${210 / scaleFactor}mm !important;
-          height: ${297 / scaleFactor}mm !important;
-          max-height: ${297 / scaleFactor}mm !important;
+          width: ${216 / scaleFactor}mm !important;
+          height: ${279 / scaleFactor}mm !important;
+          max-height: ${279 / scaleFactor}mm !important;
           display: flex !important;
           flex-direction: column !important;
           overflow: hidden !important;
@@ -259,10 +259,10 @@ export async function generatePDFFromHTML(html) {
     });
 
     // ── Step 6: Generate PDF ──
-    // format:'A4' = exactly 595.28×841.89pt (210mm × 297mm)
+    // format:'Letter' = exactly 612×792pt (216mm × 279mm)
     // preferCSSPageSize:false ensures Puppeteer's format is the sole authority
     const pdfBuffer = await page.pdf({
-      format: 'A4',
+      format: 'Letter',
       printBackground: true,
       margin: { top: '0', right: '0', bottom: '0', left: '0' },
       preferCSSPageSize: false,

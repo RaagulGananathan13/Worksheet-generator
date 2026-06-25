@@ -77,7 +77,7 @@ function toApiWorksheet(row, requestUserId) {
   };
 }
 
-// ─── POST /api/worksheets/generate-pdf — Generate A4 PDF download ──
+// ─── POST /api/worksheets/generate-pdf — Generate Letter PDF download ──
 
 router.post('/generate-pdf', requireAuth, async (req, res) => {
   try {
