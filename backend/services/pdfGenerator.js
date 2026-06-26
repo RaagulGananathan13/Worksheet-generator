@@ -107,6 +107,19 @@ export async function generatePDFFromHTML(html) {
         } catch (e) { /* cross-origin stylesheets — ignore */ }
       }
 
+      // Also neutralize any @media print rules that break flex layout
+      for (const sheet of document.styleSheets) {
+        try {
+          const rules = sheet.cssRules || sheet.rules;
+          for (let i = rules.length - 1; i >= 0; i--) {
+            if (rules[i].type === CSSRule.MEDIA_RULE &&
+                rules[i].conditionText && rules[i].conditionText.includes('print')) {
+              sheet.deleteRule(i);
+            }
+          }
+        } catch (e) { /* cross-origin — ignore */ }
+      }
+
       // Find the page container (supports both new .ws-page and old .page class)
       const pageEl = document.querySelector('.ws-page') || document.querySelector('.page');
       if (!pageEl) return;
@@ -129,6 +142,7 @@ export async function generatePDFFromHTML(html) {
           print-color-adjust: exact;
           overflow: hidden;
         }
+        /* Flex column layout — pins footer to bottom */
         .ws-page, .page {
           width: 216mm !important;
           height: 279mm !important;
@@ -141,8 +155,11 @@ export async function generatePDFFromHTML(html) {
           display: flex !important;
           flex-direction: column !important;
           overflow: hidden !important;
+          position: relative !important;
         }
-        .ws-header, .header { flex-shrink: 0 !important; }
+        .ws-header, .header {
+          flex-shrink: 0 !important;
+        }
         .ws-body, .body {
           flex: 1 1 auto !important;
           min-height: 0 !important;
@@ -158,10 +175,7 @@ export async function generatePDFFromHTML(html) {
           box-sizing: border-box !important;
         }
         .ws-footer-copyright, .footer-copyright {
-          font-size: 7pt !important;
-          font-weight: 400 !important;
-          margin-bottom: 5px !important;
-          text-align: center !important;
+          display: none !important;
         }
         .ws-footer-info, .footer-info {
           font-size: 9pt !important;
@@ -175,8 +189,17 @@ export async function generatePDFFromHTML(html) {
           white-space: nowrap !important;
         }
         .ws-vertical-copyright, .vertical-copyright {
+          position: absolute !important;
           left: -193px !important;
+          width: 400px !important;
+          top: 50% !important;
+          text-align: center !important;
+          transform: translateY(-50%) rotate(90deg) !important;
           font-size: 7pt !important;
+          font-weight: 400 !important;
+          color: #111 !important;
+          pointer-events: none !important;
+          white-space: nowrap !important;
         }
       `;
       document.head.appendChild(baseStyle);
@@ -185,6 +208,7 @@ export async function generatePDFFromHTML(html) {
       void pageEl.offsetHeight;
 
       // --- Measure natural content height ---
+      // Temporarily allow the page to expand so we can measure true content height
       pageEl.style.setProperty('height', 'auto', 'important');
       pageEl.style.setProperty('max-height', 'none', 'important');
       const wsBody = pageEl.querySelector('.ws-body') || pageEl.querySelector('.body');
@@ -207,55 +231,57 @@ export async function generatePDFFromHTML(html) {
         scaleFactor = Math.max(LETTER_HEIGHT_PX / naturalHeight, 0.5);
       }
 
-      // --- Inject scale-to-fit CSS ---
-      const scaleStyle = document.createElement('style');
-      scaleStyle.id = 'ws-pdf-scale';
-      scaleStyle.innerHTML = `
-        body {
-          zoom: ${scaleFactor} !important;
-          width: ${216 / scaleFactor}mm !important;
-          height: ${279 / scaleFactor}mm !important;
-        }
-        .ws-page, .page {
-          width: ${216 / scaleFactor}mm !important;
-          height: ${279 / scaleFactor}mm !important;
-          max-height: ${279 / scaleFactor}mm !important;
-          display: flex !important;
-          flex-direction: column !important;
-          overflow: hidden !important;
-        }
-        .ws-body, .body {
-          flex: 1 1 auto !important;
-          min-height: 0 !important;
-          overflow: hidden !important;
-        }
-        .ws-footer, .footer {
-          flex-shrink: 0 !important;
-          width: 100% !important;
-          text-align: center !important;
-          padding: 0 12mm 15px 12mm !important;
-          margin-top: auto !important;
-          color: #111 !important;
-        }
-        .ws-footer-copyright, .footer-copyright {
-          font-size: 7pt !important;
-          font-weight: 400 !important;
-          margin-bottom: 5px !important;
-          text-align: center !important;
-        }
-        .ws-footer-info, .footer-info {
-          font-size: 9pt !important;
-          display: flex !important;
-          justify-content: space-between !important;
-          width: 100% !important;
-          align-items: center !important;
-          font-weight: 400 !important;
-        }
-        .ws-footer-info span, .footer-info span {
-          white-space: nowrap !important;
-        }
-      `;
-      document.head.appendChild(scaleStyle);
+      // --- Inject scale-to-fit CSS using transform (NOT zoom) ---
+      // transform:scale is spec-compliant and Puppeteer renders it identically
+      // to the screen preview, unlike the non-standard zoom property.
+      if (scaleFactor < 1) {
+        const scaleStyle = document.createElement('style');
+        scaleStyle.id = 'ws-pdf-scale';
+        scaleStyle.innerHTML = `
+          .ws-page, .page {
+            /* Use transform:scale for content shrinking — keeps all child
+               positions proportional (images, footer, copyright all stay put) */
+            transform: scale(${scaleFactor}) !important;
+            transform-origin: top left !important;
+            /* Expand the layout box so scaled content fills the Letter page */
+            width: ${216 / scaleFactor}mm !important;
+            height: ${279 / scaleFactor}mm !important;
+            max-height: ${279 / scaleFactor}mm !important;
+            /* Flex must stay for footer pinning */
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+          }
+          .ws-body, .body {
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+          }
+          .ws-footer, .footer {
+            flex-shrink: 0 !important;
+            width: 100% !important;
+            text-align: center !important;
+            padding: 0 12mm 15px 12mm !important;
+            margin-top: auto !important;
+            color: #111 !important;
+          }
+          .ws-footer-copyright, .footer-copyright {
+            display: none !important;
+          }
+          .ws-footer-info, .footer-info {
+            font-size: 9pt !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+            align-items: center !important;
+            font-weight: 400 !important;
+          }
+          .ws-footer-info span, .footer-info span {
+            white-space: nowrap !important;
+          }
+        `;
+        document.head.appendChild(scaleStyle);
+      }
     });
 
     // ── Step 6: Generate PDF ──

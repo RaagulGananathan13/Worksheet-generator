@@ -45,10 +45,10 @@ export default function ExportModal() {
     let m;
     while ((m = linkRe.exec(currentHTML)) !== null) fontLinks.push(m[0]);
 
-    // Extract template styles (skip editor styles)
+    // Extract template styles — use currentHTML (includes draft edits) not just originalHTML
     const styleRe = /<style(?:(?!id="ws-editor)[^>])*>([\s\S]*?)<\/style>/gi;
     const styles = [];
-    while ((m = styleRe.exec(originalHTML)) !== null) styles.push(m[1]);
+    while ((m = styleRe.exec(currentHTML)) !== null) styles.push(m[1]);
 
     return `<!DOCTYPE html>
 <html>
@@ -77,8 +77,8 @@ body {
   print-color-adjust: exact;
   overflow: hidden;
 }
-/* Page fills exactly one Letter — flex column pins footer to bottom */
-.ws-page {
+/* Flex column layout — pins footer to bottom (must match preview) */
+.ws-page, .page {
   width: 216mm !important;
   height: 279mm !important;
   min-height: 0 !important;
@@ -90,16 +90,17 @@ body {
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
+  position: relative !important;
 }
-.ws-header {
+.ws-header, .header {
   flex-shrink: 0 !important;
 }
-.ws-body {
+.ws-body, .body {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow: hidden !important;
 }
-.ws-footer {
+.ws-footer, .footer {
   flex-shrink: 0 !important;
   width: 100% !important;
   text-align: center !important;
@@ -108,12 +109,11 @@ body {
   color: #111 !important;
   box-sizing: border-box !important;
 }
+/* Keep hidden — matches preview (vertical sidebar handles copyright) */
 .ws-footer-copyright, .footer-copyright {
-  font-size: 7pt !important;
-  font-weight: 400 !important;
-  margin-bottom: 5px !important;
-  text-align: center !important;
+  display: none !important;
 }
+/* Keep space-between — matches preview layout */
 .ws-footer-info, .footer-info {
   font-size: 9pt !important;
   display: flex !important;
@@ -126,8 +126,17 @@ body {
   white-space: nowrap !important;
 }
 .ws-vertical-copyright, .vertical-copyright {
+  position: absolute !important;
   left: -193px !important;
+  width: 400px !important;
+  top: 50% !important;
+  text-align: center !important;
+  transform: translateY(-50%) rotate(90deg) !important;
   font-size: 7pt !important;
+  font-weight: 400 !important;
+  color: #111 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
 }
 </style>
 </head>

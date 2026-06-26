@@ -31,12 +31,15 @@ const TEMPLATE_CSS = `
   @media print{
     html,body{height:auto!important}
     body{background:none;margin:0;padding:0}
-    .ws-page{margin:0;width:216mm;min-height:0;height:auto;display:block;overflow:visible}
-    .ws-header{break-inside:avoid;page-break-inside:avoid}
-    .ws-body{flex:none}
-    .ws-footer{break-inside:avoid;page-break-inside:avoid;position:relative;margin-top:0}
-    .ws-footer-copyright{display:block!important;width:100%!important;text-align:center!important}
-    .ws-footer-info{display:flex!important;width:100%!important;justify-content:center!important}
+    /* CRITICAL: Keep flex layout in print — removing flex breaks footer pinning */
+    .ws-page{margin:0;width:216mm;min-height:279mm;display:flex!important;flex-direction:column!important;overflow:hidden}
+    .ws-header{break-inside:avoid;page-break-inside:avoid;flex-shrink:0!important}
+    .ws-body{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+    .ws-footer{break-inside:avoid;page-break-inside:avoid;flex-shrink:0!important;margin-top:auto!important}
+    /* Keep footer-copyright hidden — matches preview (vertical sidebar handles copyright) */
+    .ws-footer-copyright{display:none!important}
+    /* Keep space-between — matches preview layout */
+    .ws-footer-info{display:flex!important;width:100%!important;justify-content:space-between!important}
     .ws-body-content>*{break-inside:auto}
   }
 
@@ -66,7 +69,7 @@ const TEMPLATE_CSS = `
   .ws-body{
     flex:1;
     position:relative;
-    padding:3mm 12mm 4mm 12mm;
+    padding:10mm 12mm 10mm 12mm;
   }
   .ws-wm-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
   .ws-wm{
