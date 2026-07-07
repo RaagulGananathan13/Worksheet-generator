@@ -145,7 +145,7 @@ const TEMPLATE_HEADER = `
       </table>
     </div>
     <div class="ws-header-mid">
-      <div class="ws-activity-id">Activity ID : 140100100001</div>
+      <div class="ws-activity-id">Worksheet ID : 140100100001</div>
       <div class="ws-activity-title">Addition with two digit numbers</div>
       <div class="ws-form-fields">
         <div class="ws-form-row">
