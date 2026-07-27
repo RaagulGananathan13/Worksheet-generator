@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { temporal } from 'zundo';
 import { ZOOM_LIMITS, HISTORY_LIMIT } from '../utils/constants';
 import { clamp, generateId } from '../utils/helpers';
+import { unwrapFromTemplate } from '../engine/templateWrapper';
 
 const useWorksheetStore = create()(
   temporal(
@@ -44,11 +45,17 @@ const useWorksheetStore = create()(
       setWorksheetMeta: (meta) => set((s) => ({ worksheetMeta: { ...s.worksheetMeta, ...meta } })),
 
       // === Actions: Draft (unsaved edits) ===
-      setDraftHTML: (html) => set({ draftHTML: html, hasUnsavedChanges: true }),
+      setDraftHTML: (html) => set({
+        draftHTML: html,
+        hasUnsavedChanges: true,
+        // Sync rawHTML so 'Edit Source' shows current state with all editor modifications
+        rawHTML: unwrapFromTemplate(html),
+      }),
 
       // Called after undo/redo restores a previous draftHTML — reload iframe
       _syncAfterUndoRedo: () => set((s) => ({
         hasUnsavedChanges: s.draftHTML !== s.originalHTML,
+        rawHTML: unwrapFromTemplate(s.draftHTML || s.originalHTML),
         _reloadCounter: (s._reloadCounter || 0) + 1,
       })),
 
@@ -60,6 +67,7 @@ const useWorksheetStore = create()(
       discardChanges: () => set((s) => ({
         draftHTML: s.originalHTML,
         hasUnsavedChanges: false,
+        rawHTML: unwrapFromTemplate(s.originalHTML),
         // Trigger iframe reload by updating a counter
         _reloadCounter: (s._reloadCounter || 0) + 1,
       })),

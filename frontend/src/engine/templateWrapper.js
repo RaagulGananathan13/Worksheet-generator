@@ -250,6 +250,82 @@ ${TEMPLATE_FOOTER}
 }
 
 /**
+ * Unwrap user HTML content from the GeniusBees template.
+ * This is the reverse of wrapInTemplate() — given the full template-wrapped
+ * document (from draftHTML), it extracts just the user's body content
+ * and any user-authored styles, returning a standalone HTML string.
+ *
+ * This ensures editor changes (inline styles from font-size, color, etc.)
+ * are reflected back in the user's source code.
+ */
+export function unwrapFromTemplate(wrappedHTML) {
+  if (!wrappedHTML) return '';
+
+  // Use a DOM parser to reliably extract content
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(wrappedHTML, 'text/html');
+
+  // 1. Extract the user's body content from .ws-body-content
+  const bodyContentEl = doc.querySelector('.ws-body-content');
+  if (!bodyContentEl) {
+    // Fallback: if no template structure found, return body innerHTML
+    return doc.body ? doc.body.innerHTML.trim() : wrappedHTML;
+  }
+  const userBodyHTML = bodyContentEl.innerHTML.trim();
+
+  // 2. Extract user styles (exclude template CSS and editor injections)
+  const userStyles = [];
+  doc.querySelectorAll('style').forEach((styleEl) => {
+    const id = styleEl.id || '';
+    // Skip template and editor-injected styles
+    if (id === 'ws-editor-styles' || id === 'ws-readonly-styles' ||
+        id === 'ws-scale-to-fit' || id === 'ws-scale-css' ||
+        id === 'ws-pdf-base' || id === 'ws-pdf-scale') {
+      return;
+    }
+    const content = styleEl.textContent || '';
+    // Skip the main template CSS (contains TEMPLATE_CSS markers)
+    if (content.includes('.ws-page') && content.includes('.ws-header') &&
+        content.includes('.ws-footer') && content.includes('@page')) {
+      return;
+    }
+    // This is a user style — keep it
+    userStyles.push(`<style>${content}</style>`);
+  });
+
+  // 3. Extract user stylesheet links (exclude Google Fonts Poppins from template)
+  const userLinks = [];
+  doc.querySelectorAll('link[rel="stylesheet"]').forEach((linkEl) => {
+    const href = linkEl.getAttribute('href') || '';
+    // Skip the template's Poppins font link
+    if (href.includes('fonts.googleapis.com') && href.includes('Poppins') && !href.includes('Inter')) {
+      return;
+    }
+    userLinks.push(linkEl.outerHTML);
+  });
+
+  // 4. Reconstruct a standalone HTML document
+  const headContent = [...userLinks, ...userStyles].join('\n');
+
+  if (headContent.trim()) {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+${headContent}
+</head>
+<body>
+${userBodyHTML}
+</body>
+</html>`;
+  }
+
+  // If no styles/links, return just the body content (simpler source)
+  return userBodyHTML;
+}
+
+/**
  * Get clean HTML from the editor iframe for export.
  * Uses draftHTML if available, falls back to originalHTML.
  */

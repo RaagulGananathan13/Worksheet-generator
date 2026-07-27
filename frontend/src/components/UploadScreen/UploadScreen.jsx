@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { AlertCircle, ArrowRight, ArrowLeft, Clipboard, Trash2 } from 'lucide-react';
 import useWorksheetStore from '../../store/worksheetStore';
 import { parseHTMLString } from '../../engine/htmlParser';
@@ -12,6 +12,11 @@ export default function UploadScreen() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const textareaRef = useRef(null);
+
+  // Sync htmlInput when rawHTML changes (e.g. returning from editor with modifications)
+  useEffect(() => {
+    if (rawHTML) setHtmlInput(rawHTML);
+  }, [rawHTML]);
 
   const setView = useWorksheetStore((s) => s.setView);
   const setBlocks = useWorksheetStore((s) => s.setBlocks);
