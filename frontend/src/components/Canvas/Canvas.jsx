@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect, useMemo, useState } from 'react';
 import useWorksheetStore from '../../store/worksheetStore';
+import { buildScaleToFitScript } from '../../engine/templateWrapper';
 
 /**
  * Canvas v5 — Drag-to-Move, Canvas Panning, Element Editing
@@ -8,6 +9,7 @@ export default function Canvas({ containerRef }) {
   const canvasRef = useRef(null);
   const iframeRef = useRef(null);
   const [isPanning, setIsPanning] = useState(false);
+  const [iframeHeight, setIframeHeight] = useState(1054);
   const panStartRef = useRef({ x: 0, y: 0 });
 
   const originalHTML = useWorksheetStore((s) => s.originalHTML);
@@ -33,10 +35,20 @@ export default function Canvas({ containerRef }) {
     [originalHTML, reloadCounter, readOnly]
   );
 
+  // Reset iframe height when content changes (new worksheet loaded or reload)
+  useEffect(() => {
+    setIframeHeight(1054);
+  }, [reloadCounter, originalHTML]);
+
   // Listen for messages from the iframe
   useEffect(() => {
     function handleMessage(e) {
       if (!e.data || typeof e.data !== 'object') return;
+      // Handle scale-to-fit height reporting (works in both edit and read-only modes)
+      if (e.data.type === 'PAGE_SCALED') {
+        setIframeHeight(Math.max(e.data.height, 200));
+        return;
+      }
       if (readOnly) return; // Block all mutations in read-only mode
       if (e.data.type === 'ELEMENT_SELECTED') setSelectedElement(e.data.data);
       if (e.data.type === 'ELEMENT_DESELECTED') setSelectedElement(null);
@@ -162,7 +174,7 @@ export default function Canvas({ containerRef }) {
           ref={canvasRef}
           style={{
             width: 816,
-            minHeight: 1054,
+            minHeight: iframeHeight,
             transform: `scale(${zoom}) translate(${panOffset.x / zoom}px, ${panOffset.y / zoom}px)`,
             transformOrigin: 'top center',
             background: '#fff',
@@ -176,7 +188,7 @@ export default function Canvas({ containerRef }) {
             key={reloadCounter}
             srcDoc={editableSrcdoc}
             title="Worksheet Editor"
-            style={{ width: '100%', minHeight: 1054, border: 'none', display: 'block' }}
+            style={{ width: '100%', height: iframeHeight, border: 'none', display: 'block' }}
             sandbox="allow-same-origin allow-scripts"
           />
         </div>
@@ -315,7 +327,9 @@ img[data-ws-id].ws-selected { outline: 2px solid rgba(234,88,12,0.8) !important;
     var clone=document.documentElement.cloneNode(true);
     var s1=clone.querySelector('#ws-editor-styles');
     var s2=clone.querySelector('#ws-editor-script');
-    if(s1)s1.remove(); if(s2)s2.remove();
+    var s3=clone.querySelector('#ws-scale-to-fit');
+    var s4=clone.querySelector('#ws-scale-css');
+    if(s1)s1.remove(); if(s2)s2.remove(); if(s3)s3.remove(); if(s4)s4.remove();
     clone.querySelectorAll('[data-ws-id]').forEach(function(n){n.removeAttribute('data-ws-id');});
     clone.querySelectorAll('[contenteditable]').forEach(function(n){n.removeAttribute('contenteditable');});
     clone.querySelectorAll('.ws-selected').forEach(function(n){n.classList.remove('ws-selected');});
@@ -510,10 +524,12 @@ img[data-ws-id].ws-selected { outline: 2px solid rgba(234,88,12,0.8) !important;
 ` + `</` + `script>`;
 
 
+  const scaleScript = buildScaleToFitScript();
+
   if (html.includes('</body>')) {
-    return html.replace('</body>', editorCSS + editorScript + '\n</body>');
+    return html.replace('</body>', editorCSS + editorScript + scaleScript + '\n</body>');
   }
-  return html + editorCSS + editorScript;
+  return html + editorCSS + editorScript + scaleScript;
 }
 
 /* ─── Read-only srcdoc: no editing, no selection, just pure viewing ─── */
@@ -543,8 +559,10 @@ function buildReadOnlySrcdoc(html) {
 })();
 ` + `</${'script'}>`;
 
+  const scaleScript = buildScaleToFitScript();
+
   if (html.includes('</body>')) {
-    return html.replace('</body>', readOnlyCSS + readOnlyScript + '\n</body>');
+    return html.replace('</body>', readOnlyCSS + readOnlyScript + scaleScript + '\n</body>');
   }
-  return html + readOnlyCSS + readOnlyScript;
+  return html + readOnlyCSS + readOnlyScript + scaleScript;
 }

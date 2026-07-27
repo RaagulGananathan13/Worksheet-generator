@@ -258,4 +258,110 @@ export function getExportHTML(store) {
   return html;
 }
 
+/**
+ * Build a <script> block that measures the natural content height of .ws-page
+ * and applies CSS zoom to scale it down if content overflows Letter height.
+ * This replicates the PDF export's scale-to-fit logic in the editor iframe,
+ * ensuring WYSIWYG parity between the editor preview and PDF output.
+ *
+ * Posts a { type:'PAGE_SCALED', height, scaleFactor } message to parent
+ * so the Canvas component can resize the iframe container accordingly.
+ */
+export function buildScaleToFitScript() {
+  return `
+<script id="ws-scale-to-fit">
+(function(){
+  var LETTER_H = 1054; // 279mm at 96dpi
+
+  function scaleToFit(){
+    var page = document.querySelector('.ws-page') || document.querySelector('.page');
+    if(!page) return;
+
+    // Remove any previous scale styling
+    var prev = document.getElementById('ws-scale-css');
+    if(prev) prev.remove();
+    page.style.removeProperty('zoom');
+
+    // Temporarily expand so we can measure natural height
+    var origH = page.style.height;
+    var origMaxH = page.style.maxHeight;
+    var origOverflow = page.style.overflow;
+    page.style.setProperty('height','auto','important');
+    page.style.setProperty('max-height','none','important');
+    page.style.setProperty('overflow','visible','important');
+
+    var wsBody = page.querySelector('.ws-body') || page.querySelector('.body');
+    var origBodyOverflow;
+    if(wsBody){
+      origBodyOverflow = wsBody.style.overflow;
+      wsBody.style.setProperty('overflow','visible','important');
+    }
+
+    // Force layout recalc
+    void page.offsetHeight;
+
+    var naturalH = page.scrollHeight;
+
+    // Restore original styles
+    if(origH) page.style.height = origH; else page.style.removeProperty('height');
+    if(origMaxH) page.style.maxHeight = origMaxH; else page.style.removeProperty('max-height');
+    if(origOverflow) page.style.overflow = origOverflow; else page.style.removeProperty('overflow');
+    if(wsBody){
+      if(origBodyOverflow) wsBody.style.overflow = origBodyOverflow;
+      else wsBody.style.removeProperty('overflow');
+    }
+
+    // Calculate scale factor
+    var scale = 1;
+    if(naturalH > LETTER_H){
+      scale = Math.max(LETTER_H / naturalH, 0.5);
+    }
+
+    // Apply zoom-based scaling if needed
+    if(scale < 1){
+      var s = document.createElement('style');
+      s.id = 'ws-scale-css';
+      s.innerHTML = 
+        '.ws-page, .page {' +
+        '  zoom: ' + scale + ' !important;' +
+        '  width: 100% !important;' +
+        '  min-height: ' + (LETTER_H / scale) + 'px !important;' +
+        '  overflow: visible !important;' +
+        '}' +
+        '.ws-body, .body {' +
+        '  overflow: visible !important;' +
+        '}';
+      document.head.appendChild(s);
+    }
+
+    // Notify parent of the final scaled page height
+    // After zoom, the visual height is naturalH * scale (capped at LETTER_H)
+    var finalH = scale < 1 ? LETTER_H : naturalH;
+    window.parent.postMessage({
+      type: 'PAGE_SCALED',
+      height: finalH,
+      naturalHeight: naturalH,
+      scaleFactor: scale
+    }, '*');
+  }
+
+  // Run after fonts load and DOM settles
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){
+      setTimeout(scaleToFit, 150);
+    });
+  } else {
+    setTimeout(scaleToFit, 400);
+  }
+
+  // Re-run when content changes (editor edits trigger HTML_UPDATED)
+  var observer = new MutationObserver(function(){
+    clearTimeout(observer._timer);
+    observer._timer = setTimeout(scaleToFit, 300);
+  });
+  observer.observe(document.body, { childList:true, subtree:true, characterData:true, attributes:true });
+})();
+` + `</${'script'}>`;
+}
+
 export { TEMPLATE_CSS, TEMPLATE_HEADER, TEMPLATE_FOOTER };
