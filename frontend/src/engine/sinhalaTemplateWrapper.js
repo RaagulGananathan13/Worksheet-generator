@@ -48,8 +48,8 @@ const SINHALA_TEMPLATE_CSS = `
   .ws-header { padding: 7mm 12mm 5mm 12mm; border-bottom: none; display: flex; gap: 15px; flex-shrink: 0; }
   .ws-header-left { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
   .ws-header-left img { width: 140px; height: auto; display: block; margin-left: -10px; }
-  .ws-grade-table { border-collapse: collapse; margin-left: 4px; }
-  .ws-grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 300; color: #555; border: none; }
+  .ws-grade-table { border-collapse: collapse; margin-left: 4px; font-family: 'Poppins', Arial, sans-serif !important; }
+  .ws-grade-table td { width: 40px; height: 35px; text-align: center; font-size: 18px; font-weight: 400; color: #555; border: none; font-family: 'Poppins', Arial, sans-serif !important; }
   .ws-grade-table tr:first-child td { border-bottom: 1px solid #777; }
   .ws-grade-table td:not(:last-child) { border-right: 1px solid #777; }
   .ws-header-mid { flex: 1 !important; padding: 0 15px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; overflow: hidden !important; }
@@ -145,7 +145,7 @@ const SINHALA_TEMPLATE_HEADER = `
     </div>
     <div class="ws-header-mid">
       <div class="ws-activity-id">වැඩ පත්‍රිකා අංකය : 140100100001</div>
-      <div class="ws-activity-title"></div>
+      <div class="ws-activity-title">ඉලක්කම් දෙකේ සංඛ්යා එකතු කිරීම</div>
       <div class="ws-form-fields">
         <div class="ws-form-row">
           <span class="ws-f-label">අංකය</span>
