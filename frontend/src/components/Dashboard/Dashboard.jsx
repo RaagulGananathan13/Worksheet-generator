@@ -197,15 +197,26 @@ export default function Dashboard() {
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
 
-            {/* Create New */}
+            {/* Create New (English) */}
             <button
-              onClick={() => setView('upload')}
+              onClick={() => { useWorksheetStore.getState().setWorksheetLang('en'); setView('upload'); }}
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-orange to-brand-orange-dark text-white text-sm font-semibold rounded-xl
                          shadow-md shadow-brand-orange/20 hover:shadow-lg hover:shadow-brand-orange/30
                          transition-all duration-300 active:scale-[0.98]"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Create New</span>
+            </button>
+
+            {/* Create New (Sinhala) */}
+            <button
+              onClick={() => { useWorksheetStore.getState().setWorksheetLang('si'); setView('upload-sinhala'); }}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-semibold rounded-xl
+                         shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30
+                         transition-all duration-300 active:scale-[0.98]"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">සිංහල</span>
             </button>
           </div>
         </div>

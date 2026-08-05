@@ -3,9 +3,9 @@ import { AlertCircle, ArrowRight, ArrowLeft, Clipboard, Trash2 } from 'lucide-re
 import useWorksheetStore from '../../store/worksheetStore';
 import { parseHTMLString } from '../../engine/htmlParser';
 import { detectBlocks } from '../../engine/detectionEngine';
-import { wrapInTemplate } from '../../engine/templateWrapper';
+import { wrapInSinhalaTemplate } from '../../engine/sinhalaTemplateWrapper';
 
-export default function UploadScreen() {
+export default function SinhalaUploadScreen() {
   const rawHTML = useWorksheetStore((s) => s.rawHTML);
   const setRawHTML = useWorksheetStore((s) => s.setRawHTML);
   const [htmlInput, setHtmlInput] = useState(rawHTML || '');
@@ -51,19 +51,19 @@ export default function UploadScreen() {
 
   const handleProceedToEditor = useCallback(async () => {
     if (htmlInput.trim() && !isValidHTML(htmlInput)) {
-      setError("This doesn't look like valid HTML. Please paste a complete HTML worksheet.");
+      setError("මෙය නිවැරදි HTML ලෙස පෙනෙන්නේ නැත. සම්පූර්ණ HTML වැඩ පත්‍රිකාවක් ඇලවන්න.");
       return;
     }
     setLoading(true);
     setError('');
     setRawHTML(htmlInput);
-    setWorksheetLang('en');
+    setWorksheetLang('si');
     try {
-      const wrappedHTML = wrapInTemplate(htmlInput);
+      const wrappedHTML = wrapInSinhalaTemplate(htmlInput);
       setOriginalHTML(wrappedHTML);
       const { elements, worksheetMeta } = await parseHTMLString(wrappedHTML);
       const blocks = detectBlocks(elements, worksheetMeta);
-      
+
       setBlocks(blocks);
       setWorksheetMeta(worksheetMeta);
       setReadOnly(false);
@@ -73,7 +73,7 @@ export default function UploadScreen() {
     } finally {
       setLoading(false);
     }
-  }, [htmlInput, isValidHTML, setOriginalHTML, setBlocks, setWorksheetMeta, setView, setReadOnly]);
+  }, [htmlInput, isValidHTML, setOriginalHTML, setBlocks, setWorksheetMeta, setView, setReadOnly, setWorksheetLang]);
 
   const hasHTML = htmlInput.trim().length > 0;
 
@@ -87,27 +87,30 @@ export default function UploadScreen() {
             <button
               onClick={() => setView('dashboard')}
               className="p-1.5 text-surface-400 hover:text-brand-orange hover:bg-accent-50 rounded-lg transition-all"
-              title="Back to Dashboard"
+              title="උපකරණ පුවරුවට ආපසු"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
             <img src="/gb-logo.jpg" alt="GeniusBees" className="h-9 object-contain" />
             <div className="w-px h-7 bg-surface-200" />
             <div>
-              <h1 className="text-sm font-semibold text-surface-900">Worksheet Editor</h1>
-              <p className="text-[10px] text-surface-500">Paste HTML below to start editing</p>
+              <h1 className="text-sm font-semibold text-surface-900 flex items-center gap-2">
+                සිංහල වැඩ පත්‍රිකා සංස්කාරකය
+                <span className="px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded text-[9px] font-semibold uppercase">සිංහල</span>
+              </h1>
+              <p className="text-[10px] text-surface-500">සංස්කරණය ආරම්භ කිරීමට පහත HTML ඇලවන්න</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={handlePasteFromClipboard}
               className="text-xs flex items-center gap-1.5 px-3 py-1.5 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all border border-surface-200"
-              title="Paste from clipboard">
-              <Clipboard className="w-3.5 h-3.5" /> Paste
+              title="ක්ලිප්බෝඩ් එකෙන් ඇලවන්න">
+              <Clipboard className="w-3.5 h-3.5" /> ඇලවන්න
             </button>
             {hasHTML && (
               <button onClick={handleClear}
                 className="text-xs flex items-center gap-1.5 px-3 py-1.5 text-danger-500 hover:bg-red-50 rounded-lg transition-all border border-red-200">
-                <Trash2 className="w-3.5 h-3.5" /> Clear
+                <Trash2 className="w-3.5 h-3.5" /> මකන්න
               </button>
             )}
           </div>
@@ -119,7 +122,7 @@ export default function UploadScreen() {
             ref={textareaRef}
             value={htmlInput}
             onChange={handleInputChange}
-            placeholder={`Paste your HTML worksheet code here...\n\nExample:\n<!DOCTYPE html>\n<html>\n<head>...</head>\n<body>\n  <div class="worksheet">\n    ...\n  </div>\n</body>\n</html>`}
+            placeholder={`ඔබගේ HTML වැඩ පත්‍රිකා කේතය මෙහි ඇලවන්න...\n\nඋදාහරණය:\n<!DOCTYPE html>\n<html>\n<head>...</head>\n<body>\n  <div class="worksheet">\n    ...\n  </div>\n</body>\n</html>`}
             className="w-full h-full min-h-[300px] bg-surface-50 border border-surface-200 rounded-xl p-4 text-sm text-surface-800 font-mono
                        placeholder:text-surface-400 resize-none
                        focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange/40
@@ -136,7 +139,7 @@ export default function UploadScreen() {
           </div>
         )}
 
-        {/* Open in Editor Button — ALWAYS VISIBLE */}
+        {/* Open in Editor Button */}
         <div className="px-4 py-3 border-t border-surface-200 shrink-0">
           <button
             onClick={handleProceedToEditor}
@@ -146,11 +149,11 @@ export default function UploadScreen() {
             {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Parsing HTML...
+                HTML විග්‍රහ කරමින්...
               </>
             ) : (
               <>
-                Open in Editor
+                සංස්කාරකයේ විවෘත කරන්න
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -163,7 +166,7 @@ export default function UploadScreen() {
         <div className="flex items-center px-5 py-3 border-b border-surface-200 shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-brand-green animate-pulse-soft" />
-            <span className="text-xs font-medium text-surface-600">Live Preview</span>
+            <span className="text-xs font-medium text-surface-600">සජීවී පෙරදසුන</span>
           </div>
         </div>
 
@@ -172,7 +175,7 @@ export default function UploadScreen() {
             <div className="bg-white rounded-xl shadow-md overflow-hidden animate-fade-in border border-surface-200">
               <iframe
                 srcDoc={htmlInput}
-                title="Worksheet Preview"
+                title="වැඩ පත්‍රිකා පෙරදසුන"
                 className="w-full border-none"
                 style={{ minHeight: '500px', height: 'calc(100vh - 140px)' }}
                 sandbox="allow-same-origin"
@@ -181,9 +184,9 @@ export default function UploadScreen() {
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center">
               <img src="/gb-logo.jpg" alt="GeniusBees" className="h-16 object-contain mb-4 opacity-40" />
-              <p className="text-surface-700 text-sm font-medium mb-1">No preview yet</p>
+              <p className="text-surface-700 text-sm font-medium mb-1">තවමත් පෙරදසුනක් නොමැත</p>
               <p className="text-surface-500 text-xs max-w-xs">
-                Paste HTML code in the left panel to see a live preview of your worksheet here
+                ඔබගේ වැඩ පත්‍රිකාවේ සජීවී පෙරදසුනක් මෙහි බැලීමට වම් පැනලයේ HTML කේතය ඇලවන්න
               </p>
             </div>
           )}

@@ -4,6 +4,7 @@ import useAuthStore from './store/authStore';
 import AuthPage from './components/Auth/AuthPage';
 import Dashboard from './components/Dashboard/Dashboard';
 import UploadScreen from './components/UploadScreen/UploadScreen';
+import SinhalaUploadScreen from './components/UploadScreen/SinhalaUploadScreen';
 import EditorLayout from './components/Editor/EditorLayout';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
       {view === 'auth' && <AuthPage />}
       {view === 'dashboard' && <Dashboard />}
       {view === 'upload' && <UploadScreen />}
+      {view === 'upload-sinhala' && <SinhalaUploadScreen />}
       {view === 'editor' && <EditorLayout />}
     </div>
   );

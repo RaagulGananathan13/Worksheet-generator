@@ -52,7 +52,7 @@ export default function Toolbar() {
 
   const handleNew = useCallback(() => {
     if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Discard and start new?')) return;
-    setView('upload');
+    setView(useWorksheetStore.getState().worksheetLang === 'si' ? 'upload-sinhala' : 'upload');
   }, [hasUnsavedChanges, setView]);
 
   const handleDashboard = useCallback(() => {
@@ -117,7 +117,7 @@ export default function Toolbar() {
 
         {/* Edit Source — go back to upload screen */}
         {!readOnly && (
-          <button onClick={() => setView('upload')}
+          <button onClick={() => setView(useWorksheetStore.getState().worksheetLang === 'si' ? 'upload-sinhala' : 'upload')}
             className="text-xs flex items-center gap-1 px-2 py-1.5 text-surface-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Edit HTML Source">
             <Code2 className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Edit Source</span>

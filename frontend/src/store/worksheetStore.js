@@ -3,12 +3,16 @@ import { temporal } from 'zundo';
 import { ZOOM_LIMITS, HISTORY_LIMIT } from '../utils/constants';
 import { clamp, generateId } from '../utils/helpers';
 import { unwrapFromTemplate } from '../engine/templateWrapper';
+import { unwrapFromSinhalaTemplate } from '../engine/sinhalaTemplateWrapper';
 
 const useWorksheetStore = create()(
   temporal(
     (set, get) => ({
       // === View State ===
-      view: 'auth', // 'auth' | 'dashboard' | 'upload' | 'editor'
+      view: 'auth', // 'auth' | 'dashboard' | 'upload' | 'upload-sinhala' | 'editor'
+
+      // === Language ===
+      worksheetLang: 'en', // 'en' | 'si'
 
       // === Worksheet Data ===
       rawHTML: '',            // The raw HTML string pasted by the user
@@ -38,6 +42,7 @@ const useWorksheetStore = create()(
       // === Actions: View ===
       setView: (view) => set({ view }),
       setReadOnly: (readOnly) => set({ readOnly }),
+      setWorksheetLang: (lang) => set({ worksheetLang: lang }),
 
       // === Actions: Worksheet ===
       setRawHTML: (html) => set({ rawHTML: html }),
@@ -45,32 +50,37 @@ const useWorksheetStore = create()(
       setWorksheetMeta: (meta) => set((s) => ({ worksheetMeta: { ...s.worksheetMeta, ...meta } })),
 
       // === Actions: Draft (unsaved edits) ===
-      setDraftHTML: (html) => set({
+      setDraftHTML: (html) => set((s) => ({
         draftHTML: html,
         hasUnsavedChanges: true,
         // Sync rawHTML so 'Edit Source' shows current state with all editor modifications
-        rawHTML: unwrapFromTemplate(html),
-      }),
+        rawHTML: s.worksheetLang === 'si' ? unwrapFromSinhalaTemplate(html) : unwrapFromTemplate(html),
+      })),
 
       // Called after undo/redo restores a previous draftHTML — reload iframe
-      _syncAfterUndoRedo: () => set((s) => ({
-        hasUnsavedChanges: s.draftHTML !== s.originalHTML,
-        rawHTML: unwrapFromTemplate(s.draftHTML || s.originalHTML),
-        _reloadCounter: (s._reloadCounter || 0) + 1,
-      })),
+      _syncAfterUndoRedo: () => set((s) => {
+        const unwrap = s.worksheetLang === 'si' ? unwrapFromSinhalaTemplate : unwrapFromTemplate;
+        return {
+          hasUnsavedChanges: s.draftHTML !== s.originalHTML,
+          rawHTML: unwrap(s.draftHTML || s.originalHTML),
+          _reloadCounter: (s._reloadCounter || 0) + 1,
+        };
+      }),
 
       saveChanges: () => set((s) => ({
         originalHTML: s.draftHTML || s.originalHTML,
         hasUnsavedChanges: false,
       })),
 
-      discardChanges: () => set((s) => ({
-        draftHTML: s.originalHTML,
-        hasUnsavedChanges: false,
-        rawHTML: unwrapFromTemplate(s.originalHTML),
-        // Trigger iframe reload by updating a counter
-        _reloadCounter: (s._reloadCounter || 0) + 1,
-      })),
+      discardChanges: () => set((s) => {
+        const unwrap = s.worksheetLang === 'si' ? unwrapFromSinhalaTemplate : unwrapFromTemplate;
+        return {
+          draftHTML: s.originalHTML,
+          hasUnsavedChanges: false,
+          rawHTML: unwrap(s.originalHTML),
+          _reloadCounter: (s._reloadCounter || 0) + 1,
+        };
+      }),
 
       _reloadCounter: 0,
 
