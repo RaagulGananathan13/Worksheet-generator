@@ -109,7 +109,7 @@ const SINHALA_TEMPLATE_CSS = `
     display: none !important;
   }
   .ws-footer-info {
-    font-size: 8pt !important;
+    font-size: 9pt !important;
     display: flex !important;
     justify-content: space-between !important;
     width: 100% !important;
@@ -119,6 +119,7 @@ const SINHALA_TEMPLATE_CSS = `
   .ws-footer-info span {
     white-space: nowrap !important;
   }
+  .ws-eng-text { font-family: 'Times New Roman', Times, serif !important; }
   .ws-vertical-copyright {
     position: absolute;
     left: -193px;
@@ -172,8 +173,8 @@ const SINHALA_TEMPLATE_FOOTER = `
   <div class="ws-vertical-copyright">ප්‍රකාශන හිමිකම&copy; 2026 GeniusBees Inc. සියලුම හිමිකම් ඇවිරිණි.</div>
   <div class="ws-footer">
     <div class="ws-footer-info">
-      <span>www.geniusbees.com</span>
-      <span>info@geniusbees.com</span>
+      <span class="ws-eng-text">www.geniusbees.com</span>
+      <span class="ws-eng-text">info@geniusbees.com</span>
       <span>මෙම වැඩ පත්‍රිකාව geniusbees.com හි ලියාපදිංචි සිසුන් සඳහා පමණි.</span>
     </div>
   </div>`;
