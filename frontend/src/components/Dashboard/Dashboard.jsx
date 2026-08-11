@@ -26,22 +26,25 @@ export default function Dashboard() {
   const setReadOnly = useWorksheetStore((s) => s.setReadOnly);
 
   // ─── Fetch worksheets ──────────────────────────────────
+  // S3 DISABLED (AWS cost reduction) — skip fetching from S3
+  // To re-enable, uncomment the fetch block below
 
   const fetchWorksheets = useCallback(async () => {
     setLoading(true);
     setError('');
-    try {
-      const res = await fetch('/api/worksheets', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error('Failed to load worksheets');
-      const data = await res.json();
-      setWorksheets(data.worksheets || []);
-    } catch (err) {
-      setError(err.message || 'Failed to load worksheets.');
-    } finally {
-      setLoading(false);
-    }
+    // S3 fetch disabled — always return empty list
+    // try {
+    //   const res = await fetch('/api/worksheets', {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   });
+    //   if (!res.ok) throw new Error('Failed to load worksheets');
+    //   const data = await res.json();
+    //   setWorksheets(data.worksheets || []);
+    // } catch (err) {
+    //   setError(err.message || 'Failed to load worksheets.');
+    // }
+    setWorksheets([]);
+    setLoading(false);
   }, [token]);
 
   useEffect(() => {
@@ -249,7 +252,7 @@ export default function Dashboard() {
               </div>
               <h3 className="text-lg font-semibold text-surface-900 mb-1">No worksheets yet</h3>
               <p className="text-sm text-surface-500 mb-5 text-center max-w-sm">
-                Create your first worksheet by pasting HTML and saving it to S3.
+              Create your first worksheet by clicking "Create New" or "සිංහල" above.
               </p>
               <button
                 onClick={() => setView('upload')}

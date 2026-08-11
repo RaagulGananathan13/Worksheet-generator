@@ -289,8 +289,9 @@ ${bodyContent}
           </div>
         )}
 
-        {/* S3 Upload Section — owner only (hidden for read-only viewers) */}
-        {!readOnly && (
+        {/* S3 Upload Section — DISABLED (AWS cost reduction) */}
+        {/* To re-enable, remove the `false &&` guard below */}
+        {false && !readOnly && (
         <div className="mb-4 space-y-3 rounded-xl border border-surface-200 bg-surface-50 p-4">
           <div>
             <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-surface-500">File Name</label>
