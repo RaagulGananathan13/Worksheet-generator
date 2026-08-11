@@ -71,6 +71,78 @@ export async function generatePDFFromHTML(html) {
       processedHtml = processedHtml.replace(/src=["']\/?watermark\.svg["']/g, `src="${watermarkBase64}"`);
     }
 
+    // ── Step 1b: Inject Google Fonts for consistent rendering on all environments ──
+    // On localhost (Windows), 'Times New Roman' and 'Poppins' may be available locally.
+    // On AWS (Linux), these fonts are NOT installed — headless Chromium falls back to
+    // generic serif/sans-serif which looks completely different.
+    // Fix: Inject Google Fonts imports + @font-face aliases BEFORE rendering.
+    const fontInjection = `
+      <style id="ws-pdf-fonts">
+        /* Import Google Fonts — these load reliably in headless Chromium */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Sinhala:wght@300;400;500;600;700&display=block');
+
+        /* Map 'Times New Roman' and 'Times' to 'Tinos' (metrically identical Google Font)
+           so that CSS rules referencing 'Times New Roman' work on Linux without the font installed */
+        @font-face {
+          font-family: 'Times New Roman';
+          src: local('Times New Roman'), local('Tinos');
+          font-weight: 400;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Times New Roman';
+          src: local('Times New Roman'), local('Tinos');
+          font-weight: 700;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Times';
+          src: local('Times'), local('Tinos');
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        /* Ensure footer and copyright always use Tinos as reliable fallback */
+        .ws-footer, .ws-footer *, .ws-vertical-copyright {
+          font-family: 'Tinos', 'Times New Roman', Times, serif !important;
+        }
+        .ws-eng-text {
+          font-family: 'Tinos', 'Times New Roman', Times, serif !important;
+        }
+        .ws-footer-info {
+          font-size: 9pt !important;
+          font-weight: 400 !important;
+        }
+        .ws-vertical-copyright {
+          font-size: 7pt !important;
+          font-weight: 400 !important;
+        }
+
+        /* Ensure header always uses Poppins loaded from Google Fonts */
+        .ws-header, .ws-header * {
+          font-family: 'Poppins', Arial, sans-serif !important;
+        }
+        .ws-activity-id {
+          font-size: 15px !important;
+          font-weight: 700 !important;
+        }
+        .ws-activity-title {
+          font-size: 14px !important;
+          font-weight: 700 !important;
+        }
+        .ws-form-row {
+          font-size: 12px !important;
+        }
+      </style>
+    `;
+
+    // Inject right after <head> tag so fonts load first
+    if (processedHtml.includes('</head>')) {
+      processedHtml = processedHtml.replace('</head>', fontInjection + '</head>');
+    } else if (processedHtml.includes('<body')) {
+      processedHtml = processedHtml.replace('<body', fontInjection + '<body');
+    }
+
     // ── Step 2: Set viewport to exact Letter dimensions (matches frontend iframe width:216mm) ──
     await page.setViewport({
       width: 816,   // 216mm at 96dpi
@@ -84,9 +156,23 @@ export async function generatePDFFromHTML(html) {
       timeout: 30000,
     });
 
-    // Wait for web fonts
-    await page.evaluate(() => document.fonts?.ready);
-    await new Promise((r) => setTimeout(r, 500));
+    // Wait for web fonts — increased timeout for AWS network latency
+    try {
+      await page.evaluate(() => {
+        return new Promise((resolve) => {
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => resolve());
+          } else {
+            resolve();
+          }
+        });
+      });
+    } catch (e) {
+      // Font loading timeout — continue anyway
+      console.warn('Font loading wait timed out, continuing with available fonts');
+    }
+    // Extra settle time for fonts to fully render (critical on slow AWS networks)
+    await new Promise((r) => setTimeout(r, 1500));
 
     // ── Step 4: Emulate print media for correct CSS rules ──
     await page.emulateMediaType('print');

@@ -96,7 +96,7 @@ const TEMPLATE_CSS = `
   }
 
   /* ═══ FOOTER ═══ */
-  .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Times New Roman', Times, serif !important; }
+  .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Tinos', 'Times New Roman', Times, serif !important; }
   .ws-footer {
     width: 100% !important;
     text-align: center !important;
@@ -226,7 +226,7 @@ export function wrapInTemplate(userHTML) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeniusBees Worksheet</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>${TEMPLATE_CSS}</style>
 ${originalStyles}
 </head>
