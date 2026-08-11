@@ -71,38 +71,30 @@ export async function generatePDFFromHTML(html) {
       processedHtml = processedHtml.replace(/src=["']\/?watermark\.svg["']/g, `src="${watermarkBase64}"`);
     }
 
-    // ── Step 1b: Inject Google Fonts for consistent rendering on all environments ──
-    // On localhost (Windows), 'Times New Roman' and 'Poppins' may be available locally.
-    // On AWS (Linux), these fonts are NOT installed — headless Chromium falls back to
-    // generic serif/sans-serif which looks completely different.
-    // Fix: Inject Google Fonts imports + @font-face aliases BEFORE rendering.
-    const fontInjection = `
-      <style id="ws-pdf-fonts">
-        /* Import Google Fonts — these load reliably in headless Chromium */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Sinhala:wght@300;400;500;600;700&display=block');
+    // ── Step 1b: Inject Google Fonts <link> tags for consistent rendering on all environments ──
+    // ROOT CAUSE: On localhost (Windows), 'Times New Roman' is a system font and the OS provides
+    // Sinhala fallback fonts (e.g., 'Iskoola Pota'). On AWS (Linux), NEITHER exists — headless
+    // Chromium falls back to generic serif/sans-serif which looks completely different.
+    //
+    // FIX: Inject <link> tags (NOT @import which is unreliable in headless Chromium) for:
+    //   - Poppins: Header font
+    //   - Tinos: Metrically identical to Times New Roman (footer/copyright)
+    //   - Noto Sans Sinhala: For Sinhala character rendering (no system Sinhala fonts on Linux)
 
-        /* Map 'Times New Roman' and 'Times' to 'Tinos' (metrically identical Google Font)
-           so that CSS rules referencing 'Times New Roman' work on Linux without the font installed */
-        @font-face {
-          font-family: 'Times New Roman';
-          src: local('Times New Roman'), local('Tinos');
-          font-weight: 400;
-          font-style: normal;
-        }
-        @font-face {
-          font-family: 'Times New Roman';
-          src: local('Times New Roman'), local('Tinos');
-          font-weight: 700;
-          font-style: normal;
-        }
-        @font-face {
-          font-family: 'Times';
-          src: local('Times'), local('Tinos');
-          font-weight: 400;
-          font-style: normal;
-        }
+    // Detect if this is a Sinhala worksheet
+    const isSinhala = processedHtml.includes('Noto Sans Sinhala') || 
+                      processedHtml.includes('Noto+Sans+Sinhala') ||
+                      processedHtml.includes('ws-eng-text');
 
-        /* Ensure footer and copyright always use Tinos as reliable fallback */
+    const fontLinks = `
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Sinhala:wght@300;400;500;600;700&display=block" rel="stylesheet">
+    `;
+
+    const fontOverrides = `
+      <style id="ws-pdf-font-overrides">
+        /* ── Footer & Copyright: Use Tinos (Google's TNR equivalent) ── */
         .ws-footer, .ws-footer *, .ws-vertical-copyright {
           font-family: 'Tinos', 'Times New Roman', Times, serif !important;
         }
@@ -118,9 +110,9 @@ export async function generatePDFFromHTML(html) {
           font-weight: 400 !important;
         }
 
-        /* Ensure header always uses Poppins loaded from Google Fonts */
+        /* ── Header: Poppins + Sinhala fallback ── */
         .ws-header, .ws-header * {
-          font-family: 'Poppins', Arial, sans-serif !important;
+          font-family: 'Poppins', ${isSinhala ? "'Noto Sans Sinhala', " : ""}Arial, sans-serif !important;
         }
         .ws-activity-id {
           font-size: 15px !important;
@@ -133,14 +125,27 @@ export async function generatePDFFromHTML(html) {
         .ws-form-row {
           font-size: 12px !important;
         }
+
+        ${isSinhala ? `
+        /* ── Sinhala: Ensure Noto Sans Sinhala is in all font stacks ── */
+        .ws-footer-info span:not(.ws-eng-text) {
+          font-family: 'Noto Sans Sinhala', 'Tinos', 'Times New Roman', serif !important;
+        }
+        .ws-vertical-copyright {
+          font-family: 'Noto Sans Sinhala', 'Tinos', 'Times New Roman', serif !important;
+        }
+        body {
+          font-family: 'Noto Sans Sinhala', 'Poppins', Arial, sans-serif !important;
+        }
+        ` : ''}
       </style>
     `;
 
-    // Inject right after <head> tag so fonts load first
+    // Inject <link> tags BEFORE </head> — <link> is more reliable than @import in headless Chromium
     if (processedHtml.includes('</head>')) {
-      processedHtml = processedHtml.replace('</head>', fontInjection + '</head>');
+      processedHtml = processedHtml.replace('</head>', fontLinks + fontOverrides + '</head>');
     } else if (processedHtml.includes('<body')) {
-      processedHtml = processedHtml.replace('<body', fontInjection + '<body');
+      processedHtml = processedHtml.replace('<body', fontLinks + fontOverrides + '<body');
     }
 
     // ── Step 2: Set viewport to exact Letter dimensions (matches frontend iframe width:216mm) ──
@@ -156,23 +161,46 @@ export async function generatePDFFromHTML(html) {
       timeout: 30000,
     });
 
-    // Wait for web fonts — increased timeout for AWS network latency
+    // ── Step 3b: Robust font loading — wait until specific fonts are actually available ──
+    // document.fonts.ready resolves too early on some systems. Instead, we actively
+    // check that the required font families have loaded before proceeding.
+    const requiredFonts = ['Poppins', 'Tinos'];
+    if (isSinhala) requiredFonts.push('Noto Sans Sinhala');
+
     try {
-      await page.evaluate(() => {
-        return new Promise((resolve) => {
-          if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(() => resolve());
-          } else {
-            resolve();
-          }
-        });
-      });
+      await page.evaluate(async (fonts) => {
+        // Wait for the FontFaceSet to be ready first
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+
+        // Then actively check each font family with a timeout
+        const checkFont = (family) => {
+          return new Promise((resolve) => {
+            const maxAttempts = 20; // 20 × 500ms = 10 seconds max per font
+            let attempts = 0;
+            const check = () => {
+              if (document.fonts && document.fonts.check(`16px "${family}"`)) {
+                resolve(true);
+              } else if (attempts++ < maxAttempts) {
+                setTimeout(check, 500);
+              } else {
+                console.warn(`Font "${family}" did not load within timeout`);
+                resolve(false);
+              }
+            };
+            check();
+          });
+        };
+
+        await Promise.all(fonts.map(f => checkFont(f)));
+      }, requiredFonts);
     } catch (e) {
-      // Font loading timeout — continue anyway
-      console.warn('Font loading wait timed out, continuing with available fonts');
+      console.warn('Font loading check failed, continuing with available fonts:', e.message);
     }
-    // Extra settle time for fonts to fully render (critical on slow AWS networks)
-    await new Promise((r) => setTimeout(r, 1500));
+
+    // Final settle time — let the renderer apply fonts to all glyphs
+    await new Promise((r) => setTimeout(r, 1000));
 
     // ── Step 4: Emulate print media for correct CSS rules ──
     await page.emulateMediaType('print');
