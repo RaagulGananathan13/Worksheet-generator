@@ -29,6 +29,19 @@ export default function App() {
     }
   }, [isLoading, isAuthenticated, view, setView]);
 
+  // Warn user before closing tab if they have unsaved work in the editor
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      const state = useWorksheetStore.getState();
+      if (state.view === 'editor' && (state.draftHTML || state.originalHTML)) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   // Show loading spinner while checking stored token
   if (isLoading) {
     return (

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Search, FileText, Trash2, Eye, Calendar, User,
-  FolderOpen, Loader2, LogOut, RefreshCw, AlertCircle
+  FolderOpen, Loader2, LogOut, RefreshCw, AlertCircle, RotateCcw
 } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import useWorksheetStore from '../../store/worksheetStore';
@@ -24,6 +24,22 @@ export default function Dashboard() {
   const setBlocks = useWorksheetStore((s) => s.setBlocks);
   const setWorksheetMeta = useWorksheetStore((s) => s.setWorksheetMeta);
   const setReadOnly = useWorksheetStore((s) => s.setReadOnly);
+
+  // Session recovery state
+  const savedDraftHTML = useWorksheetStore((s) => s.draftHTML);
+  const savedOriginalHTML = useWorksheetStore((s) => s.originalHTML);
+  const savedLang = useWorksheetStore((s) => s.worksheetLang);
+  const clearSession = useWorksheetStore((s) => s.clearSession);
+  const hasSavedSession = !!(savedDraftHTML || savedOriginalHTML);
+
+  const handleResumeSession = useCallback(() => {
+    // Restore the editor view — the persist middleware already has all the data
+    setView('editor');
+  }, [setView]);
+
+  const handleDismissSession = useCallback(() => {
+    clearSession();
+  }, [clearSession]);
 
   // ─── Fetch worksheets ──────────────────────────────────
   // S3 DISABLED (AWS cost reduction) — skip fetching from S3
@@ -228,6 +244,37 @@ export default function Dashboard() {
       {/* ─── Content ────────────────────────────────────── */}
       <div className="flex-1 overflow-auto px-6 pb-6">
         <div className="max-w-7xl mx-auto">
+          {/* Resume Session Banner */}
+          {hasSavedSession && (
+            <div className="mb-4 px-5 py-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 flex items-center justify-between gap-4 animate-fade-in">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <RotateCcw className="w-5 h-5 text-amber-600" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-surface-900">Unsaved session found</h4>
+                  <p className="text-xs text-surface-500 mt-0.5">
+                    You have a {savedLang === 'si' ? 'Sinhala' : 'English'} worksheet from your last session. Resume where you left off?
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={handleDismissSession}
+                  className="px-3 py-1.5 text-xs font-medium text-surface-500 hover:text-surface-900 hover:bg-white rounded-lg border border-surface-200 transition-all"
+                >
+                  Discard
+                </button>
+                <button
+                  onClick={handleResumeSession}
+                  className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-brand-orange hover:bg-brand-orange-dark rounded-lg shadow-sm transition-all active:scale-[0.98]"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Resume
+                </button>
+              </div>
+            </div>
+          )}
           {/* Loading State */}
           {loading && (
             <div className="flex flex-col items-center justify-center py-20 animate-fade-in">

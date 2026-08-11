@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
 import { ZOOM_LIMITS, HISTORY_LIMIT } from '../utils/constants';
 import { clamp, generateId } from '../utils/helpers';
@@ -6,8 +7,9 @@ import { unwrapFromTemplate } from '../engine/templateWrapper';
 import { unwrapFromSinhalaTemplate } from '../engine/sinhalaTemplateWrapper';
 
 const useWorksheetStore = create()(
-  temporal(
-    (set, get) => ({
+  persist(
+    temporal(
+      (set, get) => ({
       // === View State ===
       view: 'auth', // 'auth' | 'dashboard' | 'upload' | 'upload-sinhala' | 'editor'
 
@@ -166,6 +168,30 @@ const useWorksheetStore = create()(
       setShowExportModal: (show) => set({ showExportModal: show }),
       setShowCodeViewer: (show) => set({ showCodeViewer: show }),
       setShowGrid: (show) => set({ showGrid: show }),
+
+      // === Actions: Session Recovery ===
+      clearSession: () => {
+        localStorage.removeItem('gb-worksheet-session');
+        set({
+          view: 'dashboard',
+          worksheetLang: 'en',
+          rawHTML: '',
+          originalHTML: '',
+          draftHTML: '',
+          hasUnsavedChanges: false,
+          blocks: [],
+          selectedElement: null,
+          selectedBlockIds: [],
+          zoom: 1,
+          panOffset: { x: 0, y: 0 },
+          showGrid: true,
+          showExportModal: false,
+          showCodeViewer: false,
+          readOnly: false,
+          _reloadCounter: 0,
+          worksheetMeta: { title: 'Untitled Worksheet', width: 1100, height: 800 },
+        });
+      },
     }),
     {
       partialize: (state) => ({ draftHTML: state.draftHTML }),
@@ -183,6 +209,22 @@ const useWorksheetStore = create()(
         };
       },
     }
+  ),
+  {
+    name: 'gb-worksheet-session',
+    // Only persist the essential worksheet data — not transient UI state
+    partialize: (state) => ({
+      view: state.view,
+      worksheetLang: state.worksheetLang,
+      rawHTML: state.rawHTML,
+      originalHTML: state.originalHTML,
+      draftHTML: state.draftHTML,
+      hasUnsavedChanges: state.hasUnsavedChanges,
+      worksheetMeta: state.worksheetMeta,
+      blocks: state.blocks,
+      _reloadCounter: state._reloadCounter,
+    }),
+  }
   )
 );
 
