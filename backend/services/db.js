@@ -33,9 +33,21 @@ export async function initDatabase() {
       id VARCHAR(36) PRIMARY KEY,
       email VARCHAR(255) UNIQUE NOT NULL,
       password_hash VARCHAR(255) NOT NULL,
+      reset_token VARCHAR(255) NULL,
+      reset_token_expires DATETIME NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Ensure existing tables get the new columns (ignore errors if columns already exist)
+  try {
+    await pool.execute('ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) NULL, ADD COLUMN reset_token_expires DATETIME NULL');
+  } catch (e) {
+    // ER_DUP_FIELDNAME (1060) means the columns already exist
+    if (e.errno !== 1060) {
+      console.error('Error adding reset columns to users table:', e.message);
+    }
+  }
 
   await pool.execute(`
     CREATE TABLE IF NOT EXISTS worksheets (
