@@ -44,7 +44,7 @@ const SINHALA_TEMPLATE_CSS = `
   }
 
   /* ═══ HEADER ═══ */
-  .ws-header, .ws-header * { font-family: 'Noto Sans Sinhala', 'Iskoola Pota', 'Poppins', Arial, sans-serif !important; }
+  .ws-header, .ws-header * { font-family: 'Poppins', Arial, sans-serif !important; }
   .ws-header { padding: 7mm 12mm 5mm 12mm; border-bottom: none; display: flex; gap: 15px; flex-shrink: 0; }
   .ws-header-left { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
   .ws-header-left img { width: 140px; height: auto; display: block; margin-left: -10px; }
@@ -53,10 +53,10 @@ const SINHALA_TEMPLATE_CSS = `
   .ws-grade-table tr:first-child td { border-bottom: 1px solid #777; }
   .ws-grade-table td:not(:last-child) { border-right: 1px solid #777; }
   .ws-header-mid { flex: 1 !important; padding: 0 15px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; overflow: hidden !important; }
-  .ws-activity-id { font-size: 14px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 4px 0 !important; line-height: 1.4 !important; }
-  .ws-activity-title { font-size: 13px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 14px 0 !important; line-height: 1.4 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-activity-id { font-size: 15px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 4px 0 !important; line-height: 1.2 !important; }
+  .ws-activity-title { font-size: 14px !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 16px 0 !important; line-height: 1.2 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ws-form-fields { display: flex !important; flex-direction: column !important; gap: 8px !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-  .ws-form-row { display: flex !important; align-items: baseline !important; gap: 2px !important; font-size: 11px !important; color: #333 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; line-height: 1.4 !important; }
+  .ws-form-row { display: flex !important; align-items: baseline !important; gap: 2px !important; font-size: 12px !important; color: #333 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
   .ws-f-label { font-weight: 400 !important; white-space: nowrap !important; color: #333 !important; }
   .ws-f-line-dashed { flex: 1 !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; min-width: 20px !important; }
   .ws-f-line-sm-dashed { width: 60px !important; border-bottom: 1px dashed #555 !important; margin-bottom: 4px !important; }
@@ -95,7 +95,7 @@ const SINHALA_TEMPLATE_CSS = `
   }
 
   /* ═══ FOOTER ═══ */
-  .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Noto Sans Sinhala', 'Iskoola Pota', 'Times New Roman', Times, serif !important; }
+  .ws-footer, .ws-footer *, .ws-vertical-copyright { font-family: 'Times New Roman', Times, serif !important; }
   .ws-footer {
     width: 100% !important;
     text-align: center !important;
@@ -145,15 +145,15 @@ const SINHALA_TEMPLATE_HEADER = `
       </table>
     </div>
     <div class="ws-header-mid">
-      <div class="ws-activity-id">වැඩ පත්‍රිකා අංකය : 140100100001</div>
-      <div class="ws-activity-title">ඉලක්කම් දෙකේ සංඛ්යා එකතු කිරීම</div>
+      <div class="ws-activity-id">අභ්&zwj;යාස පත්&zwj;රිකා අංකය : 140100100001</div>
+      <div class="ws-activity-title">ඉලක්කම් දෙකේ සංඛ්&zwj;යා එකතු කිරීම</div>
       <div class="ws-form-fields">
         <div class="ws-form-row">
           <span class="ws-f-label">අංකය</span>
           <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
-          <span class="ws-f-label">නම</span>
+          <span class="ws-f-label">නම </span>
           <div class="ws-f-line-dashed"></div>
         </div>
         <div class="ws-form-row">
@@ -170,12 +170,12 @@ const SINHALA_TEMPLATE_HEADER = `
   </div>`;
 
 const SINHALA_TEMPLATE_FOOTER = `
-  <div class="ws-vertical-copyright">ප්‍රකාශන හිමිකම&copy; 2026 GeniusBees Inc. සියලුම හිමිකම් ඇවිරිණි.</div>
+  <div class="ws-vertical-copyright">ප්&zwj;රකාශන හිමිකම© 2026 GeniusBees Inc. සියලුම හිමිකම් ඇවිරිණි.</div>
   <div class="ws-footer">
     <div class="ws-footer-info">
       <span class="ws-eng-text">www.geniusbees.com</span>
       <span class="ws-eng-text">info@geniusbees.com</span>
-      <span>මෙම වැඩ පත්‍රිකාව geniusbees.com හි ලියාපදිංචි සිසුන් සඳහා පමණි.</span>
+      <span>මෙම අභ්&zwj;යාස පත්&zwj;රිකාව geniusbees.com හි ලියාපදිංචි සිසුන් සඳහා පමණි.</span>
     </div>
   </div>`;
 
