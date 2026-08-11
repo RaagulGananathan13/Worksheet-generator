@@ -89,7 +89,7 @@ export async function generatePDFFromHTML(html) {
     const fontLinks = `
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Sinhala:wght@300;400;500;600;700&display=block" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Sinhala:wght@300;400;500;600;700&family=Noto+Serif+Sinhala:wght@300;400;500;600;700&display=block" rel="stylesheet">
     `;
 
     const fontOverrides = `
@@ -127,13 +127,14 @@ export async function generatePDFFromHTML(html) {
         }
 
         ${isSinhala ? `
-        /* ── Sinhala: Ensure Noto Sans Sinhala is in all font stacks ── */
+        /* ── Sinhala footer: Use Noto SERIF Sinhala to match Tinos/Times New Roman serif look ── */
         .ws-footer-info span:not(.ws-eng-text) {
-          font-family: 'Noto Sans Sinhala', 'Tinos', 'Times New Roman', serif !important;
+          font-family: 'Noto Serif Sinhala', 'Tinos', 'Times New Roman', serif !important;
         }
         .ws-vertical-copyright {
-          font-family: 'Noto Sans Sinhala', 'Tinos', 'Times New Roman', serif !important;
+          font-family: 'Noto Serif Sinhala', 'Tinos', 'Times New Roman', serif !important;
         }
+        /* ── Sinhala body: Keep sans-serif for body/header ── */
         body {
           font-family: 'Noto Sans Sinhala', 'Poppins', Arial, sans-serif !important;
         }
@@ -165,7 +166,7 @@ export async function generatePDFFromHTML(html) {
     // document.fonts.ready resolves too early on some systems. Instead, we actively
     // check that the required font families have loaded before proceeding.
     const requiredFonts = ['Poppins', 'Tinos'];
-    if (isSinhala) requiredFonts.push('Noto Sans Sinhala');
+    if (isSinhala) requiredFonts.push('Noto Sans Sinhala', 'Noto Serif Sinhala');
 
     try {
       await page.evaluate(async (fonts) => {
