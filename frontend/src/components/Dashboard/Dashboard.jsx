@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import useWorksheetStore from '../../store/worksheetStore';
+import { readSessionRegistry, readBackup, removeRegistryEntry, gcStaleEntries } from '../../store/worksheetStore';
 import { parseHTMLString } from '../../engine/htmlParser';
 import { detectBlocks } from '../../engine/detectionEngine';
 
@@ -25,21 +26,57 @@ export default function Dashboard() {
   const setWorksheetMeta = useWorksheetStore((s) => s.setWorksheetMeta);
   const setReadOnly = useWorksheetStore((s) => s.setReadOnly);
 
-  // Session recovery state
+  // ── Session recovery from cross-tab registry (localStorage) ──
+  // This tab's own state is in sessionStorage (isolated). But if another tab
+  // crashed or was abandoned, its backup lives in localStorage. We read the
+  // registry to find recoverable sessions from OTHER tabs.
+  const [recoverableSessions, setRecoverableSessions] = useState([]);
+  const currentTabId = useWorksheetStore((s) => s._tabId);
+
+  // Also check if THIS tab has an active session (sessionStorage rehydrated from refresh)
   const savedDraftHTML = useWorksheetStore((s) => s.draftHTML);
   const savedOriginalHTML = useWorksheetStore((s) => s.originalHTML);
   const savedLang = useWorksheetStore((s) => s.worksheetLang);
   const clearSession = useWorksheetStore((s) => s.clearSession);
-  const hasSavedSession = !!(savedDraftHTML || savedOriginalHTML);
+  const restoreFromBackup = useWorksheetStore((s) => s.restoreFromBackup);
+  const hasOwnSavedSession = !!(savedDraftHTML || savedOriginalHTML);
+
+  // On mount: GC stale entries, then read registry for other tabs' sessions
+  useEffect(() => {
+    gcStaleEntries();
+    const registry = readSessionRegistry();
+    // Filter out this tab's own entry — we handle that separately via sessionStorage
+    const otherSessions = registry.filter((e) => e.tabId !== currentTabId);
+    setRecoverableSessions(otherSessions);
+  }, [currentTabId]);
+
+  const hasSavedSession = hasOwnSavedSession || recoverableSessions.length > 0;
 
   const handleResumeSession = useCallback(() => {
-    // Restore the editor view — the persist middleware already has all the data
-    setView('editor');
-  }, [setView]);
+    if (hasOwnSavedSession) {
+      // This tab has its own sessionStorage data (e.g., page refresh) — just go to editor
+      setView('editor');
+    } else if (recoverableSessions.length > 0) {
+      // Recover the most recent session from another tab
+      const mostRecent = recoverableSessions.sort((a, b) => b.timestamp - a.timestamp)[0];
+      const backup = readBackup(mostRecent.tabId);
+      if (backup) {
+        restoreFromBackup(backup);
+        // Clean up the old tab's registry entry + backup
+        removeRegistryEntry(mostRecent.tabId);
+        setRecoverableSessions((prev) => prev.filter((e) => e.tabId !== mostRecent.tabId));
+      }
+    }
+  }, [hasOwnSavedSession, recoverableSessions, setView, restoreFromBackup]);
 
   const handleDismissSession = useCallback(() => {
-    clearSession();
-  }, [clearSession]);
+    if (hasOwnSavedSession) {
+      clearSession();
+    }
+    // Also clean up all recoverable sessions from other tabs
+    recoverableSessions.forEach((e) => removeRegistryEntry(e.tabId));
+    setRecoverableSessions([]);
+  }, [hasOwnSavedSession, clearSession, recoverableSessions]);
 
   // ─── Fetch worksheets ──────────────────────────────────
   // S3 DISABLED (AWS cost reduction) — skip fetching from S3
@@ -255,7 +292,10 @@ export default function Dashboard() {
                 <div>
                   <h4 className="text-sm font-semibold text-surface-900">Unsaved session found</h4>
                   <p className="text-xs text-surface-500 mt-0.5">
-                    You have a {savedLang === 'si' ? 'Sinhala' : 'English'} worksheet from your last session. Resume where you left off?
+                    {hasOwnSavedSession
+                      ? `You have a ${savedLang === 'si' ? 'Sinhala' : 'English'} worksheet from your last session. Resume where you left off?`
+                      : `Found ${recoverableSessions.length} recoverable session${recoverableSessions.length > 1 ? 's' : ''} from another tab. Resume the most recent one?`
+                    }
                   </p>
                 </div>
               </div>
