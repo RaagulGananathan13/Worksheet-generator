@@ -216,27 +216,28 @@ export default function Dashboard() {
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
 
-            {/* Create New (English) */}
-            <button
-              onClick={() => { useWorksheetStore.getState().setWorksheetLang('en'); setView('upload'); }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-orange to-brand-orange-dark text-white text-sm font-semibold rounded-xl
-                         shadow-md shadow-brand-orange/20 hover:shadow-lg hover:shadow-brand-orange/30
-                         transition-all duration-300 active:scale-[0.98]"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Create New</span>
-            </button>
-
-            {/* Create New (Sinhala) */}
-            <button
-              onClick={() => { useWorksheetStore.getState().setWorksheetLang('si'); setView('upload-sinhala'); }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-semibold rounded-xl
-                         shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30
-                         transition-all duration-300 active:scale-[0.98]"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">සිංහල</span>
-            </button>
+            {/* Create Actions (Grouped Button) - Only show if not empty */}
+            {worksheets.length > 0 && (
+              <div className="flex items-center bg-white border border-surface-200 p-1 rounded-xl shadow-sm">
+                <button
+                  onClick={() => { useWorksheetStore.getState().setWorksheetLang('en'); setView('upload'); }}
+                  className="flex items-center gap-2 px-4 py-2 text-brand-orange hover:bg-brand-orange hover:text-white text-sm font-bold rounded-lg transition-all duration-300"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline">New in English</span>
+                </button>
+                
+                <div className="w-px h-5 bg-surface-200 mx-1" />
+                
+                <button
+                  onClick={() => { useWorksheetStore.getState().setWorksheetLang('si'); setView('upload-sinhala'); }}
+                  className="flex items-center gap-2 px-4 py-2 text-amber-600 hover:bg-amber-500 hover:text-white text-sm font-bold rounded-lg transition-all duration-300"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline">New in Sinhala</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -302,15 +303,28 @@ export default function Dashboard() {
               />
               <h3 className="text-xl font-bold text-surface-900 mb-2">No worksheets yet</h3>
               <p className="text-surface-500 mb-8 text-center max-w-sm leading-relaxed">
-                Start your child's learning journey! Create your first worksheet by clicking "Create New" or "සිංහල" above.
+                Start your child's learning journey! Create your first worksheet by selecting a language below.
               </p>
-              <button
-                onClick={() => setView('upload')}
-                className="flex items-center gap-2 px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white text-sm font-bold rounded-xl shadow-lg shadow-brand-orange/20 hover:shadow-brand-orange/30 transition-all active:scale-[0.98]"
-              >
-                <Plus className="w-5 h-5" />
-                Create Worksheet
-              </button>
+              
+              <div className="flex items-center bg-white border border-surface-200 p-1.5 rounded-2xl shadow-md">
+                <button
+                  onClick={() => { useWorksheetStore.getState().setWorksheetLang('en'); setView('upload'); }}
+                  className="flex items-center gap-2 px-6 py-2.5 text-brand-orange hover:bg-brand-orange hover:text-white text-sm font-bold rounded-xl transition-all duration-300"
+                >
+                  <Plus className="w-5 h-5" />
+                  New in English
+                </button>
+                
+                <div className="w-px h-6 bg-surface-200 mx-2" />
+                
+                <button
+                  onClick={() => { useWorksheetStore.getState().setWorksheetLang('si'); setView('upload-sinhala'); }}
+                  className="flex items-center gap-2 px-6 py-2.5 text-amber-600 hover:bg-amber-500 hover:text-white text-sm font-bold rounded-xl transition-all duration-300"
+                >
+                  <Plus className="w-5 h-5" />
+                  New in Sinhala
+                </button>
+              </div>
             </div>
           )}
 
