@@ -293,19 +293,22 @@ export default function Dashboard() {
 
           {/* Empty State */}
           {!loading && !error && worksheets.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
-              <div className="w-20 h-20 bg-accent-50 rounded-2xl flex items-center justify-center mb-4">
-                <FileText className="w-9 h-9 text-brand-orange" />
-              </div>
-              <h3 className="text-lg font-semibold text-surface-900 mb-1">No worksheets yet</h3>
-              <p className="text-sm text-surface-500 mb-5 text-center max-w-sm">
-              Create your first worksheet by clicking "Create New" or "සිංහල" above.
+            <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
+              <img 
+                src="/assets/illustrations/ai_mascot.webp" 
+                alt="No Worksheets" 
+                className="w-48 h-48 object-contain mb-6 drop-shadow-xl animate-float"
+                loading="lazy"
+              />
+              <h3 className="text-xl font-bold text-surface-900 mb-2">No worksheets yet</h3>
+              <p className="text-surface-500 mb-8 text-center max-w-sm leading-relaxed">
+                Start your child's learning journey! Create your first worksheet by clicking "Create New" or "සිංහල" above.
               </p>
               <button
                 onClick={() => setView('upload')}
-                className="flex items-center gap-2 px-5 py-2.5 bg-brand-orange hover:bg-brand-orange-dark text-white text-sm font-semibold rounded-xl shadow-md transition-all active:scale-[0.98]"
+                className="flex items-center gap-2 px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white text-sm font-bold rounded-xl shadow-lg shadow-brand-orange/20 hover:shadow-brand-orange/30 transition-all active:scale-[0.98]"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-5 h-5" />
                 Create Worksheet
               </button>
             </div>

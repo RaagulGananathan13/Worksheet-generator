@@ -179,11 +179,16 @@ export default function UploadScreen() {
               />
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center">
-              <img src="/gb-logo.jpg" alt="GeniusBees" className="h-16 object-contain mb-4 opacity-40" />
-              <p className="text-surface-700 text-sm font-medium mb-1">No preview yet</p>
-              <p className="text-surface-500 text-xs max-w-xs">
-                Paste HTML code in the left panel to see a live preview of your worksheet here
+            <div className="h-full flex flex-col items-center justify-center text-center px-6 animate-fade-in">
+              <img 
+                src="/assets/illustrations/how_it_works.webp" 
+                alt="How it works" 
+                className="w-56 h-56 object-contain mb-6 drop-shadow-lg animate-float"
+                loading="lazy" 
+              />
+              <h3 className="text-xl font-bold text-surface-900 mb-2">Live Preview Area</h3>
+              <p className="text-surface-500 text-sm max-w-md leading-relaxed">
+                Paste your HTML code in the left panel to see a live, interactive preview of your worksheet here.
               </p>
             </div>
           )}
