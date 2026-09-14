@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Cropper - Green Border Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 500px;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            display: none;
+        }
+        .crop-preview {
+            max-width: 100%;
+            max-height: 500px;
+            border: 1px solid #28a745;
+            margin: 10px 0;
+            display: none;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .btn-upload {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn-upload:hover {
+            background-color: #218838;
+        }
+        .btn-download {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+            display: none;
+            transition: background-color 0.3s;
+        }
+        .btn-download:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            display: none;
+            margin: 10px 0;
+        }
+        .coords-display {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-family: monospace;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Image Cropper</h1>
+        <p class="text-center text-muted mb-4">Upload an image with a green border to automatically crop it</p>
+        
+        <div class="info-box">
+            <h5>How to use:</h5>
+            <ol>
+                <li>Upload an image with a green border</li>
+                <li>The system will automatically detect and crop to the green border</li>
+                <li>Download the cropped image</li>
+            </ol>
+            <p class="mb-0"><strong>Tip:</strong> For best results, ensure the green border is clearly visible and not too thick.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="imageInput" class="form-label">Select an image with green border:</label>
+                    <input class="form-control" type="file" id="imageInput" accept="image/*">
+                </div>
+                <div class="mb-3">
+                    <label for="paddingInput" class="form-label">Padding (pixels):</label>
+                    <input type="number" class="form-control" id="paddingInput" value="10" min="0" max="100">
+                </div>
+                <button id="uploadBtn" class="btn-upload">Process Image</button>
+                <a id="downloadBtn" class="btn-download" download="cropped_image.png">
+                    <i class="fas fa-download"></i> Download Cropped Image
+                </a>
+                <div class="loading" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Processing...</span>
+                    </div>
+                    <span class="ms-2">Processing image...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5>Original Image</h5>
+                <div class="preview-container">
+                    <img id="originalPreview" class="image-preview" alt="Original">
+                    <p id="noImageText" class="text-muted">No image selected</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>Cropped Result</h5>
+                <div class="preview-container">
+                    <img id="croppedPreview" class="crop-preview" alt="Cropped">
+                    <p id="noResultText" class="text-muted">Cropped image will appear here</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="coords-display" id="coordsDisplay">
+            <h6>Crop Coordinates:</h6>
+            <div id="coordsInfo"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageInput = document.getElementById('imageInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const originalPreview = document.getElementById('originalPreview');
+            const croppedPreview = document.getElementById('croppedPreview');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const noImageText = document.getElementById('noImageText');
+            const noResultText = document.getElementById('noResultText');
+            const coordsDisplay = document.getElementById('coordsDisplay');
+            const coordsInfo = document.getElementById('coordsInfo');
+            const paddingInput = document.getElementById('paddingInput');
+
+            // Preview selected image
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        originalPreview.src = event.target.result;
+                        originalPreview.style.display = 'block';
+                        noImageText.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Reset cropped preview
+                    croppedPreview.style.display = 'none';
+                    noResultText.style.display = 'block';
+                    downloadBtn.style.display = 'none';
+                    coordsDisplay.style.display = 'none';
+                }
+            });
+
+            // Handle image upload and processing
+            uploadBtn.addEventListener('click', async function() {
+                const file = imageInput.files[0];
+                if (!file) {
+                    alert('Please select an image first');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('padding', paddingInput.value || 10);
+
+                try {
+                    // Show loading state
+                    loadingSpinner.style.display = 'block';
+                    uploadBtn.disabled = true;
+
+                    const response = await fetch('/crop-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.status === 'success') {
+                        // Display cropped image
+                        croppedPreview.src = result.image_url + '?t=' + new Date().getTime();
+                        croppedPreview.style.display = 'block';
+                        noResultText.style.display = 'none';
+                        
+                        // Enable download button
+                        downloadBtn.href = result.image_url;
+                        downloadBtn.download = 'cropped_' + file.name.split('.')[0] + '.png';
+                        downloadBtn.style.display = 'inline-block';
+                        
+                        // Show coordinates
+                        if (result.crop_coordinates) {
+                            const coords = result.crop_coordinates;
+                            coordsInfo.innerHTML = `
+                                <p>X: ${coords.x}px, Y: ${coords.y}px</p>
+                                <p>Width: ${coords.width}px, Height: ${coords.height}px</p>
+                                <p>Original size: ${result.original_size.width} × ${result.original_size.height}px</p>
+                                <p>Cropped size: ${result.cropped_size.width} × ${result.cropped_size.height}px</p>
+                            `;
+                            coordsDisplay.style.display = 'block';
+                        }
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while processing the image');
+                } finally {
+                    loadingSpinner.style.display = 'none';
+                    uploadBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

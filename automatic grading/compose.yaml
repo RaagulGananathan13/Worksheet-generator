@@ -1,0 +1,42 @@
+services:
+  grading:
+    build: .
+    restart: unless-stopped
+    environment:
+      AG_BOOTSTRAP_TOKEN: ${AG_BOOTSTRAP_TOKEN:?Set AG_BOOTSTRAP_TOKEN in .env}
+      AG_SECURE_COOKIES: "1"
+      AG_ALLOWED_ORIGINS: https://${AG_DOMAIN:?Set AG_DOMAIN in .env}
+      AG_SAMPLES_DIR: /samples
+      OCR_MIN_CONFIDENCE: ${OCR_MIN_CONFIDENCE:-0.98}
+      OCR_CPU_THREADS: ${OCR_CPU_THREADS:-2}
+    volumes:
+      - grading-data:/app/data
+      - ../sample-worksheets:/samples:ro
+    expose:
+      - "8001"
+    init: true
+    mem_limit: 6g
+    cpus: 3.0
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - grading
+    environment:
+      AG_DOMAIN: ${AG_DOMAIN:?Set AG_DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+volumes:
+  grading-data:
+  caddy-data:
+  caddy-config:

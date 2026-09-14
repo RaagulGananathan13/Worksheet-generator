@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/
+artifacts/
+.pytest_cache/
+.api-tests-*/
+.pdf-tests-*/
+.paper-tests-*/
+.paper-api-render-*/
+.paper-migration-*/
+.demo-api-tests-*/
+.retry-migration-*/
+.retry-report-tests-*/
+.diag-*/
+node_modules/

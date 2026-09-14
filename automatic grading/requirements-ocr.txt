@@ -1,0 +1,9 @@
+# Optional free, local CPU handwriting recognition. Install after requirements.txt.
+# Verified with Python 3.13 and these versions; no API subscription required.
+torch==2.11.0
+torchvision==0.26.0
+transformers==5.7.0
+safetensors==0.7.0
+huggingface-hub==1.12.0
+requests==2.32.4
+Pillow==11.1.0

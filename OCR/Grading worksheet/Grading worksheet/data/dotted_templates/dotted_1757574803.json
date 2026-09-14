@@ -1,0 +1,150 @@
+{
+  "id": "dotted_1757574803",
+  "name": "pp",
+  "created_at": "2025-09-11T12:43:23.264632",
+  "image_path": "data\\dotted_templates\\images\\worksheet_dotted_1757574803.png",
+  "image_dimensions": {
+    "width": 916,
+    "height": 1173
+  },
+  "questions": [
+    {
+      "id": "Q1",
+      "color": "green",
+      "expected_answer": "round",
+      "position": {
+        "x": 321,
+        "y": 486,
+        "x2": 584,
+        "y2": 486,
+        "length": 263
+      },
+      "relative_position": {
+        "x": 0.35043668122270744,
+        "y": 0.4143222506393862,
+        "x2": 0.6375545851528385,
+        "y2": 0.4143222506393862,
+        "length": 0.22421142369991476
+      },
+      "metadata": {
+        "angle": 0,
+        "detection_method": "hough_lines_horizontal"
+      }
+    },
+    {
+      "id": "Q2",
+      "color": "green",
+      "expected_answer": "legs",
+      "position": {
+        "x": 355,
+        "y": 591,
+        "x2": 675,
+        "y2": 591,
+        "length": 320
+      },
+      "relative_position": {
+        "x": 0.3875545851528384,
+        "y": 0.5038363171355499,
+        "x2": 0.7368995633187773,
+        "y2": 0.5038363171355499,
+        "length": 0.2728047740835465
+      },
+      "metadata": {
+        "angle": 0,
+        "detection_method": "hough_lines_horizontal"
+      }
+    },
+    {
+      "id": "Q3",
+      "color": "green",
+      "expected_answer": "fur",
+      "position": {
+        "x": 337,
+        "y": 694,
+        "x2": 665,
+        "y2": 694,
+        "length": 328
+      },
+      "relative_position": {
+        "x": 0.36790393013100436,
+        "y": 0.5916453537936914,
+        "x2": 0.7259825327510917,
+        "y2": 0.5916453537936914,
+        "length": 0.2796248934356351
+      },
+      "metadata": {
+        "angle": 0,
+        "detection_method": "hough_lines_horizontal"
+      }
+    },
+    {
+      "id": "Q4",
+      "color": "green",
+      "expected_answer": "chocolate",
+      "position": {
+        "x": 284,
+        "y": 801,
+        "x2": 553,
+        "y2": 801,
+        "length": 269
+      },
+      "relative_position": {
+        "x": 0.31004366812227074,
+        "y": 0.6828644501278772,
+        "x2": 0.6037117903930131,
+        "y2": 0.6828644501278772,
+        "length": 0.22932651321398123
+      },
+      "metadata": {
+        "angle": 0,
+        "detection_method": "hough_lines_horizontal"
+      }
+    },
+    {
+      "id": "Q5",
+      "color": "green",
+      "expected_answer": "months",
+      "position": {
+        "x": 460,
+        "y": 906,
+        "x2": 787,
+        "y2": 906,
+        "length": 327
+      },
+      "relative_position": {
+        "x": 0.5021834061135371,
+        "y": 0.7723785166240409,
+        "x2": 0.8591703056768559,
+        "y2": 0.7723785166240409,
+        "length": 0.27877237851662406
+      },
+      "metadata": {
+        "angle": 0,
+        "detection_method": "hough_lines_horizontal"
+      }
+    },
+    {
+      "id": "Q6",
+      "color": "green",
+      "expected_answer": "year",
+      "position": {
+        "x": 513,
+        "y": 1011,
+        "x2": 790,
+        "y2": 1011,
+        "length": 277
+      },
+      "relative_position": {
+        "x": 0.5600436681222707,
+        "y": 0.8618925831202046,
+        "x2": 0.8624454148471615,
+        "y2": 0.8618925831202046,
+        "length": 0.2361466325660699
+      },
+      "metadata": {
+        "angle": 0,
+        "detection_method": "hough_lines_horizontal"
+      }
+    }
+  ]
+}

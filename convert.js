@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const dir = 'c:/Users/94775/Desktop/Worksheet-generator/frontend/public/assets/illustrations';
+const dir = path.join(__dirname, 'frontend', 'public', 'assets', 'illustrations');
 
 async function convert() {
   const files = fs.readdirSync(dir).filter(f => f.endsWith('.png'));

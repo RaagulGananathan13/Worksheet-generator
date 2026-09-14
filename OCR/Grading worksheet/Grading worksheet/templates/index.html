@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Handwriting OCR - Extract Text from Images</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Extract text from handwritten or printed text in images with our powerful OCR tool">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✍️</text></svg>">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --success-color: #4cc9f0;
+      --light-bg: #f8f9fa;
+      --dark-color: #212529;
+      --border-radius: 12px;
+      --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: var(--primary-color) !important;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-brand i {
+      font-size: 1.5rem;
+    }
+
+    .main-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card {
+      border: none;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      background: white;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      font-weight: 600;
+      padding: 1.25rem 1.5rem;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .card-header.bg-light {
+      background: #f8f9fa !important;
+      color: #212529 !important;
+      border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+
+    .card-header[aria-expanded="true"] .fa-chevron-down {
+      transform: rotate(180deg);
+    }
+
+    .card-header .fa-chevron-down {
+      transition: transform 0.3s ease;
+    }
+
+    .form-range::-webkit-slider-thumb {
+      background: var(--primary-color);
+    }
+
+    .form-range:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+    }
+
+    .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .form-switch .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .card-body {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: var(--border-radius);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
+      margin: 0 auto 2rem;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 250px;
+    }
+
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--primary-color);
+      background-color: rgba(67, 97, 238, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.1);
+    }
+
+    .upload-area i {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 1.25rem;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .upload-area:hover i {
+      transform: scale(1.1);
+    }
+
+    .upload-area h4 {
+      font-weight: 600;
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      color: var(--dark-color);
+    }
+
+    .upload-area p {
+      color: #6b7280;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 0.875rem 2rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    #imagePreview {
+      max-height: 400px;
+      width: auto;
+      max-width: 100%;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      display: block;
+      margin: 0 auto 1.5rem;
+    }
+
+    #previewContainer {
+      text-align: center;
+      margin: 1.5rem 0;
+      display: none;
+    }
+
+    .result-card {
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .result-text {
+      background-color: #f8fafc;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      text-align: left;
+      border: 1px solid #e2e8f0;
+    }
+
+    .confidence-badge {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .confidence-badge i {
+      font-size: 1.1rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-outline-primary {
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      background: transparent;
+    }
+
+    .btn-outline-primary:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1100;
+      min-width: 300px;
+      box-shadow: var(--box-shadow);
+      border: none;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .toast-header {
+      background: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      font-weight: 500;
+    }
+
+    .toast-body {
+      padding: 1rem 1.25rem;
+    }
+
+    .toast-success .toast-header {
+      color: #059669;
+    }
+
+    .toast-error .toast-header {
+      color: #dc2626;
+    }
+
+    .feature-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(67, 97, 238, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      height: 100%;
+      background: white;
+      border: 1px solid #e2e8f0;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--box-shadow);
+    }
+
+    .feature-card h5 {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      background: white;
+      padding: 2rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      color: #6b7280;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        margin: 1rem auto;
+      }
+
+      .card-body {
+        padding: 1.5rem 1rem;
+      }
+
+      .upload-area {
+        padding: 1.5rem 1rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="fas fa-pen-fancy"></i>
+        <span>Handwriting OCR</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#how-it-works">How It Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bold mb-3">Extract Text from Images with AI</h1>
+      <p class="lead text-muted mb-4">Quickly convert images with handwritten or printed text into editable and searchable content.</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="card mb-5">
+      <div class="card-header">
+        <i class="fas fa-upload me-2"></i> Upload Image
+      </div>
+      <div class="card-body">
+        <!-- Preview Container -->
+        <div id="previewContainer">
+          <img id="imagePreview" src="" class="img-fluid" alt="Image Preview" />
+          <button type="button" class="btn btn-outline-danger btn-sm mt-2" id="removeImage">
+            <i class="fas fa-times me-1"></i> Remove Image
+          </button>
+        </div>
+
+        <!-- Upload Form -->
+        <form id="uploadForm" enctype="multipart/form-data">
+          <div class="mb-4">
+            <label for="imageUpload" class="form-label">
+              <div class="upload-area" id="dropArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h4>Drag & Drop Your Image Here</h4>
+                <p>or click to browse files</p>
+                <small class="text-muted">Supports JPG, PNG, JPEG (Max 5MB)</small>
+              </div>
+              <input class="form-control d-none" type="file" id="imageUpload" accept="image/*" required>
+            </label>
+          </div>
+
+          <div class="mb-4">
+            <label for="languages" class="form-label">Select Language</label>
+            <select class="form-select" id="languages">
+              <option value="eng" selected>English</option>
+              <option value="spa">Spanish</option>
+              <option value="fra">French</option>
+              <option value="deu">German</option>
+              <option value="ita">Italian</option>
+              <option value="por">Portuguese</option>
+              <option value="rus">Russian</option>
+              <option value="chi_sim">Chinese (Simplified)</option>
+              <option value="jpn">Japanese</option>
+              <option value="kor">Korean</option>
+            </select>
+          </div>
+
+          <!-- Preprocessing Options -->
+          <div class="card mb-4">
+            <div class="card-header bg-light" data-bs-toggle="collapse" href="#preprocessingOptions" role="button" aria-expanded="false" aria-controls="preprocessingOptions" style="cursor: pointer;">
+              <i class="fas fa-sliders-h me-2"></i> Image Preprocessing Options
+              <i class="fas fa-chevron-down float-end mt-1"></i>
+            </div>
+            <div class="collapse" id="preprocessingOptions">
+              <div class="card-body">
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="enablePreprocess" name="preprocess" checked>
+                  <label class="form-check-label" for="enablePreprocess">Enable Image Preprocessing</label>
+                </div>
+
+                <div id="preprocessingControls">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="denoise" name="denoise" checked>
+                        <label class="form-check-label" for="denoise">Remove Noise</label>
+                        <small class="text-muted d-block">Reduces image noise for better clarity</small>
+                      </div>
+
+                      <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="deskew" name="deskew" checked>
+                        <label class="form-check-label" for="deskew">Auto-rotate Image</label>
+                        <small class="text-muted d-block">Corrects skewed or rotated text</small>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="sharpen" name="sharpen" checked>
+                        <label class="form-check-label" for="sharpen">Sharpen Text</label>
+                        <small class="text-muted d-block">Enhances text edges for better recognition</small>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="contrast" class="form-label">Contrast: <span id="contrastValue">1.2</span>x</label>
+                        <input type="range" class="form-range" id="contrast" name="contrast" min="0.5" max="2" step="0.1" value="1.2">
+                        <small class="text-muted">Adjust image contrast</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group mb-0">
+                    <label class="form-label">Threshold Method</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="threshold" id="adaptive" value="adaptive" checked>
+                      <label class="form-check-label" for="adaptive">Adaptive Thresholding</label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="radio" name="threshold" id="otsu" value="otsu">
+                      <label class="form-check-label" for="otsu">Otsu's Method</label>
+                    </div>
+                    <small class="text-muted">Method for converting to black and white</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" id="processBtn">
+            <span class="spinner-border spinner-border-sm d-none me-2" id="spinner" role="status" aria-hidden="true"></span>
+            <span id="btnText">Extract Text</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Result Card -->
+    <div class="card result-card" id="resultContainer">
+      <div class="card-header">
+        <i class="fas fa-file-alt me-2"></i> Extracted Text
+      </div>
+      <div class="card-body">
+        <div class="result-text" id="extractedText"></div>
+        <div class="confidence-badge" id="confidenceBadge">
+          <i class="fas fa-check-circle"></i>
+          <span>Confidence: <span id="confidenceScore">0%</span></span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn btn-outline-primary flex-grow-1" id="copyText">
+            <i class="far fa-copy me-2"></i> Copy Text
+          </button>
+          <button type="button" class="btn btn-outline-primary flex-grow-1" id="downloadText">
+            <i class="fas fa-download me-2"></i> Download
+          </button>
+          <button type="button" class="btn btn-outline-primary flex-grow-1" id="clearAll">
+            <i class="fas fa-redo me-2"></i> Clear All
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="my-5 pt-5">
+      <h2 class="text-center mb-5">Why Choose Our OCR Tool</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h5>Lightning Fast</h5>
+            <p>Process your images in seconds with our high-speed OCR technology that delivers accurate results instantly.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-braille"></i>
+            </div>
+            <h5>Handwriting Recognition</h5>
+            <p>Advanced AI that accurately recognizes both printed text and various handwriting styles with high precision.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-language"></i>
+            </div>
+            <h5>Multiple Languages</h5>
+            <p>Supports text extraction in multiple languages, making it perfect for international users and documents.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="my-5 pt-5">
+      <h2 class="text-center mb-5">How It Works</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="text-center p-3">
+            <div class="mb-3">
+              <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">1</span>
+            </div>
+            <h5>Upload Your Image</h5>
+            <p class="text-muted">Drag & drop your image or click to browse files from your device.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center p-3">
+            <div class="mb-3">
+              <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">2</span>
+            </div>
+            <h5>AI Processing</h5>
+            <p class="text-muted">Our advanced AI analyzes the image and extracts text with high accuracy.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center p-3">
+            <div class="mb-3">
+              <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">3</span>
+            </div>
+            <h5>Get Your Text</h5>
+            <p class="text-muted">Copy, download, or edit the extracted text instantly. It's that simple!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contact" class="text-center">
+    <div class="container">
+      <h3 class="mb-4">Handwriting OCR</h3>
+      <p class="text-muted mb-4">Extract text from images with ease using our powerful OCR technology.</p>
+
+      <div class="footer-links">
+        <a href="#">Home</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="social-links">
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-github"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+
+      <div class="copyright">
+        &copy; 2023 Handwriting OCR. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toastContainer"></div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Toastr for Notifications -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <!-- PDF Generation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script></script>
+
+<!-- JavaScript Logic -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize preprocessing controls
+  const initPreprocessingControls = () => {
+    const enablePreprocess = document.getElementById('enablePreprocess');
+    const preprocessingControls = document.getElementById('preprocessingControls');
+    const contrastSlider = document.getElementById('contrast');
+    const contrastValue = document.getElementById('contrastValue');
+
+    if (!enablePreprocess || !preprocessingControls) return;
+
+    // Toggle preprocessing controls based on enable/disable checkbox
+    const togglePreprocessingControls = () => {
+      const inputs = preprocessingControls.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        input.disabled = !enablePreprocess.checked;
+      });
+    };
+
+    // Update contrast value display
+    if (contrastSlider && contrastValue) {
+      contrastSlider.addEventListener('input', () => {
+        contrastValue.textContent = contrastSlider.value;
+      });
+    }
+
+    // Initialize controls
+    togglePreprocessingControls();
+    enablePreprocess.addEventListener('change', togglePreprocessingControls);
+  };
+
+  // Initialize the controls when the page loads
+  initPreprocessingControls();
+
+  // Initialize toastr
+  toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: 'toast-top-right',
+    timeOut: 5000,
+    extendedTimeOut: 2000
+  };
+
+  // DOM Elements
+  const uploadForm = document.getElementById('uploadForm');
+  const fileInput = document.getElementById('imageUpload');
+  const imagePreview = document.getElementById('imagePreview');
+  const previewContainer = document.getElementById('previewContainer');
+  const resultContainer = document.getElementById('resultContainer');
+  const extractedText = document.getElementById('extractedText');
+  const confidenceScore = document.getElementById('confidenceScore');
+  const processBtn = document.getElementById('processBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+  const dropArea = document.getElementById('dropArea');
+  const removeImageBtn = document.getElementById('removeImage');
+  const copyTextBtn = document.getElementById('copyText');
+  const downloadTextBtn = document.getElementById('downloadText');
+  const clearAllBtn = document.getElementById('clearAll');
+  const confidenceBadge = document.getElementById('confidenceBadge');
+  const languageSelect = document.getElementById('languages');
+
+  // Event Listeners
+  uploadForm.addEventListener('submit', handleSubmit);
+  fileInput.addEventListener('change', handleFiles);
+  if (removeImageBtn) removeImageBtn.addEventListener('click', resetFileInput);
+  if (copyTextBtn) copyTextBtn.addEventListener('click', copyToClipboard);
+  if (downloadTextBtn) downloadTextBtn.addEventListener('click', downloadText);
+  if (clearAllBtn) clearAllBtn.addEventListener('click', resetAll);
+  if (dropArea) {
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop functionality
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    dropArea.addEventListener('drop', handleDrop, false);
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        window.scrollTo({
+          top: targetElement.offsetTop - 80,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Helper Functions
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function highlight() {
+    dropArea.classList.add('dragover');
+  }
+
+  function unhighlight() {
+    dropArea.classList.remove('dragover');
+  }
+
+  function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+
+    if (files.length) {
+      fileInput.files = files;
+      handleFiles({ target: { files } });
+    }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+      showToast('Error', 'Please select an image file', 'error');
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('languages', languageSelect ? languageSelect.value : 'eng');
+    formData.append('detail', '1');
+
+  // Add preprocessing parameters if enabled
+    const enablePreprocess = document.getElementById('enablePreprocess');
+    if (enablePreprocess && enablePreprocess.checked) {
+      formData.append('preprocess', 'true');
+      formData.append('denoise', document.getElementById('denoise').checked);
+      formData.append('deskew', document.getElementById('deskew').checked);
+      formData.append('sharpen', document.getElementById('sharpen').checked);
+      formData.append('contrast', document.getElementById('contrast').value);
+
+      const thresholdMethod = document.querySelector('input[name="threshold"]:checked');
+      if (thresholdMethod) {
+        formData.append('threshold', thresholdMethod.value);
+      }
+    } else {
+      formData.append('preprocess', 'false');
+    }
+    // Update UI for processing
+    if (processBtn) processBtn.disabled = true;
+    if (spinner) spinner.classList.remove('d-none');
+    if (btnText) btnText.textContent = 'Processing...';
+
+    try {
+      const response = await fetch('/api/ocr', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to process image');
+      }
+
+      const result = await response.json();
+
+      // Display results
+      displayResults(result);
+
+    } catch (error) {
+      console.error('Error:', error);
+      showToast('Error', error.message || 'Failed to process image', 'error');
+    } finally {
+      if (processBtn) processBtn.disabled = false;
+      if (spinner) spinner.classList.add('d-none');
+      if (btnText) btnText.textContent = 'Extract Text';
+    }
+  }
+
+  function displayResults(result) {
+    if (!extractedText || !resultContainer) return;
+
+    // Update extracted text
+    extractedText.textContent = result.text || 'No text was extracted.';
+
+    // Update confidence score
+    const confidence = result.confidence ? Math.round(result.confidence * 100) : 0;
+    if (confidenceScore) confidenceScore.textContent = `${confidence}%`;
+
+    // Update confidence badge based on confidence level
+    updateConfidenceBadge(confidence);
+
+    // Show result container with animation
+    resultContainer.style.display = 'block';
+    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    showToast('Success', 'Text extracted successfully!', 'success');
+  }
+
+  function updateConfidenceBadge(confidence) {
+    if (!confidenceBadge) return;
+
+    if (confidence >= 80) {
+      confidenceBadge.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Confidence: <span id="confidenceScore">${confidence}%</span> (High)</span>
+      `;
+      confidenceBadge.style.backgroundColor = '#dcfce7';
+      confidenceBadge.style.color = '#166534';
+    } else if (confidence >= 50) {
+      confidenceBadge.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Confidence: <span id="confidenceScore">${confidence}%</span> (Medium)</span>
+      `;
+      confidenceBadge.style.backgroundColor = '#fef9c3';
+      confidenceBadge.style.color = '#854d0e';
+    } else {
+      confidenceBadge.innerHTML = `
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Confidence: <span id="confidenceScore">${confidence}%</span> (Low)</span>
+      `;
+      confidenceBadge.style.backgroundColor = '#fee2e2';
+      confidenceBadge.style.color = '#991b1b';
+    }
+
+    // Re-attach event listener to the new confidence score element
+    if (confidenceScore) confidenceScore.textContent = `${confidence}%`;
+  }
+
+  function handleFiles(e) {
+    const files = e.target.files;
+    if (files.length === 0) return;
+
+    const file = files[0];
+
+    // Validate file type
+    if (!file.type.match('image.*')) {
+      showToast('Error', 'Please upload an image file (JPG, PNG, JPEG)', 'error');
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Error', 'File size should be less than 5MB', 'error');
+      return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      if (imagePreview) imagePreview.src = e.target.result;
+      if (previewContainer) {
+        previewContainer.style.display = 'block';
+
+        // Scroll to preview
+        setTimeout(() => {
+          previewContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function copyToClipboard() {
+    if (!extractedText || !extractedText.textContent.trim()) {
+      showToast('Error', 'No text to copy', 'error');
+      return;
+    }
+
+    navigator.clipboard.writeText(extractedText.textContent)
+      .then(() => {
+        showToast('Success', 'Text copied to clipboard!', 'success');
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err);
+        showToast('Error', 'Failed to copy text', 'error');
+      });
+  }
+
+  function downloadText() {
+    if (!extractedText || !extractedText.textContent.trim()) {
+      showToast('Error', 'No text to download', 'error');
+      return;
+    }
+
+    const element = document.createElement('a');
+    const file = new Blob([extractedText.textContent], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'extracted-text.txt';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+
+    showToast('Success', 'Text downloaded successfully!', 'success');
+  }
+
+  function resetFileInput() {
+    if (fileInput) fileInput.value = '';
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (resultContainer) resultContainer.style.display = 'none';
+    if (extractedText) extractedText.textContent = '';
+    if (confidenceScore) confidenceScore.textContent = '0%';
+
+    if (confidenceBadge) {
+      confidenceBadge.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Confidence: <span id="confidenceScore">0%</span></span>
+      `;
+      confidenceBadge.style.backgroundColor = '#e0f2fe';
+      confidenceBadge.style.color = '#0369a1';
+    }
+  }
+
+  function resetAll() {
+    resetFileInput();
+    showToast('Info', 'All fields have been reset', 'info');
+  }
+
+  function showToast(title, message, type = 'info') {
+    // Use toastr if available, otherwise fallback to alert
+    if (window.toastr) {
+      switch(type) {
+        case 'success':
+          toastr.success(message, title);
+          break;
+        case 'error':
+          toastr.error(message, title);
+          break;
+        case 'warning':
+          toastr.warning(message, title);
+          break;
+        default:
+          toastr.info(message, title);
+      }
+    } else {
+      // Fallback to browser alert
+      alert(`${title}: ${message}`);
+    }
+
+
+  }
+});
+</script>
+
+</body>
+</html>

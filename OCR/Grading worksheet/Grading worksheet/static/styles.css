@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #F2994A;
+  --color-primary-hover: #E18732;
+  --color-accent-blue: #F2994A;
+  --color-accent-purple: #B388FF;
+  --color-danger: #DC3545;
+
+  --color-text: #2D3748;
+  --color-text-muted: #6B7280;
+
+  --color-bg: #F6FAFD;
+  --color-surface: #FFFFFF;
+
+  --color-border: #E6EEF7;
+  --color-border-tint: #DDEAFB;
+
+  --color-success: #27AE60;
+  --shadow-soft: 0 10px 30px rgba(16,24,40,0.06);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+
+/* Bootstrap 5 variable overrides */
+:root {
+  --bs-primary: var(--color-primary);
+  --bs-primary-rgb: 242, 153, 74;
+  --bs-info: var(--color-primary);
+  --bs-info-rgb: 242, 153, 74;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+/* Cards */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-tint);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+.card-header {
+  border-bottom: 1px solid var(--color-border);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+/* Ensure disabled primary buttons are orange too */
+.btn-primary:disabled, .btn-primary.disabled,
+.btn-primary:disabled:hover, .btn-primary.disabled:hover {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  opacity: .65; /* keep disabled look */
+}
+
+/* Toggle switches (Bootstrap form-check-input) */
+.form-check-input:checked {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+.form-switch .form-check-input:focus { box-shadow: 0 0 0 .25rem rgba(242,153,74,.20); }
+.btn-secondary {
+  background: #fff;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* Badges and progress */
+.badge.bg-primary { background-color: var(--color-primary) !important; }
+.progress { background-color: #eef3f8; border-radius: 999px; overflow: hidden; }
+.progress-bar { transition: width .3s ease; }
+
+/* Form controls */
+.form-control, .form-select {
+  border-radius: 12px;
+  border-color: var(--color-border);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 .25rem rgba(242,153,74,.20);
+}
+
+/* Links */
+.a, a { color: var(--color-primary); }
+a:hover { color: var(--color-primary-hover); }
+
+/* Helper upload area styling (if used) */
+.dropzone, .upload-area, .input-dashed {
+  border: 1px dashed var(--color-border-tint);
+  background: #FCFEFF;
+  border-radius: 14px;
+}
+
+/* Tables and list groups subtle tweaks */
+.list-group-item {
+  border-color: var(--color-border);
+}
+
+/* Headers */
+h1, h2, h3, h4, h5 { color: var(--color-text); }
+.text-muted { color: var(--color-text-muted) !important; }
+
+/* Number badges on overlays (compact circular, black bg) */
+.line-number, .box-number, .question-number-label {
+  background-color: #F2994AFF !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* Utility spacing smoothing */
+.container-fluid { max-width: 1200px; }

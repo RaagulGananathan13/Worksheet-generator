@@ -1,0 +1,10 @@
+{
+  "name": "geniusbees-automatic-grading-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/ink.test.mjs tests/session.test.mjs",
+    "test:ink": "node --test tests/ink.test.mjs",
+    "test:browser": "node tools/browser_smoke.cjs"
+  }
+}

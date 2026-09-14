@@ -1,0 +1,26 @@
+# Normalize line endings of text files in the repository.
+* text=auto
+
+# Binary files: never convert line endings. The classroom checks the exact
+# SHA-256 of sample and demo PDFs, so a converted PDF would stop working.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pth binary
+*.safetensors binary
+*.onnx binary
+*.sqlite3 binary
+
+# Files used on Linux servers and containers keep LF line endings.
+*.sh text eol=lf
+Dockerfile text eol=lf
+Caddyfile text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf

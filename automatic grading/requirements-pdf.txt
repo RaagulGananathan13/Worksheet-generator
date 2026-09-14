@@ -1,0 +1,7 @@
+# PDF renderer/reports and PDF verification fixtures. No PyMuPDF dependency.
+# PDFium/pypdfium2 and ReportLab ship their own bundled license notices.
+pypdfium2==5.13.0
+reportlab==4.4.7
+Pillow==11.1.0
+# Pure-Python PDF inspection/fixtures used by local verification and tools.
+pypdf==6.7.2

@@ -1,0 +1,1159 @@
+{
+  "format": "geniusbees-synthetic-demo-manifest-v1",
+  "synthetic": true,
+  "warning": "Visual fixtures only, not student-collected handwriting or accuracy evidence. Intended correct values are not guaranteed automatic OCR marks. Trace quality always needs review.",
+  "files": [
+    {
+      "pdf": "19963892-correct.synthetic.pdf",
+      "fixture": "19963892-correct.synthetic.json",
+      "source_filename": "19963892.pdf",
+      "source_sha256": "6f8bed06bff71a4c792009e8c10a94197d2699c8828118062619f957e8d512f3",
+      "scenario": "correct",
+      "title": "Basic division III",
+      "question_count": 11,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 11,
+      "pdf_sha256": "ee8f0c0dd49d2e4fefe4efbddc8f609d64f4fbded754f94241557c76e6d8d8e9",
+      "responses": [
+        {
+          "question_id": "word-1",
+          "label": "Stickers: number of students (final answer)",
+          "intended_written_value": "384",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "word-2",
+          "label": "Apples: number of baskets (final answer)",
+          "intended_written_value": "121",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "word-3",
+          "label": "Cookies: number of boxes (final answer)",
+          "intended_written_value": "300",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-1",
+          "label": "Division 1: 826 ÷ 2 quotient",
+          "intended_written_value": "413",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-2",
+          "label": "Division 2: 867 ÷ 3 quotient",
+          "intended_written_value": "289",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-3",
+          "label": "Division 3: 840 ÷ 4 quotient",
+          "intended_written_value": "210",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-4",
+          "label": "Division 4: 890 ÷ 5 quotient",
+          "intended_written_value": "178",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-5",
+          "label": "Division 5: 906 ÷ 6 quotient",
+          "intended_written_value": "151",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-6",
+          "label": "Division 6: 861 ÷ 7 quotient",
+          "intended_written_value": "123",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-7",
+          "label": "Division 7: 864 ÷ 8 quotient",
+          "intended_written_value": "108",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-8",
+          "label": "Division 8: 891 ÷ 9 quotient",
+          "intended_written_value": "99",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "19963892-mixed.synthetic.pdf",
+      "fixture": "19963892-mixed.synthetic.json",
+      "source_filename": "19963892.pdf",
+      "source_sha256": "6f8bed06bff71a4c792009e8c10a94197d2699c8828118062619f957e8d512f3",
+      "scenario": "mixed",
+      "title": "Basic division III",
+      "question_count": 11,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 9,
+      "pdf_sha256": "1b70c3bfc26347ac9d3562cfeb6dd419c339971a14f73a4680fcde55b6e8001a",
+      "responses": [
+        {
+          "question_id": "word-1",
+          "label": "Stickers: number of students (final answer)",
+          "intended_written_value": "385",
+          "intended_case": "deliberately wrong"
+        },
+        {
+          "question_id": "word-2",
+          "label": "Apples: number of baskets (final answer)",
+          "intended_written_value": "",
+          "intended_case": "blank"
+        },
+        {
+          "question_id": "word-3",
+          "label": "Cookies: number of boxes (final answer)",
+          "intended_written_value": "300",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-1",
+          "label": "Division 1: 826 ÷ 2 quotient",
+          "intended_written_value": "413",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-2",
+          "label": "Division 2: 867 ÷ 3 quotient",
+          "intended_written_value": "289",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-3",
+          "label": "Division 3: 840 ÷ 4 quotient",
+          "intended_written_value": "210",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-4",
+          "label": "Division 4: 890 ÷ 5 quotient",
+          "intended_written_value": "178",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-5",
+          "label": "Division 5: 906 ÷ 6 quotient",
+          "intended_written_value": "151",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-6",
+          "label": "Division 6: 861 ÷ 7 quotient",
+          "intended_written_value": "123",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-7",
+          "label": "Division 7: 864 ÷ 8 quotient",
+          "intended_written_value": "108",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "divide-8",
+          "label": "Division 8: 891 ÷ 9 quotient",
+          "intended_written_value": "99",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "35879581-correct.synthetic.pdf",
+      "fixture": "35879581-correct.synthetic.json",
+      "source_filename": "35879581.pdf",
+      "source_sha256": "34143e206e8b24d88120f0b82f7a3a7e1d02c111c4b1ec564cbd4fef7ef1a667",
+      "scenario": "correct",
+      "title": "Subtract from 92",
+      "question_count": 20,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 20,
+      "pdf_sha256": "c45728fafbbc1548dd44eca4c40965a081e6453fbb666af1c2f98f45f5471fa7",
+      "responses": [
+        {
+          "question_id": "subtract-1",
+          "label": "92 − 12",
+          "intended_written_value": "80",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-2",
+          "label": "92 − 90",
+          "intended_written_value": "2",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-3",
+          "label": "92 − 37",
+          "intended_written_value": "55",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-4",
+          "label": "92 − 58",
+          "intended_written_value": "34",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-5",
+          "label": "92 − 26",
+          "intended_written_value": "66",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-6",
+          "label": "92 − 69",
+          "intended_written_value": "23",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-7",
+          "label": "92 − 47",
+          "intended_written_value": "45",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-8",
+          "label": "92 − 78",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-9",
+          "label": "92 − 39",
+          "intended_written_value": "53",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-10",
+          "label": "92 − 84",
+          "intended_written_value": "8",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-11",
+          "label": "92 − 48",
+          "intended_written_value": "44",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-12",
+          "label": "92 − 27",
+          "intended_written_value": "65",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-13",
+          "label": "92 − 65",
+          "intended_written_value": "27",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-14",
+          "label": "92 − 54",
+          "intended_written_value": "38",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-15",
+          "label": "92 − 87",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-16",
+          "label": "92 − 34",
+          "intended_written_value": "58",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-17",
+          "label": "92 − 76",
+          "intended_written_value": "16",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-18",
+          "label": "92 − 59",
+          "intended_written_value": "33",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-19",
+          "label": "92 − 86",
+          "intended_written_value": "6",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-20",
+          "label": "92 − 43",
+          "intended_written_value": "49",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "35879581-mixed.synthetic.pdf",
+      "fixture": "35879581-mixed.synthetic.json",
+      "source_filename": "35879581.pdf",
+      "source_sha256": "34143e206e8b24d88120f0b82f7a3a7e1d02c111c4b1ec564cbd4fef7ef1a667",
+      "scenario": "mixed",
+      "title": "Subtract from 92",
+      "question_count": 20,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 18,
+      "pdf_sha256": "db95f0aac6c68ff9bfcefe4679acd91c8117e88ee63a34cb330532784ced05f2",
+      "responses": [
+        {
+          "question_id": "subtract-1",
+          "label": "92 − 12",
+          "intended_written_value": "81",
+          "intended_case": "deliberately wrong"
+        },
+        {
+          "question_id": "subtract-2",
+          "label": "92 − 90",
+          "intended_written_value": "",
+          "intended_case": "blank"
+        },
+        {
+          "question_id": "subtract-3",
+          "label": "92 − 37",
+          "intended_written_value": "55",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-4",
+          "label": "92 − 58",
+          "intended_written_value": "34",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-5",
+          "label": "92 − 26",
+          "intended_written_value": "66",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-6",
+          "label": "92 − 69",
+          "intended_written_value": "23",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-7",
+          "label": "92 − 47",
+          "intended_written_value": "45",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-8",
+          "label": "92 − 78",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-9",
+          "label": "92 − 39",
+          "intended_written_value": "53",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-10",
+          "label": "92 − 84",
+          "intended_written_value": "8",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-11",
+          "label": "92 − 48",
+          "intended_written_value": "44",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-12",
+          "label": "92 − 27",
+          "intended_written_value": "65",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-13",
+          "label": "92 − 65",
+          "intended_written_value": "27",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-14",
+          "label": "92 − 54",
+          "intended_written_value": "38",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-15",
+          "label": "92 − 87",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-16",
+          "label": "92 − 34",
+          "intended_written_value": "58",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-17",
+          "label": "92 − 76",
+          "intended_written_value": "16",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-18",
+          "label": "92 − 59",
+          "intended_written_value": "33",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-19",
+          "label": "92 − 86",
+          "intended_written_value": "6",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "subtract-20",
+          "label": "92 − 43",
+          "intended_written_value": "49",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "36635880-correct.synthetic.pdf",
+      "fixture": "36635880-correct.synthetic.json",
+      "source_filename": "36635880.pdf",
+      "source_sha256": "601ee8ca4f4e3f4b61d30715a9e5dcf3be177346ea87f616466b86d8e18e206b",
+      "scenario": "correct",
+      "title": "Write and trace 21–25",
+      "question_count": 15,
+      "manual_questions": 5,
+      "intended_correct_numeric_or_choice": 10,
+      "pdf_sha256": "5d6d1d42d8ad2d39a55c08ae87be1e70ea2e438c75c93b712734046a0d62acd0",
+      "responses": [
+        {
+          "question_id": "cabbage-21",
+          "label": "Write 21 inside the cabbage",
+          "intended_written_value": "21",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-21",
+          "label": "Trace 21: teacher checks shape and stroke placement",
+          "intended_written_value": "21",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-21",
+          "label": "Write 21 in the bottom box",
+          "intended_written_value": "21",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-22",
+          "label": "Write 22 inside the cabbage",
+          "intended_written_value": "22",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-22",
+          "label": "Trace 22: teacher checks shape and stroke placement",
+          "intended_written_value": "22",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-22",
+          "label": "Write 22 in the bottom box",
+          "intended_written_value": "22",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-23",
+          "label": "Write 23 inside the cabbage",
+          "intended_written_value": "23",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-23",
+          "label": "Trace 23: teacher checks shape and stroke placement",
+          "intended_written_value": "23",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-23",
+          "label": "Write 23 in the bottom box",
+          "intended_written_value": "23",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-24",
+          "label": "Write 24 inside the cabbage",
+          "intended_written_value": "24",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-24",
+          "label": "Trace 24: teacher checks shape and stroke placement",
+          "intended_written_value": "24",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-24",
+          "label": "Write 24 in the bottom box",
+          "intended_written_value": "24",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-25",
+          "label": "Write 25 inside the cabbage",
+          "intended_written_value": "25",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-25",
+          "label": "Trace 25: teacher checks shape and stroke placement",
+          "intended_written_value": "25",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-25",
+          "label": "Write 25 in the bottom box",
+          "intended_written_value": "25",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "36635880-mixed.synthetic.pdf",
+      "fixture": "36635880-mixed.synthetic.json",
+      "source_filename": "36635880.pdf",
+      "source_sha256": "601ee8ca4f4e3f4b61d30715a9e5dcf3be177346ea87f616466b86d8e18e206b",
+      "scenario": "mixed",
+      "title": "Write and trace 21–25",
+      "question_count": 15,
+      "manual_questions": 5,
+      "intended_correct_numeric_or_choice": 8,
+      "pdf_sha256": "e3fd1c5afd27638103de4c7e722a5ed4025f32e2a5dea77072a0406412088d21",
+      "responses": [
+        {
+          "question_id": "cabbage-21",
+          "label": "Write 21 inside the cabbage",
+          "intended_written_value": "22",
+          "intended_case": "deliberately wrong"
+        },
+        {
+          "question_id": "trace-21",
+          "label": "Trace 21: teacher checks shape and stroke placement",
+          "intended_written_value": "21",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-21",
+          "label": "Write 21 in the bottom box",
+          "intended_written_value": "",
+          "intended_case": "blank"
+        },
+        {
+          "question_id": "cabbage-22",
+          "label": "Write 22 inside the cabbage",
+          "intended_written_value": "22",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-22",
+          "label": "Trace 22: teacher checks shape and stroke placement",
+          "intended_written_value": "22",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-22",
+          "label": "Write 22 in the bottom box",
+          "intended_written_value": "22",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-23",
+          "label": "Write 23 inside the cabbage",
+          "intended_written_value": "23",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-23",
+          "label": "Trace 23: teacher checks shape and stroke placement",
+          "intended_written_value": "23",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-23",
+          "label": "Write 23 in the bottom box",
+          "intended_written_value": "23",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-24",
+          "label": "Write 24 inside the cabbage",
+          "intended_written_value": "24",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-24",
+          "label": "Trace 24: teacher checks shape and stroke placement",
+          "intended_written_value": "24",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-24",
+          "label": "Write 24 in the bottom box",
+          "intended_written_value": "24",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "cabbage-25",
+          "label": "Write 25 inside the cabbage",
+          "intended_written_value": "25",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "trace-25",
+          "label": "Trace 25: teacher checks shape and stroke placement",
+          "intended_written_value": "25",
+          "intended_case": "manual"
+        },
+        {
+          "question_id": "write-25",
+          "label": "Write 25 in the bottom box",
+          "intended_written_value": "25",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "48544102-correct.synthetic.pdf",
+      "fixture": "48544102-correct.synthetic.json",
+      "source_filename": "48544102.pdf",
+      "source_sha256": "532df7e2a487f1325c7c027a31c0d2ff769791103fdb35f22d42566310382025",
+      "scenario": "correct",
+      "title": "Add 2",
+      "question_count": 16,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 16,
+      "pdf_sha256": "3e26d21f814193cb325bd0a6f2c48565dc35cf6a7140181e278fcb9d2728672c",
+      "responses": [
+        {
+          "question_id": "add-1",
+          "label": "2 + 1",
+          "intended_written_value": "3",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-2",
+          "label": "2 + 5",
+          "intended_written_value": "7",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-3",
+          "label": "2 + 9",
+          "intended_written_value": "11",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-4",
+          "label": "2 + 3",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-5",
+          "label": "2 + 11",
+          "intended_written_value": "13",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-6",
+          "label": "2 + 6",
+          "intended_written_value": "8",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-7",
+          "label": "2 + 2",
+          "intended_written_value": "4",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-8",
+          "label": "2 + 8",
+          "intended_written_value": "10",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-9",
+          "label": "2 + 4",
+          "intended_written_value": "6",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-10",
+          "label": "2 + 12",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-11",
+          "label": "2 + 7",
+          "intended_written_value": "9",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-12",
+          "label": "2 + 10",
+          "intended_written_value": "12",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-13",
+          "label": "2 + 5",
+          "intended_written_value": "7",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-14",
+          "label": "2 + 12",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-15",
+          "label": "2 + 3",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-16",
+          "label": "2 + 9",
+          "intended_written_value": "11",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "48544102-mixed.synthetic.pdf",
+      "fixture": "48544102-mixed.synthetic.json",
+      "source_filename": "48544102.pdf",
+      "source_sha256": "532df7e2a487f1325c7c027a31c0d2ff769791103fdb35f22d42566310382025",
+      "scenario": "mixed",
+      "title": "Add 2",
+      "question_count": 16,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 14,
+      "pdf_sha256": "50264f1afb2635655f0ce559794534cb0e49a5eeebd0d9f76753ad60bfe4184f",
+      "responses": [
+        {
+          "question_id": "add-1",
+          "label": "2 + 1",
+          "intended_written_value": "4",
+          "intended_case": "deliberately wrong"
+        },
+        {
+          "question_id": "add-2",
+          "label": "2 + 5",
+          "intended_written_value": "",
+          "intended_case": "blank"
+        },
+        {
+          "question_id": "add-3",
+          "label": "2 + 9",
+          "intended_written_value": "11",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-4",
+          "label": "2 + 3",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-5",
+          "label": "2 + 11",
+          "intended_written_value": "13",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-6",
+          "label": "2 + 6",
+          "intended_written_value": "8",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-7",
+          "label": "2 + 2",
+          "intended_written_value": "4",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-8",
+          "label": "2 + 8",
+          "intended_written_value": "10",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-9",
+          "label": "2 + 4",
+          "intended_written_value": "6",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-10",
+          "label": "2 + 12",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-11",
+          "label": "2 + 7",
+          "intended_written_value": "9",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-12",
+          "label": "2 + 10",
+          "intended_written_value": "12",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-13",
+          "label": "2 + 5",
+          "intended_written_value": "7",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-14",
+          "label": "2 + 12",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-15",
+          "label": "2 + 3",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "add-16",
+          "label": "2 + 9",
+          "intended_written_value": "11",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "91903282-correct.synthetic.pdf",
+      "fixture": "91903282-correct.synthetic.json",
+      "source_filename": "91903282.pdf",
+      "source_sha256": "4e1b2dcd7164d8c0742c54daeb15a75aa3624c586b47683c8fe609c920277e5f",
+      "scenario": "correct",
+      "title": "Count and complete numbers",
+      "question_count": 10,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 10,
+      "pdf_sha256": "2073960affbc46d4214f3cdceac1989dc6b758a5d28e94c8682208b4cf3f9ac2",
+      "responses": [
+        {
+          "question_id": "count-1",
+          "label": "Count the ants; select one number",
+          "intended_written_value": "7",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "count-2",
+          "label": "Count the apples; select one number",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "count-3",
+          "label": "Count the balls; select one number",
+          "intended_written_value": "9",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "count-4",
+          "label": "Count the bamboo plants; select one number",
+          "intended_written_value": "4",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-1",
+          "label": "Flower grid: row 1, column 2",
+          "intended_written_value": "2",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-2",
+          "label": "Flower grid: row 1, column 5",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-3",
+          "label": "Flower grid: row 2, column 3",
+          "intended_written_value": "8",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-4",
+          "label": "Flower grid: row 3, column 1",
+          "intended_written_value": "11",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-5",
+          "label": "Flower grid: row 3, column 4",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-6",
+          "label": "Flower grid: row 4, column 2",
+          "intended_written_value": "17",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "91903282-mixed.synthetic.pdf",
+      "fixture": "91903282-mixed.synthetic.json",
+      "source_filename": "91903282.pdf",
+      "source_sha256": "4e1b2dcd7164d8c0742c54daeb15a75aa3624c586b47683c8fe609c920277e5f",
+      "scenario": "mixed",
+      "title": "Count and complete numbers",
+      "question_count": 10,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 8,
+      "pdf_sha256": "0d8a6dcff5f5213437137dff2c440fdecf33e685b1ab72bb5c021729cfdf295f",
+      "responses": [
+        {
+          "question_id": "count-1",
+          "label": "Count the ants; select one number",
+          "intended_written_value": "1",
+          "intended_case": "deliberately wrong"
+        },
+        {
+          "question_id": "count-2",
+          "label": "Count the apples; select one number",
+          "intended_written_value": "",
+          "intended_case": "blank"
+        },
+        {
+          "question_id": "count-3",
+          "label": "Count the balls; select one number",
+          "intended_written_value": "9",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "count-4",
+          "label": "Count the bamboo plants; select one number",
+          "intended_written_value": "4",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-1",
+          "label": "Flower grid: row 1, column 2",
+          "intended_written_value": "2",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-2",
+          "label": "Flower grid: row 1, column 5",
+          "intended_written_value": "5",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-3",
+          "label": "Flower grid: row 2, column 3",
+          "intended_written_value": "8",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-4",
+          "label": "Flower grid: row 3, column 1",
+          "intended_written_value": "11",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-5",
+          "label": "Flower grid: row 3, column 4",
+          "intended_written_value": "14",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "flower-6",
+          "label": "Flower grid: row 4, column 2",
+          "intended_written_value": "17",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "96056280-correct.synthetic.pdf",
+      "fixture": "96056280-correct.synthetic.json",
+      "source_filename": "96056280.pdf",
+      "source_sha256": "9e30d6bd57b88a0ce472421f782433b129192fa16d0d718344125f75fcd87e3e",
+      "scenario": "correct",
+      "title": "Complete the number sequences",
+      "question_count": 10,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 10,
+      "pdf_sha256": "848600ef057cdb9272152b25f51c99eb5394278526a06e9a6e18461c0e7abfb7",
+      "responses": [
+        {
+          "question_id": "chain-0-0",
+          "label": "Number chain 1: missing value 1",
+          "intended_written_value": "28",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-0-1",
+          "label": "Number chain 1: missing value 2",
+          "intended_written_value": "30",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-0-2",
+          "label": "Number chain 1: missing value 3",
+          "intended_written_value": "32",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-1-0",
+          "label": "Number chain 2: missing value 1",
+          "intended_written_value": "37",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-1-1",
+          "label": "Number chain 2: missing value 2",
+          "intended_written_value": "39",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-1-2",
+          "label": "Number chain 2: missing value 3",
+          "intended_written_value": "41",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-0-0",
+          "label": "Frog sequence 1: missing value 1",
+          "intended_written_value": "31",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-0-1",
+          "label": "Frog sequence 1: missing value 2",
+          "intended_written_value": "33",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-1-0",
+          "label": "Frog sequence 2: missing value 1",
+          "intended_written_value": "40",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-1-1",
+          "label": "Frog sequence 2: missing value 2",
+          "intended_written_value": "42",
+          "intended_case": "correct"
+        }
+      ]
+    },
+    {
+      "pdf": "96056280-mixed.synthetic.pdf",
+      "fixture": "96056280-mixed.synthetic.json",
+      "source_filename": "96056280.pdf",
+      "source_sha256": "9e30d6bd57b88a0ce472421f782433b129192fa16d0d718344125f75fcd87e3e",
+      "scenario": "mixed",
+      "title": "Complete the number sequences",
+      "question_count": 10,
+      "manual_questions": 0,
+      "intended_correct_numeric_or_choice": 8,
+      "pdf_sha256": "aa15e176d7eda0c5ff568c7b01119f6f9e2d9e307ca0d10304c8684e18b056de",
+      "responses": [
+        {
+          "question_id": "chain-0-0",
+          "label": "Number chain 1: missing value 1",
+          "intended_written_value": "29",
+          "intended_case": "deliberately wrong"
+        },
+        {
+          "question_id": "chain-0-1",
+          "label": "Number chain 1: missing value 2",
+          "intended_written_value": "",
+          "intended_case": "blank"
+        },
+        {
+          "question_id": "chain-0-2",
+          "label": "Number chain 1: missing value 3",
+          "intended_written_value": "32",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-1-0",
+          "label": "Number chain 2: missing value 1",
+          "intended_written_value": "37",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-1-1",
+          "label": "Number chain 2: missing value 2",
+          "intended_written_value": "39",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "chain-1-2",
+          "label": "Number chain 2: missing value 3",
+          "intended_written_value": "41",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-0-0",
+          "label": "Frog sequence 1: missing value 1",
+          "intended_written_value": "31",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-0-1",
+          "label": "Frog sequence 1: missing value 2",
+          "intended_written_value": "33",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-1-0",
+          "label": "Frog sequence 2: missing value 1",
+          "intended_written_value": "40",
+          "intended_case": "correct"
+        },
+        {
+          "question_id": "frog-1-1",
+          "label": "Frog sequence 2: missing value 2",
+          "intended_written_value": "42",
+          "intended_case": "correct"
+        }
+      ]
+    }
+  ]
+}

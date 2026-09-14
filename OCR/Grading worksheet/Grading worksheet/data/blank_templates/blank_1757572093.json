@@ -1,0 +1,56 @@
+{
+  "id": "blank_1757572093",
+  "name": "f",
+  "created_at": "2025-09-11T11:58:13.482483",
+  "image_path": "data\\blank_templates\\images\\blank_1757572093.png",
+  "lines": [
+    {
+      "x": 540,
+      "y": 134,
+      "width": 264,
+      "height": 7,
+      "id": "q1",
+      "expectedAnswer": "4"
+    },
+    {
+      "x": 540,
+      "y": 299,
+      "width": 264,
+      "height": 7,
+      "id": "q2",
+      "expectedAnswer": "2"
+    },
+    {
+      "x": 540,
+      "y": 456,
+      "width": 264,
+      "height": 7,
+      "id": "q3",
+      "expectedAnswer": "2"
+    },
+    {
+      "x": 540,
+      "y": 622,
+      "width": 264,
+      "height": 6,
+      "id": "q4",
+      "expectedAnswer": "2"
+    },
+    {
+      "x": 540,
+      "y": 840,
+      "width": 264,
+      "height": 6,
+      "id": "q5",
+      "expectedAnswer": "0"
+    },
+    {
+      "x": 540,
+      "y": 1025,
+      "width": 264,
+      "height": 7,
+      "id": "q6",
+      "expectedAnswer": "1"
+    }
+  ]
+}

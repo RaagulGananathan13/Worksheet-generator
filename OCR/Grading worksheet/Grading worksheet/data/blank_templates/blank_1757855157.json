@@ -1,0 +1,40 @@
+{
+  "id": "blank_1757855157",
+  "name": "pp",
+  "created_at": "2025-09-14T18:35:57.794350",
+  "image_path": "data\\blank_templates\\images\\blank_1757855157.png",
+  "lines": [
+    {
+      "x": 81,
+      "y": 611,
+      "width": 350,
+      "height": 9,
+      "id": "q1",
+      "expectedAnswer": "robot"
+    },
+    {
+      "x": 522,
+      "y": 613,
+      "width": 350,
+      "height": 9,
+      "id": "q2",
+      "expectedAnswer": "yoyo"
+    },
+    {
+      "x": 87,
+      "y": 1003,
+      "width": 350,
+      "height": 9,
+      "id": "q3",
+      "expectedAnswer": "teddy bear"
+    },
+    {
+      "x": 534,
+      "y": 1003,
+      "width": 350,
+      "height": 9,
+      "id": "q4",
+      "expectedAnswer": "scooter"
+    }
+  ]
+}

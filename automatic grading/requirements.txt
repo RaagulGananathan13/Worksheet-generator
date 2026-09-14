@@ -1,0 +1,12 @@
+# Isolated server; no dependency on the existing JavaScript generator.
+fastapi==0.135.1
+starlette==1.6.0
+uvicorn==0.41.0
+pydantic==2.12.3
+python-multipart==0.0.22
+-r requirements-pdf.txt
+Pillow==11.1.0
+httpx==0.28.1
+# Printed-worksheet uploads: page alignment and removal of printing (Apache-2.0).
+opencv-python-headless==5.0.0.93
+numpy==2.5.3

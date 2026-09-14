@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unified Worksheet Grader</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* Overlay visuals reused from individual pages */
+    #imageContainer { position: relative; display: inline-block; max-width: 100%; margin: 0 auto; }
+    #worksheetImage { max-width: 100%; max-height: 80vh; display: block; }
+    .answer-box { position: absolute; border: 2px solid var(--color-accent-blue); background-color: rgba(242,153,74,0.10); pointer-events: none; z-index: 2; }
+    .answer-box.correct { border-color: var(--color-success); background-color: rgba(39,174,96,0.12); }
+    .answer-box.partial { border-color: #ffc107; background-color: rgba(255,193,7,0.12); }
+    .answer-box.incorrect { border-color: #dc3545; background-color: rgba(220,53,69,0.10); }
+    .answer-line { position: absolute; border: 2px solid var(--color-accent-blue); background-color: rgba(242,153,74,0.10); pointer-events: none; border-radius: 4px; box-sizing: border-box; }
+    .answer-line.correct { border-color: var(--color-success); background-color: rgba(39,174,96,0.12); }
+    .answer-line.partial { border-color: #ffc107; background-color: rgba(255,193,7,0.12); }
+    .answer-line.incorrect { border-color: #dc3545; background-color: rgba(220,53,69,0.10); }
+    .answer-status { position: absolute; right: -12px; top: -12px; pointer-events: none; }
+    .status-icon { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; font-size: 12px; box-shadow: 0 2px 4px rgba(16,24,40,.1); }
+    
+    /* Result item background colors */
+    .bg-success-light { background-color: rgba(39, 174, 96, 0.1) !important; }
+    .bg-warning-light { background-color: rgba(255, 193, 7, 0.1) !important; }
+    .bg-danger-light { background-color: rgba(220, 53, 69, 0.1) !important; }
+    
+    /* Hover effects for result items */
+    .list-group-item { transition: background-color 0.2s ease; }
+    .list-group-item:hover { filter: brightness(0.98); }
+  </style>
+</head>
+<body>
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Grade Worksheet</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="typeSelect" class="form-label">Template Type</label>
+                <select id="typeSelect" class="form-select">
+                  <option value="">-- Select type --</option>
+                  <option value="answer-boxes">Answer Boxes</option>
+                  <option value="blank-lines">Blank Lines</option>
+                  <option value="dotted-lines">Dotted Lines</option>
+                  <option value="sa-boxes">Short Answer</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="templateSelect" class="form-label">Template</label>
+                <select id="templateSelect" class="form-select" disabled>
+                  <option value="">-- Select a template --</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="studentName" class="form-label">Student Name (optional)</label>
+                <input id="studentName" class="form-control" placeholder="Enter name" />
+              </div>
+              <div class="col-12">
+                <label for="studentWorksheet" class="form-label">Upload Student's Worksheet</label>
+                <input id="studentWorksheet" type="file" class="form-control" accept="image/*" />
+              </div>
+            </div>
+
+            <div id="imageContainer" class="mt-4 text-center">
+              <img id="worksheetImage" style="display:none; max-width:100%; max-height:60vh;" />
+            </div>
+            
+            <div class="mt-4 pt-3 border-top text-center">
+              <button id="gradeBtn" class="btn btn-primary btn-lg d-none" style="min-width: 200px;" disabled>
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <i class="fas fa-check-circle me-2"></i>Grade Worksheet
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Grading Results</h5>
+          </div>
+          <div class="card-body d-flex flex-column" style="min-height: 40vh; max-height: 70vh;">
+            <div id="gradingResults" class="flex-grow-1 overflow-auto mb-3" style="min-height: 0; max-height: calc(70vh - 100px);">
+              <div class="text-muted text-center py-5">
+                <i class="fas fa-tasks fa-3x mb-3"></i>
+                <p>Select a type and template, upload a worksheet, then click Grade</p>
+              </div>
+            </div>
+            <div class="mt-auto pt-3 border-top">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h4>Score: <span id="score">0</span>/<span id="totalQuestions">0</span></h4>
+                </div>
+                <div>
+                  <span id="percentage" class="badge bg-primary fs-5">0%</span>
+                </div>
+              </div>
+              <div class="progress mt-2" style="height: 10px;">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const typeSelect = document.getElementById('typeSelect');
+    const templateSelect = document.getElementById('templateSelect');
+    const studentWorksheet = document.getElementById('studentWorksheet');
+    const worksheetImage = document.getElementById('worksheetImage');
+    const gradeBtn = document.getElementById('gradeBtn');
+
+    function resetResults() {
+      document.getElementById('gradingResults').innerHTML = `
+        <div class="text-muted text-center py-5">
+          <i class="fas fa-tasks fa-3x mb-3"></i>
+          <p>Select a type and template, upload a worksheet, then click Grade</p>
+        </div>`;
+      document.getElementById('score').textContent = '0';
+      document.getElementById('totalQuestions').textContent = '0';
+      document.getElementById('percentage').textContent = '0%';
+      const pb = document.getElementById('progressBar');
+      pb.style.width = '0%';
+      pb.className = 'progress-bar';
+    }
+
+    function updateButtonState() {
+      const type = typeSelect.value;
+      const template = templateSelect.value;
+      const file = studentWorksheet.files[0];
+      const isValid = !!(type && template && file);
+      
+      if (isValid) {
+        gradeBtn.classList.remove('d-none');
+        gradeBtn.disabled = false;
+      } else {
+        gradeBtn.classList.add('d-none');
+        gradeBtn.disabled = true;
+      }
+    }
+
+    typeSelect.addEventListener('change', async () => {
+      resetResults();
+      clearOverlays();
+      templateSelect.innerHTML = '<option value="">Loading...</option>';
+      templateSelect.disabled = true;
+
+      const type = typeSelect.value;
+      worksheetImage.style.display = 'none';
+      worksheetImage.src = '';
+      studentWorksheet.value = '';
+      updateButtonState();
+
+      if (!type) {
+        templateSelect.innerHTML = '<option value="">-- Select a template --</option>';
+        return;
+      }
+
+      const listEndpoint = `/api/${type}/templates`;
+      try {
+        const res = await fetch(listEndpoint);
+        if (!res.ok) throw new Error('Failed to load templates');
+        const data = await res.json();
+
+        let templates = data;
+        if (data && data.templates) templates = data.templates; // some endpoints wrap in {templates}
+
+        templateSelect.innerHTML = '<option value="">-- Select a template --</option>';
+
+        if (!Array.isArray(templates)) {
+          console.warn('Unexpected template list format', data);
+          templateSelect.disabled = false;
+          return;
+        }
+
+        templates.forEach(t => {
+          const opt = document.createElement('option');
+          // Canonical ID resolution
+          let id = t.id || t.template_id || t.filename || '';
+          // Only answer-box templates use tpl_ enforced
+          if ((type === 'answer-boxes') && id && !id.startsWith('tpl_')) {
+            id = 'tpl_' + id;
+          }
+          opt.value = id;
+          opt.textContent = id;
+          templateSelect.appendChild(opt);
+        });
+
+        templateSelect.disabled = false;
+      } catch (e) {
+        console.error(e);
+        templateSelect.innerHTML = '<option value="">Failed to load templates</option>';
+        templateSelect.disabled = false;
+      }
+    });
+
+    templateSelect.addEventListener('change', () => {
+      // Clear previous results and overlays when switching templates
+      resetResults();
+      clearOverlays();
+      worksheetImage.style.display = 'none';
+      worksheetImage.src = '';
+      studentWorksheet.value = '';
+      updateButtonState();
+    });
+
+    studentWorksheet.addEventListener('change', (e) => {
+      // New file selected -> reset previous results/overlays
+      resetResults();
+      clearOverlays();
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        worksheetImage.src = ev.target.result;
+        worksheetImage.style.display = 'block';
+        updateButtonState();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    gradeBtn.addEventListener('click', async () => {
+      const type = typeSelect.value;
+      let templateIdRaw = templateSelect.value;
+      const studentName = document.getElementById('studentName').value || 'Student';
+      const file = studentWorksheet.files[0];
+      if (!type || !templateIdRaw || !file) return;
+
+      // Some endpoints expect tpl_ prefix for answer-box templates only
+      if ((type === 'answer-boxes') && !templateIdRaw.startsWith('tpl_')) {
+        templateIdRaw = 'tpl_' + templateIdRaw;
+      }
+      // For dotted/blank, keep numeric/string IDs as-is
+
+      const formData = new FormData();
+      formData.append('template_id', templateIdRaw);
+      formData.append('student_image', file);
+      if (studentName) formData.append('student_name', studentName);
+
+      const spinner = gradeBtn.querySelector('.spinner-border');
+      const icon = gradeBtn.querySelector('i');
+
+      try {
+        gradeBtn.disabled = true;
+        spinner.classList.remove('d-none');
+        if (icon) icon.classList.add('d-none');
+
+        const res = await fetch(`/api/${type}/grade`, { method: 'POST', body: formData });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || err.message || 'Failed to grade');
+        }
+        const result = await res.json();
+        displayResults(result);
+      } catch (e) {
+        console.error('Grading error:', e);
+        alert(e.message || 'Failed to grade.');
+      } finally {
+        gradeBtn.disabled = false;
+        spinner.classList.add('d-none');
+        if (icon) icon.classList.remove('d-none');
+      }
+    });
+
+    // Template-specific display handlers
+    const resultHandlers = {
+      // Handler for Answer Boxes
+      'answer-boxes': function(answers, resultsContainer) {
+        return answers.map((a, i) => {
+          const label = a.question_id || a.id || `Q${i+1}`;
+          const expected = a.expected || a.model_answer || '';
+          const detected = a.actual || a.detected || '';
+          const isCorrect = a.is_correct || (a.category || '').toLowerCase() === 'very_good';
+          const badgeClass = isCorrect ? 'bg-success' : 'bg-danger';
+          const bgClass = isCorrect ? 'bg-success-light' : 'bg-danger-light';
+          const badgeText = isCorrect ? 'Correct' : 'Wrong';
+          
+          return `
+            <div class="list-group-item ${bgClass}">
+              <div class="d-flex w-100 justify-content-between mb-2">
+                <h6 class="mb-2">Question ${label}</h6>
+                <span class="badge ${badgeClass} align-self-start">${badgeText}</span>
+              </div>
+              <div class="answer-content">
+                ${expected ? `<div class="mb-1"><strong>Expected:</strong> ${expected}</div>` : ''}
+                ${detected ? `<div class="mb-1"><strong>Detected:</strong> ${detected}</div>` : ''}
+              </div>
+            </div>`;
+        }).join('');
+      },
+      
+      // Handler for Short Answer
+      'sa-boxes': function(answers, resultsContainer) {
+        return answers.map((a, i) => {
+          const label = a.question_id || a.id || `Q${i+1}`;
+          const expected = a.expected || a.model_answer || '';
+          const detected = a.actual || a.detected || '';
+          const similarity = a.similarity || 0;
+          const percentage = Math.round(similarity * 100);
+          
+          let status, badgeClass, bgClass;
+          if (similarity >= 0.75) { 
+            status = 'Correct'; 
+            badgeClass = 'bg-success'; 
+            bgClass = 'bg-success-light'; 
+          }
+          else if (similarity >= 0.40) { 
+            status = 'Partial'; 
+            badgeClass = 'bg-warning'; 
+            bgClass = 'bg-warning-light';
+          }
+          else { 
+            status = 'Incorrect'; 
+            badgeClass = 'bg-danger'; 
+            bgClass = 'bg-danger-light';
+          }
+          
+          return `
+            <div class="list-group-item ${bgClass}">
+              <div class="d-flex w-100 justify-content-between mb-2">
+                <h6 class="mb-2">Question ${label}</h6>
+                <span class="badge ${badgeClass} align-self-start">${status}</span>
+              </div>
+              <div class="mb-3">
+                ${expected ? `<div class="mb-1"><strong>Expected:</strong> ${expected}</div>` : ''}
+                ${detected ? `<div class="mb-1"><strong>Detected:</strong> ${detected}</div>` : ''}
+                <div class="similarity-bar mt-2">
+                  <div class="progress" style="height: 6px; background-color: #e9ecef; margin-bottom: 4px;">
+                    <div class="progress-bar ${badgeClass}" 
+                         role="progressbar" 
+                         style="width: ${percentage}%" 
+                         aria-valuenow="${percentage}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                    </div>
+                  </div>
+                  <small class="text-muted">Similarity: ${percentage}%</small>
+                </div>
+                ${a.reasoning ? `
+                <div class="reasoning mt-2 p-2 bg-light rounded">
+                  <small class="text-muted">${a.reasoning}</small>
+                </div>` : ''}
+              </div>
+            </div>`;
+        }).join('');
+      },
+      
+      // Handler for Blank Lines and Dotted Lines
+      'default': function(answers, resultsContainer) {
+        return answers.map((a, i) => {
+          const label = a.question_id || a.id || `Q${i+1}`;
+          const expected = a.expected || a.model_answer || '';
+          const detected = a.actual || a.detected || '';
+          const isCorrect = a.is_correct || (a.category || '').toLowerCase() === 'very_good';
+          const badgeClass = isCorrect ? 'bg-success' : 'bg-danger';
+          const bgClass = isCorrect ? 'bg-success-light' : 'bg-danger-light';
+          const badgeText = isCorrect ? 'Correct' : 'Wrong';
+          
+          return `
+            <div class="list-group-item ${bgClass}">
+              <div class="d-flex w-100 justify-content-between mb-2">
+                <h6 class="mb-2">Line ${label}</h6>
+                <span class="badge ${badgeClass} align-self-start">${badgeText}</span>
+              </div>
+              <div class="answer-content">
+                ${expected ? `<div class="mb-1"><strong>Expected:</strong> ${expected}</div>` : ''}
+                ${detected ? `<div class="mb-1"><strong>Detected:</strong> ${detected}</div>` : ''}
+              </div>
+            </div>`;
+        }).join('');
+      }
+    };
+
+    function displayResults(result) {
+      const resultsContainer = document.getElementById('gradingResults');
+      const scoreElement = document.getElementById('score');
+      const totalElement = document.getElementById('totalQuestions');
+      const percentageElement = document.getElementById('percentage');
+      const progressBar = document.getElementById('progressBar');
+      const templateType = typeSelect.value;
+
+      // Normalize answers to array form
+      let answers = [];
+      if (Array.isArray(result.answers)) {
+        answers = result.answers;
+      } else if (result.answers && typeof result.answers === 'object') {
+        answers = Object.entries(result.answers).map(([id, ans]) => ({
+          ...ans,
+          id: ans?.question_id || id,
+          detected: ans?.actual ?? ans?.detected ?? 'N/A',
+          expected: ans?.expected ?? 'N/A',
+          method: ans?.grading_method || ans?.method || 'unknown',
+          reasoning: ans?.reasoning || '',
+          is_correct: !!ans?.is_correct,
+          similarity: ans?.similarity ?? 0,
+          category: ans?.category || (ans?.is_correct ? 'very_good' : 'wrong'),
+          credit: typeof ans?.credit === 'number' ? ans.credit : (ans?.is_correct ? 1 : 0)
+        }));
+      }
+
+      // Handle empty results
+      if (!answers.length) {
+        resultsContainer.innerHTML = `
+          <div class="text-muted text-center py-5">
+            <i class="fas fa-tasks fa-3x mb-3"></i>
+            <p>No answers to grade</p>
+          </div>`;
+        scoreElement.textContent = '0';
+        totalElement.textContent = '0';
+        percentageElement.textContent = '0%';
+        progressBar.style.width = '0%';
+        progressBar.className = 'progress-bar';
+        return;
+      }
+
+      // Calculate scores based on template type
+      let score, total, percent;
+      
+      if (templateType === 'sa-boxes') {
+        // For SA, use similarity-based scoring
+        const sumCredits = answers.reduce((acc, a) => {
+          const similarity = a.similarity || 0;
+          let credit = 0;
+          if (similarity >= 0.75) credit = 1;
+          else if (similarity >= 0.40) credit = 0.5;
+          return acc + credit;
+        }, 0);
+        total = answers.length;
+        score = sumCredits;
+        percent = total > 0 ? Math.round((sumCredits / total) * 100) : 0;
+        scoreElement.textContent = sumCredits.toFixed(2);
+        totalElement.textContent = total.toFixed(2);
+      } else {
+        // For other types, use simple correct/incorrect
+        const correct = answers.filter(a => a.is_correct || (a.category && a.category.toLowerCase() === 'very_good')).length;
+        total = answers.length;
+        score = correct;
+        percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+        scoreElement.textContent = String(correct);
+        totalElement.textContent = String(total);
+      }
+
+      // Update UI elements
+      percentageElement.textContent = `${percent}%`;
+      progressBar.style.width = `${percent}%`;
+      progressBar.className = 'progress-bar';
+      
+      if (percent >= 70) progressBar.classList.add('bg-success');
+      else if (percent >= 40) progressBar.classList.add('bg-warning');
+      else progressBar.classList.add('bg-danger');
+
+      // Use appropriate handler for the template type
+      const handler = resultHandlers[templateType] || resultHandlers['default'];
+      const items = handler(answers, resultsContainer);
+      resultsContainer.innerHTML = `<div class="list-group">${items}</div>`;
+
+      // Render overlays on image
+      try {
+        renderOverlays(templateType, answers);
+      } catch (e) {
+        console.warn('Overlay render skipped:', e);
+      }
+    }
+
+    function clearOverlays() {
+      document.querySelectorAll('.answer-box, .answer-line').forEach(el => el.remove());
+    }
+
+    // Render overlays depending on selected type
+    function renderOverlays(type, answers) {
+      clearOverlays();
+      const img = document.getElementById('worksheetImage');
+      const container = document.getElementById('imageContainer');
+      if (!img || !img.src || !answers || !answers.length) return;
+
+      const scaleX = img.offsetWidth / img.naturalWidth;
+      const scaleY = img.offsetHeight / img.naturalHeight;
+
+      const isLineType = (type === 'blank-lines' || type === 'dotted-lines');
+      const isSAType = (type === 'sa-boxes');
+      answers.forEach((a, idx) => {
+        // Try multiple shapes
+        const pos = a.position || a.box || a.rect || a.area || null;
+        const line = a.line || null;
+        const shape = line || pos;
+        if (!shape) return; // nothing to draw
+
+        // Support x2/y2 style for blank lines
+        const hasX2Y2 = (shape.x2 !== undefined && shape.y2 !== undefined);
+        const rawX = (shape.x ?? shape.left ?? 0);
+        const rawY = (shape.y ?? shape.top ?? 0);
+        const rawW = hasX2Y2 ? (shape.x2 - rawX) : (shape.width ?? shape.w ?? 0);
+        const rawH = hasX2Y2 ? (shape.y2 - rawY) : (shape.height ?? shape.h ?? 0);
+
+        const x = rawX * scaleX;
+        const y = rawY * scaleY;
+        const w = rawW * scaleX;
+        const h = rawH * scaleY;
+
+        const el = document.createElement('div');
+        let stateClass;
+        if (isSAType) {
+          const sim = (a._similarity !== undefined) ? a._similarity : (a.similarity ?? 0);
+          if (sim >= 0.75) stateClass = 'correct';
+          else if (sim >= 0.40) stateClass = 'partial';
+          else stateClass = 'incorrect';
+        } else {
+          const cat = (a.category || '').toLowerCase();
+          const isPartial = (cat === 'partial' || cat === 'partially_correct');
+          const ok = !!a.is_correct || cat === 'very_good';
+          stateClass = ok ? 'correct' : (isPartial ? 'partial' : 'incorrect');
+        }
+        el.className = `${isLineType ? 'answer-line' : 'answer-box'} ${stateClass}`;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.style.width = `${Math.max(1, w)}px`;
+        el.style.height = `${Math.max(1, h)}px`;
+
+        // Add compact number badge overlapping left edge, vertically centered
+        if (isLineType) {
+          const label = document.createElement('div');
+          label.className = 'answer-line-label question-number-label';
+          label.textContent = `${idx + 1}`;
+          label.style.position = 'absolute';
+          label.style.left = '-8px';
+          label.style.top = '50%';
+          label.style.transform = 'translateY(-50%)';
+          label.style.zIndex = '2';
+          el.appendChild(label);
+        } else {
+          const label = document.createElement('div');
+          label.className = 'box-number';
+          label.textContent = `${idx + 1}`;
+          label.style.position = 'absolute';
+          label.style.left = '-8px';
+          label.style.top = '50%';
+          label.style.transform = 'translateY(-50%)';
+          label.style.zIndex = '2';
+          el.appendChild(label);
+        }
+
+        // Icon-only status: small circular check/x
+        const status = document.createElement('div');
+        status.className = 'answer-status';
+        // Place chip at top-right corner of overlay
+        status.style.right = '-12px';
+        status.style.top = '-12px';
+        const chip = document.createElement('div');
+        chip.className = 'status-icon';
+        let isPartialChip = el.classList.contains('partial');
+        let isCorrectChip = el.classList.contains('correct');
+        if (isPartialChip) {
+          chip.style.backgroundColor = '#FFC107';
+          chip.textContent = '~';
+          chip.style.color = '#000';
+          chip.style.fontWeight = '700';
+        } else if (isCorrectChip) {
+          chip.style.backgroundColor = '#27AE60';
+          chip.innerHTML = '<i class="fa-solid fa-check"></i>';
+        } else {
+          chip.style.backgroundColor = '#DC3545';
+          chip.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        }
+        status.appendChild(chip);
+        status.style.zIndex = '2';
+        el.appendChild(status);
+
+        container.appendChild(el);
+      });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      resetResults();
+    });
+  </script>
+</body>
+</html>

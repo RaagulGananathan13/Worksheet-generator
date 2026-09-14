@@ -1,4 +1,15 @@
-# Logs
+# ─── Secrets ──────────────────────────────────────────────────────────────
+# Credentials are never committed. Only *.env.example templates are tracked.
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+*.pem
+*.key
+
+# ─── Logs ─────────────────────────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,26 +18,71 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+# ─── Node: frontend and backend (worksheet generator) ────────────────────
+node_modules/
 dist
 dist-ssr
 *.local
-.env
-.env.*
-!.env.example
-server/.env
-server/.env.*
-!server/.env.example
+.vite/
+coverage/
 
 # Backend data (user/worksheet JSON storage)
 backend/data/users.json
 backend/data/worksheets.json
 
-# Editor directories and files
+# ─── Python ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# ─── Databases (student and account records are never committed) ─────────
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# ─── automatic grading: private runtime data and generated output ─────────
+# data/ holds student accounts, answers, uploaded paper photos, the SQLite
+# database and backups, plus several GB of downloaded handwriting models.
+# Keep it private and backed up; never commit it.
+automatic grading/data/
+automatic grading/artifacts/
+automatic grading/.env
+# Temporary folders created by the test suite
+.api-tests-*/
+.pdf-tests-*/
+.paper-tests-*/
+.paper-api-render-*/
+.paper-migration-*/
+.demo-api-tests-*/
+.retry-migration-*/
+.retry-report-tests-*/
+.diag-*/
+
+# ─── OCR/: earlier intern prototype (kept for reference) ─────────────────
+# Its .env contains provider keys that must be revoked, never committed.
+OCR/**/.env
+OCR/**/.venv/
+OCR/**/uploads/
+OCR/**/debug/
+OCR/**/temp/
+OCR/**/.idea/
+OCR/**/*.pth
+
+# ─── Editors and operating systems ───────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
